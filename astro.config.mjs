@@ -2,11 +2,14 @@
 import { defineConfig } from "astro/config";
 import tailwindcss from "@tailwindcss/vite";
 
+import vue from "@astrojs/vue";
+
 // https://astro.build/config
 export default defineConfig({
   vite: {
     plugins: [tailwindcss()],
   },
+
   redirects: {
     "tutorials": "/tutorials/scripting/getting-started",
     "events": "/docs",
@@ -25,5 +28,7 @@ export default defineConfig({
     "docs/functions": "/docs",
     "docs/sections": "/docs",
     "docs/classes": "/docs",
-  }
+  },
+
+  integrations: [vue()]
 });
