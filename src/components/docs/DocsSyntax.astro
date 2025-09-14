@@ -8,6 +8,7 @@ export interface Syntax {
     since: string;
     name: string;
     deprecated: boolean;
+    category: string | null;
 }
 
 interface Props {
@@ -20,6 +21,8 @@ const { syntax }: Props = Astro.props;
 <a href={`#${syntax.id}`}
     data-new={syntax.isNew} data-type={syntax.type} data-since={syntax.since} 
     class="syntax"
-    style={syntax.deprecated ? 'text-decoration: line-through; opacity: 0.5;' : ''}>
+    style={
+        syntax.deprecated ? 'text-decoration: line-through; opacity: 0.5;' : ''
+    }>
     {syntax.name}
 </a>
