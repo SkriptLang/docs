@@ -110,13 +110,12 @@ pre {
 }
 
 .syntax {
-    @apply w-full text-left p-2 rounded-md 
-        bg-l-bg-secondary dark:bg-d-bg-secondary hover:cursor-pointer
+    @apply w-full text-left hover:cursor-pointer
         break-words;
 }
 
 .syntax-active {
-    @apply bg-skript text-white font-bold;
+    @apply text-skript font-bold;
 }
 
 .doc-container {
