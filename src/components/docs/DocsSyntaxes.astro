@@ -46,7 +46,7 @@ categories.push("Other");
         <button class="category-heading bg-l-bg dark:bg-d-bg top-0 text-left hover:cursor-pointer py-1">
             <h3>{category}</h3>
         </button>
-        <div class="hidden flex-col gap-1">
+        <div class="hidden flex-col">
             {grouped[category].map(syntax => <DocsSyntax syntax={syntax} />)}
         </div>
     ))}

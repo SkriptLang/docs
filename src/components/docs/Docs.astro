@@ -95,48 +95,6 @@ function type(doc: any): DocType {
             }
         });
     });
-
-    const options = {
-        rootMargin: "0px",
-        threshold: 0.7,
-    };
-
-    const observer = new IntersectionObserver((entries) => {
-        let matched: HTMLElement | null = null;
-
-        for (let i = 0; i < entries.length; i++) {
-            if (entries[i].isIntersecting) {
-                matched = entries[i].target as HTMLElement;
-                break;
-            }
-        }
-
-        const id = matched?.querySelector(".id")?.id
-
-        if (id !== null) {
-            const anchor = document.querySelector(`a[href="#${id}"]`) as HTMLAnchorElement | null;
-
-            if (anchor === null) {
-                return;
-            }
-
-            anchor.classList.add("syntax-active");
-
-            document.querySelectorAll(".syntax-active").forEach((a) => {
-                if (a !== anchor) {
-                    a.classList.remove("syntax-active");
-                }
-            });
-
-            const syntax = document.getElementById("syntax")!!;
-            syntax.scrollTop = anchor.offsetTop 
-                - (syntax.clientHeight - document.getElementById("nav")!!.clientHeight) / 2;
-        }
-    }, options);
-
-    document.querySelectorAll(".doc-container").forEach((div) => {
-        observer.observe(div);
-    });
 </script>
 
 <div class="flex flex-col-reverse md:flex-row">

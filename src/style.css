@@ -111,7 +111,8 @@ pre {
 
 .syntax {
     @apply w-full text-left hover:cursor-pointer
-        break-words ml-4;
+        ml-4 pb-1
+        break-words hover:font-bold hover:text-skript transition-all duration-100;
 }
 
 .syntax-active {
