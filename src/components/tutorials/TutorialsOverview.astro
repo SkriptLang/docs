@@ -1,6 +1,60 @@
 ---
 import type { Tutorial } from './Tutorials.astro';
 
+interface TutorialSection {
+    title: string;
+    isSection: boolean;
+    children: (TutorialSection | Tutorial)[];
+}
+
+function compare(x: TutorialSection | Tutorial, y: TutorialSection | Tutorial) : number {
+    const isXSection = "isSection" in x;
+    const isYSection = "isSection" in y;
+    if (isXSection && isYSection) { // sections are ordered based on title
+        return x.title.localeCompare(y.title);
+    } else if (isXSection) { // sections come after tutorials
+        return 1;
+    } else if (isYSection) { // tutorials come before sections
+        return -1;
+    } else { // tutorials are ordered based on index
+        return x.index - y.index;
+    }
+}
+
+function buildTutorialView(head: TutorialSection | Tutorial, depth: number) : string {
+    if ("isSection" in head) {
+        const section: TutorialSection = head;
+        return `
+            <div class="flex flex-col gap-1 ${depth == 0 ? "" : "ml-2"}">
+                <button class="tutorials-expand-button flex flex-row items-center w-fit rounded-sm hover:cursor-pointer hover:opacity-80 transition">
+                    <h2 class="text-lg font-semibold">${section.title}</h2>
+                    <svg class="transition" width="18" height="18" viewBox="0 0 18 18" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M8.60627 10.8563L5.88752 8.1375C5.85002 8.1 5.82202 8.0595 5.80352 8.016C5.78502 7.9725 5.77552 7.9255 5.77502 7.875C5.77502 7.775 5.80952 7.6875 5.87852 7.6125C5.94752 7.5375 6.03802 7.5 6.15002 7.5H11.85C11.9625 7.5 12.0533 7.5375 12.1223 7.6125C12.1913 7.6875 12.2255 7.775 12.225 7.875C12.225 7.9 12.1875 7.9875 12.1125 8.1375L9.39377 10.8563C9.33127 10.9188 9.26877 10.9625 9.20627 10.9875C9.14377 11.0125 9.07502 11.025 9.00002 11.025C8.92502 11.025 8.85627 11.0125 8.79377 10.9875C8.73127 10.9625 8.66877 10.9188 8.60627 10.8563Z"/>
+                    </svg>
+                </button>
+                <div class="flex flex-col gap-2 border-l-1 border-l-neutral-700">
+                    ${section.children.toSorted(compare)
+                        .map((x) => buildTutorialView(x, depth + 1))
+                        .join("")}
+                </div>
+            </div>
+        `
+    }
+    const tutorial: Tutorial = head;
+    let additionalProperties;
+    if (tutorial.id === id) { // currently selected
+        additionalProperties = "bg-skript text-white";
+    } else {
+        additionalProperties = "g-l-bg-secondary dark:bg-d-bg-secondary";
+    }
+    return `
+            <a href="/tutorials/${tutorial.id}"
+                class="ml-2 text-left px-4 py-3 rounded-md hover:cursor-pointer font-bold ${additionalProperties}">
+                ${tutorial.title}
+            </a>
+        `
+}
+
 interface Props {
     id: string;
     tutorials: Tutorial[];
@@ -8,75 +62,46 @@ interface Props {
 
 const { id, tutorials }: Props = Astro.props;
 
-const bySection = tutorials.reduce((acc, tutorial) => {
-    const section = tutorial.section;
-    if (!acc[section]) acc[section] = [];
-    acc[section].push(tutorial);
+const tutorialSections : TutorialSection[] = tutorials.reduce((acc, tutorial) => {
+    const sections = tutorial.section.split("/");
+    let currentChildren: (TutorialSection | Tutorial)[] = acc;
+    sections: for (const section of sections) {
+        for (const child of currentChildren) {
+            if ("isSection" in child && child.title === section) {
+                currentChildren = child.children;
+                continue sections;
+            }
+        }
+        // section not yet established
+        let newSection: TutorialSection = {
+            title: section,
+            isSection: true,
+            children: [],
+        };
+        currentChildren.push(newSection);
+        currentChildren = newSection.children;
+    }
+    currentChildren.push(tutorial);
     return acc;
-}, {} as Record<string, Tutorial[]>);
+}, [] as TutorialSection[]);
 
 ---
 
 <script>
-    // Update position of filters to be below the nav bar,
-    // since filters is sticky this cant be done directly
-    document.getElementById("tutorials")!!.style.top = `${document.getElementById("nav")!!.offsetHeight - 1}px`;
-
-    const tutorials = document.getElementById("tutorials-expand-area")!!;
-    const expand = document.getElementById("tutorials-expand-button")!!;
-    const expandIcon = document.getElementById("tutorials-overview-expand-icon")!!; 
-    expand.addEventListener("click", () => {
-        tutorials.classList.toggle("hidden");
-        tutorials.classList.toggle("flex");
-        expandIcon.querySelector("svg")!!.classList.toggle("rotate-90");
-    });
-
-    function updatePosition() {
-        // Update position of filters to be below the nav bar,
-        // since filters is sticky this cant be done directly
-        tutorials.style.top = `${document.getElementById("nav")!!.offsetHeight - 1}px`;   
+    // apply functionality to section expansion buttons
+    for (const button of document.getElementsByClassName("tutorials-expand-button")) {
+        button.addEventListener("click", () => {
+            button.lastElementChild!!.classList.toggle("-rotate-90");
+            button.nextElementSibling!.classList.toggle("hidden");
+        });
     }
-
-    window.addEventListener("DOMContentLoaded", updatePosition);
-    window.addEventListener("resize", updatePosition);
 </script>
 
-<div id="tutorials" class="sticky top-[35px] sm:top-[118px] left-0 w-full md:w-64 md:h-[100vh] overflow-y-hidden p-4
+<div id="tutorials" class="sticky top-[35px] sm:top-[118px] left-0 w-full md:w-64 md:h-[calc(100vh-118px)] overflow-y-hidden p-4
             flex flex-col gap-2 shrink-0
             border-b-2 md:border-b-0 md:border-r-2 border-l-border dark:border-d-border
             bg-l-bg dark:bg-d-bg">
-    <div id="tutorials-expand-button" class="p-4 -m-4 flex flex-row gap-2 hover:cursor-pointer">
-        <h2 class="flex md:hidden">Overview</h2>
-        <div class="flex-auto"></div>
-        <button id="tutorials-overview-expand-icon" class="block md:hidden px-2 w-fit rounded-sm 
-            hover:cursor-pointer hover:opacity-80 transition">
-            <svg class="transition rotate-90" width="18" height="18" viewBox="0 0 18 18" xmlns="http://www.w3.org/2000/svg">
-                <path d="M8.60627 10.8563L5.88752 8.1375C5.85002 8.1 5.82202 8.0595 5.80352 8.016C5.78502 7.9725 5.77552 7.9255 5.77502 7.875C5.77502 7.775 5.80952 7.6875 5.87852 7.6125C5.94752 7.5375 6.03802 7.5 6.15002 7.5H11.85C11.9625 7.5 12.0533 7.5375 12.1223 7.6125C12.1913 7.6875 12.2255 7.775 12.225 7.875C12.225 7.9 12.1875 7.9875 12.1125 8.1375L9.39377 10.8563C9.33127 10.9188 9.26877 10.9625 9.20627 10.9875C9.14377 11.0125 9.07502 11.025 9.00002 11.025C8.92502 11.025 8.85627 11.0125 8.79377 10.9875C8.73127 10.9625 8.66877 10.9188 8.60627 10.8563Z"/>
-                </svg>
-        </button>
-    </div>
-    <div id="tutorials-expand-area" class="hidden sm:flex flex-col gap-2">
-        {Object.entries(bySection).map(([sectionName, tutorials]) => (
-           <div class="flex flex-col gap-1">
-                <h2 class="text-lg font-semibold mt-1">{sectionName}</h2>
-                <div class="flex flex-col gap-2 border-l-1 border-l-neutral-700">
-                    { tutorials.toSorted((x, y) => x.index - y.index).map(x => {
-                    if (x.id === id) {
-                        return <a href={`/tutorials/${x.id}`} class="ml-2 text-left px-4 py-3 rounded-md 
-                            bg-skript hover:cursor-pointer
-                            font-bold text-white">
-                            {x.title}
-                        </a>
-                    } else {
-                        return <a href={`/tutorials/${x.id}`} class="ml-2 text-left px-4 py-3 rounded-md 
-                            bg-l-bg-secondary dark:bg-d-bg-secondary hover:cursor-pointer
-                            font-bold">
-                            {x.title}
-                        </a>
-                    }
-                })}
-                </div>
-           </div>
-        ))}
+    <div class="hidden sm:flex flex-col gap-2">
+        <Fragment set:html={tutorialSections.toSorted((x, y) => compare(x, y) * -1).map((x) => buildTutorialView(x, 0)).join("")} />
     </div>
 </div>

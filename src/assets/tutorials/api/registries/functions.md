@@ -2,8 +2,8 @@
 title: Functions
 author: Efnilite
 date: 9/7/2024
-url: https://github.com/SkriptLang/docs/blob/master/src/assets/tutorials/functions.md
-section: API
+url: https://github.com/SkriptLang/docs/blob/master/src/assets/tutorials/api/registries/functions.md
+section: API/Registries
 index: 1
 ---
 
