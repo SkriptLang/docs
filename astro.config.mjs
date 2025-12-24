@@ -9,6 +9,8 @@ export default defineConfig({
   },
   redirects: {
     "tutorials": "/tutorials/scripting/getting-started",
+    "tutorials/scripting": "/tutorials/scripting/getting-started",
+    "tutorials/api": "/tutorials/api/getting-started",
     "events": "/docs",
     "conditions": "/docs",
     "effects": "/docs",

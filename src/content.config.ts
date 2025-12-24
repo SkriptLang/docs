@@ -7,6 +7,7 @@ const tutorials = defineCollection({
         title: z.string(),
         author: z.string(),
         date: z.coerce.date(),
+        url: z.string(),
     })
 });
 

@@ -2,7 +2,7 @@
 title: Loops
 author: sovde
 date: 2/20/2024
-url: https://github.com/SkriptLang/docs/blob/master/src/assets/tutorials/loops.md
+url: https://github.com/SkriptLang/docs/blob/master/src/assets/tutorials/scripting/loops.md
 section: Scripting
 index: 3
 ---

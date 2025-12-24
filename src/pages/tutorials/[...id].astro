@@ -24,7 +24,7 @@ const { Content } = await render(tutorial);
 
 <Page title={`${title} | Tutorials | Skript Docs`}>
     <Nav type={PageType.TUTORIALS} />
-    <Tutorials id={tutorial.id}>
+    <Tutorials id={tutorial.id} source_url={tutorial.data.url}>
         <Content />
     </Tutorials>
 </Page>

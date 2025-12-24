@@ -2,7 +2,7 @@
 title: Functions
 author: sovde
 date: 2/20/2024
-url: https://github.com/SkriptLang/docs/blob/master/src/assets/tutorials/functions.md
+url: https://github.com/SkriptLang/docs/blob/master/src/assets/tutorials/scripting/functions.md
 section: Scripting
 index: 5
 ---
