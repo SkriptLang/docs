@@ -31,6 +31,7 @@ export interface Documentation {
     patterns: string[] | null;
     examples: string[] | null;
     keywords: string[] | null;
+    category: string | null;
 }
 
 interface Props {
@@ -94,6 +95,7 @@ function color(): string {
                     return null;
                 }
             })}
+            {[docType.category].filter(x => x != null).map(x => <DocsFiche text={x} color="9a731e"/>)}
 
             <div class="flex-auto"></div>
             <button class="share hidden sm:flex">

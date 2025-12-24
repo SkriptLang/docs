@@ -28,7 +28,8 @@ const docTypes: Documentation[] = all.map(doc => ({
     events: (doc as any)["events"] ?? null,
     deprecated: (doc as any)["deprecated"] ?? null,
     keywords: (doc as any)["keywords"] ?? null,
-    cancellable: (doc as any)["cancellable"] ?? null
+    cancellable: (doc as any)["cancellable"] ?? null,
+    category: (doc as any)["category"] ?? null,
 }));
 
 export enum DocType {
@@ -146,7 +147,8 @@ function type(doc: any): DocType {
             type: syntax.type,
             since: syntax.since!!,
             name: syntax.name,
-            deprecated: syntax.deprecated
+            deprecated: syntax.deprecated,
+            category: syntax.category
         }
     })}/>
 
