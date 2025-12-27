@@ -66,15 +66,6 @@
     display: none !important;
 }
 
-/* sidebar highlight for active syntax */
-.hover-highlight {
-    background-color: var(--sl-color-gray-6);
-}
-
-.active-syntax {
-    background-color: var(--sl-color-gray-6) !important;
-}
-
 #vs_wrapper {
     position: relative;
     width: 100%;

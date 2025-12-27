@@ -4,9 +4,7 @@
 
 
 <div class="sidebar-pane">
-    <div class="sidebar-content">
-        <div id="syntax-sidebar-container"></div>
-    </div>
+    <div id="syntax-sidebar-container"></div>
 </div>
 
 <script>
@@ -108,14 +106,10 @@
 
 <style>
     .sidebar-pane {
-        height: 100%;
-        width: 100%;
+        min-height: 100%;
+        min-width: 100%;
         overflow-y: auto;
         overflow-x: hidden;
-    }
-
-    .sidebar-content {
-        padding: 1rem;
     }
 
     #syntax-sidebar-container {
@@ -137,14 +131,11 @@
         color: var(--sl-color-gray-2);
     }
 
-    :global(.syntax-sidebar-item:hover:not(.active-syntax)) {
-        background-color: var(--sl-color-gray-6);
-        color: var(--sl-color-white);
-    }
-
-    :global(.syntax-sidebar-item.active-syntax) {
+    :global(.syntax-sidebar-item:hover, .syntax-sidebar-item.active-syntax) {
         background-color: var(--sl-color-gray-5);
         color: var(--sl-color-white);
-        font-weight: 500;
+    }
+    :global([data-theme='light'] .syntax-sidebar-item:hover, [data-theme='light'] .syntax-sidebar-item.active-syntax) {
+        background-color: var(--sl-color-gray-6);
     }
 </style>
