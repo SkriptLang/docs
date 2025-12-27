@@ -36,30 +36,52 @@ import { Icon } from '@astrojs/starlight/components';
 </script>
 
 <script>
-    const syntaxes = document.getElementById('syntaxes') as HTMLElement;
-    function hideSyntaxes(search: string) {
-        for (const element of syntaxes.children) {
-            const hide = ![...element.querySelectorAll("a, p, h1, span")!!]
-                .map((child) => (child.textContent?.toLowerCase() ?? "").includes(search))
-                .reduce((acc, curr) => acc || curr, false);
-            element.classList.toggle('search-hidden', hide);
-            document.getElementById(`sidebar-${element.getAttribute('syntax-id')}`)?.classList.toggle('search-hidden', hide);
+    // Wait for syntaxDisplayManager to initialize
+    function initSearch() {
+        const syntaxDisplayManager = (window as any).__syntaxDisplayManager;
+        if (!syntaxDisplayManager) {
+            setTimeout(initSearch, 100);
+            return;
         }
+
+        // use the virtual items from SDM to serach through instead of direct DOM elements
+        const { allItems, updateSearchFilter } = syntaxDisplayManager;
+
+        // updates SDM search filter based on search input matching any text in the card 
+        function searchSyntaxes(search: string) {
+            const searchLower = search.toLowerCase();
+            const matchingIds = new Set<string>();
+
+            allItems.forEach((item: any) => {
+                // Search through text content (todo: weight by whether found in title - pattern - examples - desc)
+                const matches = [...item.element.querySelectorAll("a, p, h1, span")]
+                    .some(child => (child.textContent?.toLowerCase() ?? "").includes(searchLower));
+                
+                if (matches) {
+                    matchingIds.add(item.syntaxId);
+                }
+            });
+
+            // Update virtual scroll with search filter
+            updateSearchFilter(matchingIds);
+        }
+
+        const searchInput = document.getElementById('syntax-search-input') as HTMLInputElement;
+        searchInput.addEventListener('input', () => {
+            searchSyntaxes(searchInput.value);
+        });
+
+        // Listen for `ctrl + k` and `cmd + k` keyboard shortcuts.
+        window.addEventListener('keydown', (e) => {
+            if ((e.metaKey === true || e.ctrlKey === true) && e.key === 'k') {
+                // TODO unfocus if possible?
+                searchInput.focus();
+                e.preventDefault();
+            }
+        });
     }
 
-    const searchInput = document.getElementById('syntax-search-input') as HTMLInputElement;
-    searchInput.addEventListener('input', () => {
-        hideSyntaxes(searchInput.value.toLowerCase());
-    })
-
-    // Listen for `ctrl + k` and `cmd + k` keyboard shortcuts.
-    window.addEventListener('keydown', (e) => {
-        if ((e.metaKey === true || e.ctrlKey === true) && e.key === 'k') {
-            // TODO unfocus if possible?
-            searchInput.focus();
-            e.preventDefault();
-        }
-    });
+    initSearch();
 </script>
 
 <style>

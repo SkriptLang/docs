@@ -1,0 +1,312 @@
+---
+// SyntaxDisplayManager.astro - Handles the displaying of the SyntaxCards, including combined filtering, virtual scrolling, and jumping via sidebar 
+---
+
+<script>
+    const ESTIMATED_ITEM_HEIGHT = 450;
+    const OVERSCAN_COUNT = 3;
+
+    // -------------------
+    // Setup virtual items
+    // -------------------
+
+    // represent all syntax cards as virtual items and only display them when needed.
+    interface VirtualItem {
+        element: HTMLElement; // actual html element to show/hide
+        syntaxType: string;   // type of syntax (for type filtering)
+        syntaxId: string;     // id of syntax (for search filtering)
+        sidebarElement: HTMLElement | null; // corresponding element in the sidebar 
+        height: number;       // actual height of the html element
+        originalIndex: number; // index to sort the items properly
+    }
+
+    // get all syntaxes, then map them into VirtualItems
+    const syntaxes = document.getElementById('syntaxes') as HTMLElement;
+    const allItems: VirtualItem[] = Array.from(syntaxes.children).map((element, index) => {
+        // get info + measure height
+        const syntaxId = element.getAttribute('syntax-id')!;
+        const syntaxType = element.getAttribute('syntax-type')!;
+        const sidebarElement = document.getElementById(`sidebar-${syntaxId}`);
+        const height = (element as HTMLElement).offsetHeight || ESTIMATED_ITEM_HEIGHT;
+        
+        return { 
+            element: element as HTMLElement, 
+            syntaxType, 
+            syntaxId, 
+            sidebarElement,
+            height,
+            originalIndex: index
+        };
+    });
+
+    // create the wrapper/viewport elements to determine what's on screen
+    const wrapper = document.createElement('div');
+    wrapper.style.position = 'relative';
+    wrapper.style.width = '100%';
+
+    const viewport = document.createElement('div');
+    viewport.style.position = 'absolute';
+    viewport.style.top = '0';
+    viewport.style.left = '0';
+    viewport.style.right = '0';
+
+    syntaxes.parentElement?.insertBefore(wrapper, syntaxes);
+    wrapper.appendChild(viewport);
+
+    // move all elements to viewport but hidden until we need them
+    allItems.forEach(item => {
+        item.element.style.display = 'none';
+        viewport.appendChild(item.element);
+    });
+    
+    // -----------------
+    // Positioning stuff
+    // -----------------
+
+    // Detemine positions
+    let positions: number[] = [];
+    let visibleRange = { start: 0, end: 0 };
+
+    // function for determining the virtual positions of cards based on the item heights
+    // creates a long list of start positions as offsets from the top (dynamic programming!)
+    function calculatePositions(items: VirtualItem[]) {
+        const pos = [0];
+        for (let i = 0; i < items.length; i++) {
+            pos.push(pos[i] + items[i].height);
+        }
+        return pos;
+    }
+
+    // simple binarySearch for findVisibleRange
+    function binarySearch(arr: number[], target: number): number {
+        let left = 0;
+        let right = arr.length;
+        
+        while (left < right) {
+            const pivot = Math.floor((left + right) / 2);
+            if (arr[pivot] < target) {
+                left = pivot + 1;
+            } else {
+                right = pivot;
+            }
+        }
+        return left;
+    }
+
+    // determine which items of the currently filtered items should be visible based on the heights/viewport size
+    function findVisibleRange(scrollTop: number, viewportHeight: number) {
+        if (positions.length === 0) return { start: 0, end: 0 };
+        
+        const start = Math.max(0, binarySearch(positions, scrollTop) - OVERSCAN_COUNT);
+        const end = Math.min(filteredItems.length, binarySearch(positions, scrollTop + viewportHeight) + OVERSCAN_COUNT);
+        
+        return { start, end };
+    }
+
+    // ---------------
+    // Filtering stuff
+    // ---------------
+
+    // init filters
+    let filteredItems: VirtualItem[] = [];
+
+    let typeFilter = new Set<string>();
+    let searchFilter: Set<string> | null = null;
+
+    // get what VirtualItems should actually "exist" based on the filters
+    // keep sorted in og alphabetical order.
+    function getFilteredItems(): VirtualItem[] {
+        // type filter
+        let filtered = typeFilter.size === 0 
+            ? [...allItems]
+            : allItems.filter(item => typeFilter.has(item.syntaxType));
+        
+        // search filter
+        if (searchFilter !== null) {
+            if (searchFilter.size === 0) {
+                filtered = [];
+            } else {
+                filtered = filtered.filter(item => searchFilter.has(item.syntaxId));
+            }
+        }
+
+        return filtered.sort((a, b) => a.originalIndex - b.originalIndex);
+    }
+
+    // -------------
+    // Sidebar stuff
+    // -------------
+
+    const scrollableSidebar = document.querySelector('#starlight__sidebar');
+    if (!scrollableSidebar)
+        throw new Error("couldn't find sidebar!!!");
+
+    // vars to prevent user-auto scroll conflicts
+    let autoSyncEnabled = true;
+
+    // ensure the sidebar elements match the filtered items
+    function updateSidebar() {
+        const filteredIds = new Set(filteredItems.map(item => item.syntaxId));
+        
+        allItems.forEach(item => {
+            if (item.sidebarElement) {
+                item.sidebarElement.style.display = filteredIds.has(item.syntaxId) ? '' : 'none';
+            }
+        });
+    }
+
+
+    // Sync sidebar scroll to show the currently visible item
+    function syncSidebarScroll() {
+        // Don't auto-sync if we're jumping to an element (or there's no elements!)
+        if (!autoSyncEnabled || !filteredItems.length) 
+            return;
+
+        // determine middle element on page and find its sidebar element
+        const middleIndex = Math.floor((visibleRange.start + visibleRange.end) / 2) - 1; // -1 gives better result
+        if (middleIndex >= filteredItems.length) 
+            return;
+
+        const middleItem = filteredItems[middleIndex];
+        const sidebarElement = middleItem.sidebarElement;
+        if (!sidebarElement) 
+            return;
+
+        scrollSidebarTo(sidebarElement);
+    }
+
+    // scroll the sidebar to center the target element (and highlight it!)
+    function scrollSidebarTo(targetElement: Element) {
+        // auto-scroll
+        (targetElement as HTMLElement).scrollIntoView({
+            behavior: 'smooth',
+            block: 'center',
+            inline: 'nearest'
+        });
+
+        // add highlight :)
+        allItems.forEach(item => {
+            item.sidebarElement?.classList.remove('active-syntax');
+        });
+        targetElement.classList.add('active-syntax');
+    }
+
+    // --------------------
+    // Main rendering stuff
+    // --------------------
+
+    // Updates which items are visible and sets display attr accordingly
+    function renderVisible() {
+        if (!filteredItems.length) {
+            // No items to show, hide everything. todo: show "No items found" message?
+            allItems.forEach(item => {
+                item.element.style.display = 'none';
+            });
+            return;
+        }
+        
+        // determine visible range of items
+        const rect = wrapper.getBoundingClientRect();
+        const scrollTop = Math.max(0, -rect.top);
+        const viewportHeight = window.innerHeight;
+        
+        const newRange = findVisibleRange(scrollTop, viewportHeight);
+        if (newRange.start === visibleRange.start && newRange.end === visibleRange.end) {
+            return; // exit early if nothing changed
+        }
+        
+        visibleRange = newRange;
+        
+        // mark which ids are visible, then update display accordingly
+        const visibleIds = new Set<string>();
+        for (let i = visibleRange.start; i < visibleRange.end; i++) {
+            visibleIds.add(filteredItems[i].syntaxId);
+        }
+        allItems.forEach(item => {
+            item.element.style.display = visibleIds.has(item.syntaxId) ? '' : 'none';
+        });
+        
+        // update viewport position
+        viewport.style.transform = `translateY(${positions[visibleRange.start]}px)`;
+
+        // make sure sidebar gets synced
+        syncSidebarScroll();
+    }
+
+    // runs the full render loop, filtering, calc positions, update sidebar, renderVisible, etc
+    // Should only need to be run after filtering updates since that changes what items 'exist'.
+    function fullRender() {
+        // Get new filtered items
+        filteredItems = getFilteredItems();
+        positions = calculatePositions(filteredItems);
+        
+        const totalHeight = positions[positions.length - 1] || 0;
+        wrapper.style.height = `${totalHeight}px`;
+        
+        // Reset visible range when filtering changes
+        visibleRange = { start: -1, end: -1 };
+        
+        updateSidebar();
+        renderVisible();
+    }
+
+    // Use RAF for smooth scrolling - claude addition
+    let rafId: number | null = null;
+    function scheduleScroll() {
+        if (rafId !== null) return;
+        rafId = requestAnimationFrame(() => {
+            renderVisible();
+            rafId = null;
+        });
+    }
+
+    // ---------------------
+    // Initialize everything
+    // ---------------------
+
+    fullRender();
+
+    // scroll/resize listeners
+    window.addEventListener('scroll', scheduleScroll, { passive: true });
+    window.addEventListener('resize', fullRender, { passive: true });
+
+    // sidebar click handler (jump-to)
+    allItems.forEach((item) => {
+        if (item.sidebarElement) {
+            item.sidebarElement.addEventListener('click', (event) => {
+                event.preventDefault();
+
+                // auto-scroll activating
+                autoSyncEnabled = false;
+                
+                const targetIndex = filteredItems.findIndex(filteredItem => filteredItem.syntaxId === item.syntaxId);
+                if (targetIndex !== -1) {
+                    // scroll to target (main and sidebar)
+                    const targetY = wrapper.offsetTop + positions[targetIndex];
+                    window.scrollTo({ 
+                        top: targetY - 100, // todo: improve target when one of the last elements
+                        behavior: 'smooth' 
+                    });
+                    scrollSidebarTo(event.currentTarget as Element)
+
+                    setTimeout(() => {
+                        autoSyncEnabled = true;
+                    }, 700); // todo: estimate duration based on scroll distance
+                }
+            });
+        }
+    });
+
+    // Expose API for other components
+    (window as any).__syntaxDisplayManager = {
+        allItems,
+        updateTypeFilter: (types: Set<string>) => {
+            typeFilter = types;
+            fullRender();
+        },
+        updateSearchFilter: (matchingIds: Set<string> | null) => {
+            searchFilter = matchingIds;
+            fullRender();
+        }
+    };
+</script>

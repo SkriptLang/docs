@@ -62,6 +62,12 @@
     }
 }
 
-.filter-hidden, .search-hidden {
+.filter-hidden {
     display: none !important;
+}
+
+/* sidebar highlight for active syntax */
+.active-syntax {
+    background-color: var(--sl-color-gray-6);
+    border-radius: 0.25rem;
 }

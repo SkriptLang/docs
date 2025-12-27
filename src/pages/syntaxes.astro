@@ -1,6 +1,7 @@
 ---
 import StarlightPage from '@astrojs/starlight/components/StarlightPage.astro';
 import SyntaxCard from "../components/syntaxes/SyntaxCard.astro";
+import SyntaxDisplayManager from "../components/syntaxes/SyntaxDisplayManager.astro";
 import rawSyntaxes from "../assets/syntaxes.json"
 
 export interface Syntax {
@@ -61,4 +62,6 @@ const syntaxes: Syntax[] = [
             <SyntaxCard syntax={syntax} />
         ))}
     </div>
+
+    <SyntaxDisplayManager />
 </StarlightPage>
