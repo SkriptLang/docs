@@ -16,6 +16,7 @@ export default defineConfig({
             components: {
                 Search: './src/components/Search.astro',
                 TableOfContents: './src/components/TableOfContents.astro',
+                Sidebar: './src/components/Sidebar.astro',
             },
             customCss: [
                 // Relative path to your custom CSS file

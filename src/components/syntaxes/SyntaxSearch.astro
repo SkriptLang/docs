@@ -53,17 +53,20 @@ import { Icon } from '@astrojs/starlight/components';
             const matchingIds = new Set<string>();
 
             allItems.forEach((item: any) => {
-                // Search through text content (todo: weight by whether found in title - pattern - examples - desc)
                 const matches = [...item.element.querySelectorAll("a, p, h1, span")]
                     .some(child => (child.textContent?.toLowerCase() ?? "").includes(searchLower));
                 
                 if (matches) {
                     matchingIds.add(item.syntaxId);
                 }
+                
+                if (item.sidebarElement) {
+                    item.sidebarElement.classList.toggle('search-hidden', !matches);
+                }
             });
 
-            // Update virtual scroll with search filter
-            updateSearchFilter(matchingIds);
+            // Pass the search query so cards can be re-ordered by relevance
+            updateSearchFilter(matchingIds, search);
         }
 
         const searchInput = document.getElementById('syntax-search-input') as HTMLInputElement;

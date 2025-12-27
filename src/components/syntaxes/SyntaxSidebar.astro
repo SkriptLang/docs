@@ -1,0 +1,150 @@
+---
+// SyntaxSidebar.astro - Replacement sidebar for syntaxes page
+---
+
+
+<div class="sidebar-pane">
+    <div class="sidebar-content">
+        <div id="syntax-sidebar-container"></div>
+    </div>
+</div>
+
+<script>
+    import type { VirtualItem } from "./SyntaxDisplayManager.astro";
+    interface SidebarAPI {
+        rebuild: (filteredItems: VirtualItem[]) => void;
+        highlight: (syntaxId: string) => void;
+        scrollTo: (syntaxId: string) => void;
+    }
+
+    const container = document.getElementById('syntax-sidebar-container');
+    if (!container) throw new Error('Sidebar container not found');
+
+    let dynamicList: HTMLElement | null = null;
+
+    function createList() {
+        const list = document.createElement('ul');
+        list.className = 'syntax-sidebar-list';
+        container.appendChild(list);
+        return list;
+    }
+
+    function rebuild(filteredItems: VirtualItem[]) {        
+        if (!dynamicList) {
+            dynamicList = createList();
+        }
+
+        dynamicList.innerHTML = '';
+
+        filteredItems.forEach(item => {
+            const li = document.createElement('li');
+            li.className = 'syntax-sidebar-item';
+            li.textContent = item.syntaxName;
+            li.dataset.syntaxId = item.syntaxId;
+
+            li.addEventListener('click', (event) => {
+                event.preventDefault();
+                
+                // Dispatch event that SDM will listen to
+                window.dispatchEvent(new CustomEvent('sidebar-item-click', {
+                    detail: { syntaxId: item.syntaxId, element: event.currentTarget }
+                }));
+            });
+
+            item.sidebarElement = li;
+            dynamicList.appendChild(li);
+        });
+    }
+
+    function highlight(syntaxId: string) {
+        if (!dynamicList) return;
+
+        // Remove all highlights
+        dynamicList.querySelectorAll('.syntax-sidebar-item').forEach(item => {
+            item.classList.remove('active-syntax');
+        });
+
+        // Add highlight to target
+        const target = dynamicList.querySelector(`[data-syntax-id="${syntaxId}"]`);
+        if (target) {
+            target.classList.add('active-syntax');
+        }
+    }
+
+    function scrollTo(syntaxId: string) {
+        if (!dynamicList) return;
+
+        const target = dynamicList.querySelector(`[data-syntax-id="${syntaxId}"]`) as HTMLElement;
+        if (!target) return;
+
+        const sidebarPane = document.querySelector('.sidebar-pane') as HTMLElement;
+        if (!sidebarPane) return;
+
+        // Only scroll if element is not in view
+        const sidebarRect = sidebarPane.getBoundingClientRect();
+        const elementRect = target.getBoundingClientRect();
+
+        const isInView = (
+            elementRect.top >= sidebarRect.top &&
+            elementRect.bottom <= sidebarRect.bottom
+        );
+
+        if (!isInView) {
+            target.scrollIntoView({
+                behavior: 'smooth',
+                block: 'center',
+                inline: 'nearest'
+            });
+        }
+    }
+
+    // Expose API
+    (window as any).__syntaxSidebar = {
+        rebuild,
+        highlight,
+        scrollTo
+    } as SidebarAPI;
+</script>
+
+<style>
+    .sidebar-pane {
+        height: 100%;
+        width: 100%;
+        overflow-y: auto;
+        overflow-x: hidden;
+    }
+
+    .sidebar-content {
+        padding: 1rem;
+    }
+
+    #syntax-sidebar-container {
+        width: 100%;
+    }
+
+    :global(.syntax-sidebar-list) {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+    }
+
+    :global(.syntax-sidebar-item) {
+        padding: 0.5rem 0.75rem;
+        cursor: pointer;
+        border-radius: 0.25rem;
+        transition: background-color 0.2s;
+        font-size: 0.9rem;
+        color: var(--sl-color-gray-2);
+    }
+
+    :global(.syntax-sidebar-item:hover:not(.active-syntax)) {
+        background-color: var(--sl-color-gray-6);
+        color: var(--sl-color-white);
+    }
+
+    :global(.syntax-sidebar-item.active-syntax) {
+        background-color: var(--sl-color-gray-5);
+        color: var(--sl-color-white);
+        font-weight: 500;
+    }
+</style>

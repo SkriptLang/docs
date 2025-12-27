@@ -67,7 +67,22 @@
 }
 
 /* sidebar highlight for active syntax */
-.active-syntax {
+.hover-highlight {
     background-color: var(--sl-color-gray-6);
-    border-radius: 0.25rem;
+}
+
+.active-syntax {
+    background-color: var(--sl-color-gray-6) !important;
+}
+
+#vs_wrapper {
+    position: relative;
+    width: 100%;
+}
+
+#vs_viewport {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
 }
