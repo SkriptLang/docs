@@ -1,7 +1,7 @@
 ---
 const rtTypes = ["Conditions", "Effects", "Events", "Expressions", "Functions", "Sections", "Structures", "Types"]
 
-import docs from "../../assets/docs/docs.json";
+import docs from "../../../src/assets/syntaxes.json";
 
 const latest = docs.skriptVersion.match(/\d+\.(\d+)/)!!;
 const latestMinor = parseInt(latest[1], 10)!! - 1;

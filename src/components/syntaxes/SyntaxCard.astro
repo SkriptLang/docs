@@ -1,0 +1,115 @@
+---
+import { Aside, Badge, Card, Code } from '@astrojs/starlight/components';
+import AnchorHeading from '@astrojs/starlight/components/AnchorHeading.astro';
+import { type Syntax, SyntaxType } from '../../pages/syntaxes.astro'
+import CodeCard from "../CodeCard.astro";
+
+interface Props {
+    syntax: Syntax,
+}
+
+const { syntax }: Props = Astro.props;
+---
+
+<section class=`syntax-card ${syntax.type.toString().toLowerCase()}` syntax-id={syntax.id} syntax-type={syntax.type}>
+    <div class="col">
+        <AnchorHeading level='3' id={syntax.id}>
+            <Badge text={syntax.type} class="cb" size='large'/>
+            {syntax.name}
+        </AnchorHeading>
+        {syntax.description && syntax.description.map(line => (
+            <p set:html={line}></p>
+        ))}
+        <hr>
+        {syntax.since && (
+            <span class="row">
+                <Badge text="Since" class="cb" size='medium'/>
+                {Array.isArray(syntax.since) ? syntax.since.join(", ") : syntax.since}
+            </span>
+        )}
+    </div>
+    <div class="col">
+        {syntax.patterns && (
+            <CodeCard title="Patterns" code={syntax.patterns.filter(pattern => pattern.trim().length !== 0)}/>
+        )}
+        {syntax.examples && (
+            <CodeCard title="Examples" code={syntax.examples.filter(example => example.trim().length !== 0)}/>
+        )}
+    </div>
+</section>
+
+<style>
+    :global(.cb) {
+        --sl-color-bg-badge: var(--custom-badge-dark);
+        --sl-color-border-badge: var(--custom-badge-light);
+    }
+    :global([data-theme='light'] .cb) {
+        --sl-color-bg-badge: var(--custom-badge-light);
+        --sl-color-border-badge: var(--custom-badge-light);
+    }
+
+    .syntax-card {
+        display: flex;
+        flex-direction: row;
+        gap: 0 2%;
+        margin: 0 0 2.5rem 0;
+        padding: 1rem;
+
+        border-radius: 0.5rem;
+        background-color: var(--sl-color-bg-nav);
+        border-left: var(--custom-badge-light) 0.5em solid;
+    }
+    .row {
+        display: flex;
+        flex-direction: row;
+        gap: 0 2%;
+    }
+    .col {
+        display: flex;
+        flex-direction: column;
+        flex: 1;
+        margin: 0;
+        padding: 0;
+        max-width: 49%;
+    }
+    hr {
+        display: block;
+        margin-bottom: 1rem;
+        height: 1px;
+        border: 0;
+        background-color: var(--sl-color-gray-5);
+    }
+
+    .type {
+        --custom-badge-light: #1952cd;
+        --custom-badge-dark: #042e88;
+    }
+    .structure {
+        --custom-badge-light: #ea9f29;
+        --custom-badge-dark: #653f03;
+    }
+    .section {
+        --custom-badge-light: #7eef3c;
+        --custom-badge-dark: #2f7a04;
+    }
+    .effect {
+        --custom-badge-light: #a6d333;
+        --custom-badge-dark: #435c03;
+    }
+    .condition {
+        --custom-badge-light: #a424dd;
+        --custom-badge-dark: #4a036a;
+    }
+    .expression {
+        --custom-badge-light: #34a579;
+        --custom-badge-dark: #01472c;
+    }
+    .function {
+        --custom-badge-light: #e6882e;
+        --custom-badge-dark: #8c4703;
+    }
+    .event {
+        --custom-badge-light: #1cc3df;
+        --custom-badge-dark: #034b57;
+    }
+</style>

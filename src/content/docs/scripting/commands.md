@@ -1,15 +1,6 @@
 ---
 title: Commands
-author: sovde, blueyescat
-date: 2/20/2024
-url: https://github.com/SkriptLang/docs/blob/master/src/assets/tutorials/commands.md
-section: Scripting
-index: 4
 ---
-
-# Commands
-
-Skript allows you to easily create custom commands in your scripts, like the following:
 
 ```applescript
 # A simple "broadcast" command for broadcasting the text argument.
@@ -24,7 +15,7 @@ command /broadcast <text>:
 
 That's a simple example, but you can do much more complex things with custom commands! That "/broadcast" command only shows a few of the options you have available when creating a custom command.
 
-### Command Pattern
+## Command Pattern
 
 Here's the full list of features that you can use in your commands. They're all optional, except for the trigger section. We'll explain each one individually below.
 
@@ -45,7 +36,7 @@ command /<command name> <arguments>:
         # The code to run goes here.
 ```
 
-### Command Name
+## Command Name
 
 The command name is what comes immediately after `command`. It can consist of any characters you want, except for space. Additionally, the / in front of the command is optional. This means `command /broadcast` and `command broadcast` are the same. Here are a few examples:
 
@@ -63,7 +54,7 @@ command //set!:
         broadcast "Command: //set!"
 ```
 
-### Arguments
+## Arguments
 
 [Arguments](https://docs.skriptlang.org/expressions.html#ExprArgument) follow the command name, and are separated by spaces.\
 You can make arguments optional by surrounding them with square brackets `[]`, like this: `command /kill [all entities]`.
@@ -132,7 +123,7 @@ command /give-item <item> [with name <text>] [[and] with lore <text>]:
         give player {_item}
 ```
 
-### Prefix
+## Prefix
 
 A prefix is something **all** commands have, and it goes before the command when Minecraft registers them. You do not have to type this out when executing commands, but you can. The prefix, by default, is `skript`, which means if you leave this blank your command (with its prefix) will look like `/skript:commandName`.
 
@@ -150,12 +141,11 @@ command /test:
        
 ```
 
-<div class="hint alert">
-<h3>Alert</h3>
+:::caution
 If two commands have the same name but different prefixes, only one will be registered.
-</div>
+:::
 
-### Aliases
+## Aliases
 
 Aliases are alternate names for your command. For example, the command `/teleport` could have an alias `/tp`. Like in the command name, the forward slash (`/`) is optional.
 
@@ -168,8 +158,7 @@ command /teleport <number> <number> <number>:
         teleport player to location(arg-1, arg-2, arg-3)
 ```
 
-<div class="hint alert">
-<h3>Alert</h3>
+:::caution
 Aliases will not overwrite commands registered by other plugins. Say another plugin registers `/spawn`, and you have the following command:
 
 ```applescript
@@ -180,9 +169,9 @@ command /tp-to-spawn:
 ```
 
 If you run `/spawn`, that other plugin's command will run. You'll need to register a new command with that name and have it run your first command.
-</div>
+:::
 
-### Executable by
+## Executable by
 
 Who can execute this command. The options are `players`, `console`, or `players and console`.
 
@@ -193,11 +182,11 @@ command /shutdown:
         shutdown the server
 ```
 
-### Description
+## Description
 
 The description of the command. Other plugins can get/show this with `/help`, like `/help teleport`.
 
-### Permission
+## Permission
 
 The permission required to execute this command. The message sent to players without the proper permission can be customized with the `permission message:` field.
 
@@ -209,7 +198,7 @@ command /shutdown:
         shutdown the server
 ```
 
-### Cooldowns
+## Cooldowns
 
 This field takes a timespan that the player must wait out before executing the command again. The cooldown can be canceled with `cancel the cooldown` ([documentation here](https://docs.skriptlang.org/effects.html#EffCancelCooldown)). Like with the permissions, you can change the default cooldown message with the `cooldown message:` field. The remaining time of the cooldown can be displayed with `%remaining time%` Additionally, you can store the cooldown in a variable with `cooldown storage:`, in order to store the cooldown even when the server restarts.
 
@@ -227,10 +216,9 @@ There are also a number of expressions you can use to interact with the cooldown
 
 If you've enabled `keep command last usage dates` in your `config.sk` file, you can get the last time the player used the command with `last usage date`.
 
-<div class="hint info">
-<h3>Info</h3>
+:::tip
 You can see the full syntax for these expressions [here](https://docs.skriptlang.org/expressions.html#ExprCmdCooldownInfo).
-</div>
+:::
 
 ```applescript
 # The same vote command but with an improved cooldown message.
@@ -245,7 +233,7 @@ command /vote:
         add 1 to {vote::players::%uuid of player%}
 ```
 
-### The Trigger Section
+## The Trigger Section
 
 This section is where all the code the command should run is located. I'm sure you're familiar with how it works from the previous examples, but in case you're still unsure, some more examples of commands will be displayed here. You can see these example commands and more in the `/plugins/Skript/scripts/-examples/commands.sk` file in your server.
 

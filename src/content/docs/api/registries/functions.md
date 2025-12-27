@@ -1,13 +1,6 @@
 ---
 title: Functions
-author: Efnilite
-date: 9/7/2024
-url: https://github.com/SkriptLang/docs/blob/master/src/assets/tutorials/functions.md
-section: API
-index: 1
 ---
-
-# Functions
 
 Skript's functions allow users to perform specific actions at multiple points in a code base.
 To allow addons to easily add their own functions, Skript 2.13 introduced a new API for registering functions, 

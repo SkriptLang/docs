@@ -1,29 +1,30 @@
 // @ts-check
-import { defineConfig } from "astro/config";
-import tailwindcss from "@tailwindcss/vite";
+import { defineConfig } from 'astro/config';
+import starlight from '@astrojs/starlight';
 
 // https://astro.build/config
 export default defineConfig({
-  vite: {
-    plugins: [tailwindcss()],
-  },
-  redirects: {
-    "tutorials": "/tutorials/scripting/getting-started",
-    "events": "/docs",
-    "conditions": "/docs",
-    "effects": "/docs",
-    "types": "/docs",
-    "structures": "/docs",
-    "functions": "/docs",
-    "sections": "/docs",
-    "classes": "/docs",
-    "docs/events": "/docs",
-    "docs/conditions": "/docs",
-    "docs/effects": "/docs",
-    "docs/types": "/docs",
-    "docs/structures": "/docs",
-    "docs/functions": "/docs",
-    "docs/sections": "/docs",
-    "docs/classes": "/docs",
-  }
+	integrations: [
+		starlight({
+			title: 'Skript',
+            favicon: '/favicon.svg',
+            logo: {
+                src: './src/assets/banner.webp',
+                replacesTitle: true,
+            },
+			social: [{ icon: 'github', label: 'GitHub', href: 'https://github.com/SkriptLang' }],
+            components: {
+                Search: './src/components/Search.astro',
+                TableOfContents: './src/components/TableOfContents.astro',
+            },
+            customCss: [
+                // Relative path to your custom CSS file
+                './src/styles/custom.css',
+            ],
+            editLink: {
+                baseUrl: 'https://github.com/SkriptLang/docs/edit/master/',
+            },
+            pagination: false,
+		}),
+	],
 });

@@ -40,28 +40,7 @@ interface Props {
 
 const { docType }: Props = Astro.props;
 
-function color(): string {
-    switch (docType.type) {
-        case DocType.EVENT:
-            return "0099B3";
-        case DocType.CONDITION:
-            return "6f1896";
-        case DocType.EFFECT:
-            return "6d9604";
-        case DocType.EXPRESSION:
-            return "006e43";
-        case DocType.FUNCTION:
-            return "b25f0d";
-        case DocType.TYPE:
-            return "0d41b2";
-        case DocType.SECTION:
-            return "718400";
-        case DocType.STRUCTURE:
-            return "966518";
-        default:
-            return "000000";
-    }
-}
+
 ---
 
 <section data-new={docType.new} data-type={docType.type} data-since={docType.since}

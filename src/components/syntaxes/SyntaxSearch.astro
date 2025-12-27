@@ -1,0 +1,120 @@
+---
+// Adapted from https://github.com/withastro/starlight/blob/f14eb0cd7baa0391d6124379f6c5df4b9ab7cc44/packages/starlight/components/Search.astro
+import { Icon } from '@astrojs/starlight/components';
+---
+
+<div style="display: contents;">
+    <label id="syntax-search" class="syntax-search">
+        <Icon name="magnifier" />
+        <input aria-label={Astro.locals.t('search.label')} aria-keyshortcuts="Control+K"
+               id="syntax-search-input" type="text" placeholder={Astro.locals.t('search.label')}/>
+        <kbd class="sl-hidden md:sl-flex" style="display: none;">
+            <kbd>{Astro.locals.t('search.ctrlKey')}</kbd><kbd>K</kbd>
+        </kbd>
+    </label>
+</div>
+
+{
+    /**
+     * This is intentionally inlined to avoid briefly showing an invalid shortcut.
+     * Purposely using the deprecated `navigator.platform` property to detect Apple devices, as the
+     * user agent is spoofed by some browsers when opening the devtools.
+     */
+}
+<script is:inline>
+    (() => {
+        const searchBar = document.getElementById('syntax-search');
+        const shortcut = searchBar?.querySelector('kbd');
+        if (!searchBar || !(shortcut instanceof HTMLElement)) return;
+        const platformKey = shortcut.querySelector('kbd');
+        if (platformKey && /(Mac|iPhone|iPod|iPad)/i.test(navigator.platform)) {
+            platformKey.textContent = '⌘';
+            document.getElementById('syntax-search-input')?.setAttribute('aria-keyshortcuts', 'Meta+K');
+        }
+        shortcut.style.display = '';
+    })();
+</script>
+
+<script>
+    const syntaxes = document.getElementById('syntaxes') as HTMLElement;
+    function hideSyntaxes(search: string) {
+        for (const element of syntaxes.children) {
+            const hide = ![...element.querySelectorAll("a, p, h1, span")!!]
+                .map((child) => (child.textContent?.toLowerCase() ?? "").includes(search))
+                .reduce((acc, curr) => acc || curr, false);
+            element.classList.toggle('search-hidden', hide);
+            document.getElementById(`sidebar-${element.getAttribute('syntax-id')}`)?.classList.toggle('search-hidden', hide);
+        }
+    }
+
+    const searchInput = document.getElementById('syntax-search-input') as HTMLInputElement;
+    searchInput.addEventListener('input', () => {
+        hideSyntaxes(searchInput.value.toLowerCase());
+    })
+
+    // Listen for `ctrl + k` and `cmd + k` keyboard shortcuts.
+    window.addEventListener('keydown', (e) => {
+        if ((e.metaKey === true || e.ctrlKey === true) && e.key === 'k') {
+            // TODO unfocus if possible?
+            searchInput.focus();
+            e.preventDefault();
+        }
+    });
+</script>
+
+<style>
+    .syntax-search {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        border: 0;
+        background-color: transparent;
+        color: var(--sl-color-gray-1);
+        cursor: pointer;
+        height: 2.5rem;
+        font-size: var(--sl-text-xl);
+    }
+
+    @media (min-width: 50rem) {
+        .syntax-search {
+            border: 1px solid var(--sl-color-gray-5);
+            border-radius: 0.5rem;
+            padding-inline-start: 0.75rem;
+            padding-inline-end: 0.5rem;
+            background-color: var(--sl-color-black);
+            color: var(--sl-color-gray-2);
+            font-size: var(--sl-text-sm);
+            width: 100%;
+            max-width: 22rem;
+        }
+        .syntax-search:hover {
+            border-color: var(--sl-color-gray-2);
+            color: var(--sl-color-white);
+        }
+
+        .syntax-search > :last-child {
+            margin-inline-start: auto;
+        }
+    }
+
+    #syntax-search-input {
+        border: none;
+        background-color: inherit;
+        width: 100%;
+    }
+    #syntax-search-input:focus {
+        outline: none;
+    }
+
+    .syntax-search > kbd {
+        border-radius: 0.25rem;
+        font-size: var(--sl-text-2xs);
+        gap: 0.25em;
+        padding-inline: 0.375rem;
+        background-color: var(--sl-color-gray-6);
+    }
+
+    kbd {
+        font-family: var(--__sl-font);
+    }
+</style>

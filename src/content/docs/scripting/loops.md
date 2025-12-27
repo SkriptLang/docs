@@ -1,13 +1,6 @@
 ---
 title: Loops
-author: sovde
-date: 2/20/2024
-url: https://github.com/SkriptLang/docs/blob/master/src/assets/tutorials/loops.md
-section: Scripting
-index: 3
 ---
-
-# Loops
 
 Loops are fantastic tools for anyone to have in their skill set. Loops allow you to repeat code, create countdowns, draw things, look for certain entities or items, and much more. They, along with conditionals, are your bread and butter for controlling how your program flows.
 
@@ -42,15 +35,14 @@ loop all players:
     send "hey!" to loop-value
 ```
 
-<div class="hint info">
-<h3>Info</h3>
-If you're looping a specific expression, like `all players`, you can use `loop-type` as another version:
+:::tip
+If you're looping a specific expression, like `all players`, you can use `loop-<type>` as another version:
 
 ```
 loop all players:
     send "hey!" to loop-player
 ```
-</div>
+:::
 
 **Looping Over Lists**
 
@@ -77,8 +69,7 @@ Really, just one special feature, which is `loop-index`. This lets you access th
 
 While loops are the for loop's more temperamental cousin. They keep looping as long as a condition is true, which makes them great for repeating things over time, doing a specific action a dynamic number of times, or crashing your server.
 
-<div class="hint alert">
-<h3>Alert</h3>
+:::danger
 Since while loops will not stop until the condition fails, they can run infinitely, potentially crashing your server. Make sure your while loop **will always exit** **or add a wait to it.** Adding a wait stops the while loop until the delay is done, allowing your server to actually run.
 
 ```applescript
@@ -95,12 +86,11 @@ while true is true:
     send "hi"
     wait 1 tick
 ```
-</div>
+:::
 
 While loops are most often used to do periodic work while a condition is true, say, to do something every 5 ticks while a player is online. However, you do need to be careful that you can stop a while loop at will, since **reloading a script will not stop a running while loop**.
 
-<div class="hint warning">
-<h3>Warning</h3>
+:::caution
 While loops will not stop when you reload the script that they are in. They will doggedly run until their condition is no longer true. This is a good reason to either use a periodical event (when appropriate) or to add a special case to abort a loop.
 
 ```applescript
@@ -117,7 +107,7 @@ command abort-loop:
     trigger:
         set {abort-while-loop} to true
 ```
-</div>
+:::
 
 ### Do While
 
@@ -192,10 +182,9 @@ broadcast "Found needle at %{_index}%!"
 
 ## When to Use Loops
 
-<div class="hint info">
-<h3>Info</h3>
+:::note
 This is a more of the in-the-weeds performance comparison, so if you're just here to learn about loops, you can skip this.
-</div>
+:::
 
 Often, people will compare the performance of these two patterns:
 
@@ -220,17 +209,15 @@ While loops, meanwhile, are a bit more complicated. Skript has to run the code w
 
 However, it also comes with some benefits. Since players don't usually all join at the exact same time, the while loops running for each individual player are going to trigger at slightly different times. This helps solve our problem with `every x`, where we were getting lag spikes.
 
-<div class="hint info">
-<h3>Info</h3>
+:::note
 Note that we didn't change the amount of work that we were doing, we just spread that work out over multiple ticks.
-</div>
+:::
 
 This means the `on join, while online` pattern is good for spreading work out, but comes with the downsides of a) not stopping with a reload, and b) potentially starting multiple loops for one player if you're not careful.&#x20;
 
 It also means that for short waits, like 1 to 5 ticks, the benefits of spreading work out will be very small, and a periodical event will be your better bet. While loops also can't address sustained lag, only lag spikes.
 
-<div class="hint info">
-<h3>Summary</h3>
+## Summary
 
 **Every x, loop all players:**
 
@@ -249,5 +236,3 @@ It also means that for short waits, like 1 to 5 ticks, the benefits of spreading
 
 * Prefer using `every x, loop all players` when you are working with fast timings or smaller amounts of work.
 * Prefer `on join, while online` when you are working with slower timings or larger amounts of work (updating scoreboards is a good example, you only need to do this at most once a second.)
-</div>
-

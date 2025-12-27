@@ -1,0 +1,67 @@
+@font-face {
+    font-family: "Poppins";
+    font-style: normal;
+    font-display: swap;
+    font-weight: 600;
+    src: url(@fontsource/poppins/files/poppins-latin-500-normal.woff) format("woff"),
+         url(@fontsource/poppins/files/poppins-latin-500-normal.woff2) format("woff2");
+}
+
+:root {
+    --sl-font: Poppins;
+    --sl-font-mono: "JetBrains Mono";
+}
+
+/* Dark mode colors. */
+:root {
+    --sl-color-accent-low: #884203;
+    --sl-color-accent: #ee8522;
+    --sl-color-accent-high: #f47902;
+    --sl-color-white: #efefef;
+    --sl-color-gray-1: #e6e6e6;
+    --sl-color-gray-2: #dcdcdc;
+    --sl-color-gray-3: #c2c2c2;
+    --sl-color-gray-4: #373737;
+    --sl-color-gray-5: #333333;
+    --sl-color-gray-6: #1a1a1a;
+    --sl-color-black: #0e0e0e;
+}
+/* Light mode colors. */
+:root[data-theme='light'] {
+    --sl-color-accent-low: #f47902;
+    --sl-color-accent: #ee8522;
+    --sl-color-accent-high: #884203;
+    --sl-color-white: #0e0e0e;
+    --sl-color-gray-1: #1a1a1a;
+    --sl-color-gray-2: #333333;
+    --sl-color-gray-3: #373737;
+    --sl-color-gray-4: #8f8f8f;
+    --sl-color-gray-5: #c2c2c2;
+    --sl-color-gray-6: #dcdcdc;
+    --sl-color-gray-7: #e6e6e6;
+    --sl-color-black: #efefef;
+}
+
+@media screen and (prefers-reduced-motion: no-preference) {
+    @view-transition {
+        navigation: auto;
+    }
+}
+
+/* make index page hero smaller vertically */
+@media (min-width: 50rem) {
+    .hero {
+        padding-block: clamp(2.5rem, calc(1rem + 2.5vmin), 10rem);
+    }
+}
+
+/* fix too large TOC on large screens */
+@media (min-width: 96rem) {
+    :root {
+        --sl-content-width: 70rem;
+    }
+}
+
+.filter-hidden, .search-hidden {
+    display: none !important;
+}

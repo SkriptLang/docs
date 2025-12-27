@@ -1,13 +1,6 @@
 ---
 title: Text
-author: Efnilite, bensku
-date: 2/2/2024
-url: https://github.com/SkriptLang/docs/blob/master/src/assets/tutorials/text.md
-section: Scripting
-index: 1
 ---
-
-# Text
 
 Skript allows you to write pieces of text (aka strings). This is done by putting the text inside double quotes, for example: `"this is text"`.
 

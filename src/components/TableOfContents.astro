@@ -1,0 +1,10 @@
+---
+import Default from '@astrojs/starlight/components/TableOfContents.astro';
+import SyntaxFilter from "./syntaxes/SyntaxFilter.astro";
+
+const isSyntaxesPage = Astro.locals.starlightRoute.id === 'syntaxes';
+---
+
+{
+    isSyntaxesPage ?(<SyntaxFilter/>) : (<Default><slot /></Default>)
+}

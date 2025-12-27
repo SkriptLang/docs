@@ -1,0 +1,64 @@
+---
+import StarlightPage from '@astrojs/starlight/components/StarlightPage.astro';
+import SyntaxCard from "../components/syntaxes/SyntaxCard.astro";
+import rawSyntaxes from "../assets/syntaxes.json"
+
+export interface Syntax {
+    type: SyntaxType,
+    id: string,
+    name: string,
+    patterns: string[],
+    description: string[],
+    examples: string[],
+    since: string[],
+}
+
+export enum SyntaxType {
+    TYPE = "Type",
+    STRUCTURE = "Structure",
+    SECTION = "Section",
+    EFFECT = "Effect",
+    CONDITION = "Condition",
+    EXPRESSION = "Expression",
+
+    FUNCTION = "Function",
+
+    EVENT = "Event",
+}
+
+function processRawEntries(entries: any, type: SyntaxType, prefix: string | undefined = undefined) : any {
+    return [...entries].map(entry => {
+        entry.type = type;
+        if (prefix) {
+            entry.id = prefix + entry.id;
+        }
+        return entry;
+    })
+}
+
+const syntaxes: Syntax[] = [
+    ...processRawEntries(rawSyntaxes.classes, SyntaxType.TYPE, "Type"),
+    ...processRawEntries(rawSyntaxes.structures, SyntaxType.STRUCTURE),
+    ...processRawEntries(rawSyntaxes.sections, SyntaxType.SECTION),
+    ...processRawEntries(rawSyntaxes.effects, SyntaxType.EFFECT),
+    ...processRawEntries(rawSyntaxes.conditions, SyntaxType.CONDITION),
+    ...processRawEntries(rawSyntaxes.expressions, SyntaxType.EXPRESSION),
+
+    ...processRawEntries(rawSyntaxes.functions, SyntaxType.FUNCTION, "Func"),
+
+    ...processRawEntries(rawSyntaxes.events, SyntaxType.EVENT),
+
+].toSorted((x, y) => x.name.localeCompare(y.name)) as Syntax[]
+
+---
+
+<StarlightPage
+        frontmatter={{ title: `Syntaxes for Skript ${rawSyntaxes.skriptVersion}`, tableOfContents: true, pagefind: false}}
+        sidebar={syntaxes.map(syntax => ({ label: `${syntax.name}`, link: `syntaxes/#${syntax.id}`, attrs: { id: `sidebar-${syntax.id}` } }))}
+>
+    <div id="syntaxes">
+        {syntaxes.map(syntax => (
+            <SyntaxCard syntax={syntax} />
+        ))}
+    </div>
+</StarlightPage>
