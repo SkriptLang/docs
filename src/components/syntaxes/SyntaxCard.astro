@@ -30,7 +30,7 @@ const { syntax }: Props = Astro.props;
     </div>
     <div class="col">
         {syntax.patterns && (
-            <CodeCard title="Patterns" code={syntax.patterns.filter(pattern => pattern.trim().length !== 0)}/>
+            <CodeCard title="Patterns" code={[syntax.patterns.filter(pattern => pattern.trim().length !== 0).join("\n")]}/>
         )}
         {syntax.examples && (
             <CodeCard title="Examples" code={syntax.examples.filter(example => example.trim().length !== 0)}/>

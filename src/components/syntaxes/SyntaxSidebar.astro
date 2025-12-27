@@ -78,22 +78,11 @@
         const sidebarPane = document.querySelector('.sidebar-pane') as HTMLElement;
         if (!sidebarPane) return;
 
-        // Only scroll if element is not in view
-        const sidebarRect = sidebarPane.getBoundingClientRect();
-        const elementRect = target.getBoundingClientRect();
-
-        const isInView = (
-            elementRect.top >= sidebarRect.top &&
-            elementRect.bottom <= sidebarRect.bottom
-        );
-
-        if (!isInView) {
-            target.scrollIntoView({
-                behavior: 'smooth',
-                block: 'center',
-                inline: 'nearest'
-            });
-        }
+        target.scrollIntoView({
+            behavior: 'smooth',
+            block: 'center',
+            inline: 'nearest'
+        });
     }
 
     // Expose API
