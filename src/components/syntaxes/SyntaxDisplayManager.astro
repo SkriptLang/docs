@@ -159,6 +159,23 @@ export interface VirtualItem {
         return [].reduce.call(parentElement.childNodes, function(a: any, b: any): any { return a + (b.nodeType === 3 ? b.textContent : ''); }, '');
     }
 
+    // function to get content from a specific code card
+    function getCodeFromSection(element: HTMLElement, sectionTitle: string): string {
+        const codeCards = Array.from(element.querySelectorAll('.code-card'));
+        
+        // select by title
+        const targetCard = codeCards.find(card => {
+            const title = card.querySelector('.title');
+            return title?.textContent?.trim() === sectionTitle;
+        });
+        if (!targetCard) return '';
+        
+        // get all code element textContents from within that card
+        return Array.from(targetCard.querySelectorAll('code'))
+            .map(code => code.textContent?.toLowerCase() || '')
+            .join(' ');
+    }
+
     // assign search match score based on where the match was found/what was matched
     function scoreSearchMatch(item: VirtualItem, searchLower: string): number {
         if (!searchLower) return 0;
@@ -167,20 +184,24 @@ export interface VirtualItem {
         
         const name = getTextNodeContent(element.querySelector('h3'))?.toLowerCase() || '';
         const description = element.querySelector('p')?.textContent?.toLowerCase() || '';
-        const code = element.querySelector('code')?.textContent?.toLowerCase() || '';
+        const patterns = getCodeFromSection(element, 'Patterns');
+        const examples = getCodeFromSection(element, 'Examples');
         
         // Exact match in name = highest score
         if (name === searchLower) score += 1000;
         // Name starts with search
         else if (name.startsWith(searchLower)) score += 500;
         // Name contains search
-        else if (name.includes(searchLower)) score += 100;
+        else if (name.includes(searchLower)) score += 200;
+
+        // pattern contains
+        if (patterns.includes(searchLower)) score += 100;
         
         // Description contains
         if (description.includes(searchLower)) score += 50;
         
-        // Code examples contain
-        if (code.includes(searchLower)) score += 25;
+        // examples contain
+        if (examples.includes(searchLower)) score += 25;
         
         // prefer shorter names (more specific matches)
         if (name.includes(searchLower)) {
