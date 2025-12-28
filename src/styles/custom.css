@@ -62,10 +62,6 @@
     }
 }
 
-.filter-hidden {
-    display: none !important;
-}
-
 #starlight__sidebar {
     overflow-x: hidden;
 }

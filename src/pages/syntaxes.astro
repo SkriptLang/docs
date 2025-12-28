@@ -8,10 +8,14 @@ export interface Syntax {
     type: SyntaxType,
     id: string,
     name: string,
-    patterns: string[],
-    description: string[],
-    examples: string[],
+    patterns?: string[],
+    description?: string[],
+    examples?: string[],
     since: string[],
+    returns?: {
+        id: string,
+        name: string,
+    },
 }
 
 export enum SyntaxType {
@@ -38,7 +42,7 @@ function processRawEntries(entries: any, type: SyntaxType, prefix: string | unde
 }
 
 const syntaxes: Syntax[] = [
-    ...processRawEntries(rawSyntaxes.types, SyntaxType.TYPE, "Type"),
+    ...processRawEntries(rawSyntaxes.types, SyntaxType.TYPE),
     ...processRawEntries(rawSyntaxes.structures, SyntaxType.STRUCTURE),
     ...processRawEntries(rawSyntaxes.sections, SyntaxType.SECTION),
     ...processRawEntries(rawSyntaxes.effects, SyntaxType.EFFECT),

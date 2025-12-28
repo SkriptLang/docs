@@ -1,0 +1,34 @@
+---
+import { Badge, Icon } from '@astrojs/starlight/components';
+import { type ComponentProps } from 'astro/types';
+
+interface Props {
+    badgeProps: ComponentProps<typeof Badge>;
+    text: string;
+    link: string;
+}
+
+const { badgeProps, text, link }: Props = Astro.props;
+---
+
+<span class="prefix-badge">
+    <Badge {...badgeProps} class="cb" />
+    {link ? (
+        <a href={link}>
+            {text}
+            <Icon name="right-arrow"/>
+        </a>
+    ) : text}
+</span>
+
+<style>
+    .prefix-badge:not(:last-of-type) {
+        margin-bottom: 0.75em;
+    }
+    a {
+        display: inline-flex;
+        align-items: center;
+        text-decoration: none;
+        color: inherit;
+    }
+</style>

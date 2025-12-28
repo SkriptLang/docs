@@ -54,9 +54,9 @@ import { Icon } from '@astrojs/starlight/components';
         // Listen for `ctrl + k` and `cmd + k` keyboard shortcuts.
         window.addEventListener('keydown', (event) => {
             if ((event.metaKey === true || event.ctrlKey === true) && event.key === 'k') {
+                event.preventDefault();
                 // TODO unfocus if possible?
                 searchInput.focus();
-                event.preventDefault();
             }
         });
     }

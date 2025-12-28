@@ -265,17 +265,15 @@ export interface VirtualItem {
         sidebarAPI.scrollTo(middleItem.syntaxId);
     }
 
-    // Listen for sidebar clicks
-    window.addEventListener('sidebar-item-click', ((event: CustomEvent) => {
-        const { syntaxId } = event.detail;
-
-        autoSyncEnabled = false;
-
+    function scrollTo(syntaxId: string): void {
         const targetIndex = filteredItems.findIndex(item => item.syntaxId === syntaxId);
         if (targetIndex === -1) {
+            // TODO this should be handled a better way...
+            if (!syntaxId.startsWith("Func")) {
+                return scrollTo(`Func${syntaxId}`);
+            }
             return;
         }
-
         const targetY = wrapper.offsetTop + positions[targetIndex];
         window.scrollTo({
             top: targetY - 100,
@@ -290,7 +288,17 @@ export interface VirtualItem {
             autoSyncEnabled = true;
             syncSidebarScroll();
         }, 700);
+    }
+
+    // Listen for sidebar clicks
+    window.addEventListener('sidebar-item-click', ((event: CustomEvent) => {
+        const { syntaxId } = event.detail;
+        window.location.hash = `#${syntaxId}`;
     }) as EventListener);
+    window.addEventListener('hashchange', (event: HashChangeEvent) => {
+        const syntaxId = new URL(event.newURL).hash.substring(1); // remove #
+        scrollTo(syntaxId);
+    });
 
     // --------------------
     // Main Rendering Logic
@@ -371,6 +379,7 @@ export interface VirtualItem {
     // ---------------------
 
     fullRender();
+    scrollTo(window.location.hash.substring(1));
 
     // scroll/resize listeners
     window.addEventListener('scroll', scheduleScroll, { passive: true });

@@ -3,16 +3,17 @@ import { Code } from "@astrojs/starlight/components";
 
 interface Props {
     title: string,
+    wrap?: boolean,
     code: string[],
 }
 
-const { title, code} = Astro.props;
+const { title, wrap, code} = Astro.props;
 ---
 
 <div class="code-card">
     <span class="title">{title}</span>
     {code.map(entry => (
-        <Code code={entry} lang="applescript"/>
+        <Code code={entry} lang="applescript" wrap={wrap}/>
     ))}
 </div>
 
