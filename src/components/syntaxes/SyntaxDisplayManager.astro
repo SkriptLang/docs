@@ -22,8 +22,8 @@ export interface VirtualItem {
     import type { VirtualItem } from "./SyntaxDisplayManager.astro";
 
     // obtain container references
-    const wrapper = document.getElementById('syntaxes-wrapper') as HTMLElement;
-    const viewport = document.getElementById('syntaxes-viewport') as HTMLElement;
+    const wrapper = document.getElementById('syntaxes-wrapper')!;
+    const viewport = document.getElementById('syntaxes-viewport')!;
 
     // map all syntaxes into VirtualItems
     const allItems: VirtualItem[] = Array.from(viewport.children).map((element, index) => {
@@ -36,7 +36,7 @@ export interface VirtualItem {
         const height = (element.getBoundingClientRect().height + parseFloat(window.getComputedStyle(element).marginBottom)) || ESTIMATED_ITEM_HEIGHT;
 
         return { 
-            element: element as HTMLElement, 
+            element: element as HTMLElement,
             syntaxName,
             syntaxType,
             syntaxId,
@@ -351,6 +351,8 @@ export interface VirtualItem {
         syncSidebarScroll();
     }
 
+    const noResultsElement = document.getElementById('syntaxes-no-results')!;
+
     // runs the full render loop, filtering, calc positions, update sidebar, renderVisible, etc
     // Should only need to be run after filtering updates since that changes what items 'exist'.
     function fullRender() {
@@ -369,6 +371,15 @@ export interface VirtualItem {
 
         updateSidebar();
         renderVisible();
+        if (filteredItems.length === 0) {
+            noResultsElement.style.display = '';
+        } else {
+            noResultsElement.style.display = 'none';
+        }
+        window.scrollTo({
+            top: 0,
+            behavior: 'smooth',
+        })
     }
 
     // Use RAF for smooth scrolling - claude addition

@@ -5,7 +5,7 @@ import { Icon } from '@astrojs/starlight/components';
 
 <div style="display: contents;">
     <label id="syntax-search" class="syntax-search">
-        <Icon name="magnifier" />
+        <Icon name="magnifier" size='large'/>
         <input aria-label={Astro.locals.t('search.label')} aria-keyshortcuts="Control+K"
                id="syntax-search-input" type="text" placeholder={Astro.locals.t('search.label')}/>
         <kbd class="sl-hidden md:sl-flex" style="display: none;">
@@ -100,12 +100,17 @@ import { Icon } from '@astrojs/starlight/components';
     }
 
     #syntax-search-input {
+        margin: 0;
+        padding: 0;
         border: none;
         background-color: inherit;
         width: 100%;
     }
     #syntax-search-input:focus {
         outline: none;
+    }
+    #syntax-search-input::placeholder {
+        color: var(--sl-color-gray-2);
     }
 
     .syntax-search > kbd {

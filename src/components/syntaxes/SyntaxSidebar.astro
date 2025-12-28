@@ -34,7 +34,7 @@ const { entries }: Props = Astro.props;
         scrollTo: (syntaxId: string) => void;
     }
 
-    const sidebarList = document.getElementById('syntax-sidebar-list') as HTMLElement;
+    const sidebarList = document.getElementById('syntax-sidebar-list')!;
     for (const child of sidebarList.children) {
         const syntaxId = child.id.substring("sidebar-".length);
         child.addEventListener('click', (event) => {
@@ -55,7 +55,7 @@ const { entries }: Props = Astro.props;
         }
 
         filteredItems.forEach((item, index) => {
-            const entry = item.sidebarElement as HTMLElement;
+            const entry = item.sidebarElement!;
             entry.style.display = '';
             entry.style.order = `${index}`;
         });

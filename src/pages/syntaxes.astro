@@ -61,6 +61,7 @@ const syntaxes: Syntax[] = [
         frontmatter={{ title: `Syntaxes for Skript ${rawSyntaxes.source.version}`, tableOfContents: true, pagefind: false}}
         sidebar={syntaxes.map(syntax => ({ label: `${syntax.name}`, link: `syntaxes/#${syntax.id}`, attrs: { id: `sidebar-${syntax.id}` } }))}
 >
+    <h1 id="syntaxes-no-results" style="display: none;">No results were found.</h1>
     <div id="syntaxes-wrapper">
         <div id="syntaxes-viewport">
             {syntaxes.map(syntax => (
