@@ -66,18 +66,6 @@
     display: none !important;
 }
 
-#vs_wrapper {
-    position: relative;
-    width: 100%;
-}
-
-#vs_viewport {
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-}
-
 #starlight__sidebar {
     overflow-x: hidden;
 }

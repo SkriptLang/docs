@@ -75,11 +75,11 @@ import { Icon } from '@astrojs/starlight/components';
         });
 
         // Listen for `ctrl + k` and `cmd + k` keyboard shortcuts.
-        window.addEventListener('keydown', (e) => {
-            if ((e.metaKey === true || e.ctrlKey === true) && e.key === 'k') {
+        window.addEventListener('keydown', (event) => {
+            if ((event.metaKey === true || event.ctrlKey === true) && event.key === 'k') {
                 // TODO unfocus if possible?
                 searchInput.focus();
-                e.preventDefault();
+                event.preventDefault();
             }
         });
     }

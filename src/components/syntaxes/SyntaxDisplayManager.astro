@@ -17,20 +17,23 @@ export interface VirtualItem {
     const OVERSCAN_COUNT = 3;
 
     // -------------------
-    // Setup virtual items
+    // Setup
     // -------------------
     import type { VirtualItem } from "./SyntaxDisplayManager.astro";
 
-    // get all syntaxes, then map them into VirtualItems
-    const syntaxes = document.getElementById('syntaxes') as HTMLElement;
-    const allItems: VirtualItem[] = Array.from(syntaxes.children).map((element, index) => {
+    // obtain container references
+    const wrapper = document.getElementById('syntaxes-wrapper') as HTMLElement;
+    const viewport = document.getElementById('syntaxes-viewport') as HTMLElement;
+
+    // map all syntaxes into VirtualItems
+    const allItems: VirtualItem[] = Array.from(viewport.children).map((element, index) => {
         // get info + measure height
         const syntaxId = element.getAttribute('syntax-id')!;
         const syntaxType = element.getAttribute('syntax-type')!;
         const syntaxName = element.getAttribute('syntax-name')!;
         const sidebarElement = document.getElementById(`sidebar-${syntaxId}`);
         const height = (element as HTMLElement).offsetHeight || ESTIMATED_ITEM_HEIGHT;
-        
+
         return { 
             element: element as HTMLElement, 
             syntaxName,
@@ -42,24 +45,8 @@ export interface VirtualItem {
         };
     });
 
-    // create the wrapper/viewport elements to determine what's on screen
-    const wrapper = document.getElementById("vs_wrapper");
-    if (!wrapper)
-        throw new Error("vs wrapper missing!");
-    const viewport = document.getElementById("vs_viewport");
-    if (!viewport)
-        throw new Error("viewport missing!");
-
-
-    // move all elements to viewport but hidden until we need them
-    allItems.forEach((item, index) => {
-        item.element.style.display = 'none';
-        item.element.style.order = '0'; // For flexbox ordering
-        viewport.appendChild(item.element);
-    });
-    
     // -----------------
-    // Positioning stuff
+    // Positioning Logic
     // -----------------
 
     let positions: number[] = [];
@@ -79,7 +66,7 @@ export interface VirtualItem {
     function binarySearch(arr: number[], target: number): number {
         let left = 0;
         let right = arr.length;
-        
+
         while (left < right) {
             const pivot = Math.floor((left + right) / 2);
             if (arr[pivot] < target) {
@@ -93,16 +80,18 @@ export interface VirtualItem {
 
     // determine which items of the currently filtered items should be visible based on the heights/viewport size
     function findVisibleRange(scrollTop: number, viewportHeight: number) {
-        if (positions.length === 0) return { start: 0, end: 0 };
-        
+        if (positions.length === 0) {
+            return { start: 0, end: 0 };
+        }
+
         const start = Math.max(0, binarySearch(positions, scrollTop) - OVERSCAN_COUNT);
         const end = Math.min(filteredItems.length, binarySearch(positions, scrollTop + viewportHeight) + OVERSCAN_COUNT);
-        
+
         return { start, end };
     }
 
     // ---------------
-    // Filtering stuff
+    // Filtering Logic
     // ---------------
 
     // init filters
@@ -118,14 +107,13 @@ export interface VirtualItem {
         let filtered = typeFilter.size === 0 
             ? [...allItems]
             : allItems.filter(item => typeFilter.has(item.syntaxType));
-        
+
         // search filter
-        if (searchFilter !== null) {
+        if (searchFilter) {
             if (searchFilter.size === 0) {
                 filtered = [];
             } else {
-                const filter = searchFilter;
-                filtered = filtered.filter(item => filter.has(item.syntaxId));
+                filtered = filtered.filter(item => (searchFilter as Set<string>).has(item.syntaxId));
             }
         }
 
@@ -148,7 +136,7 @@ export interface VirtualItem {
                 // get items in order
                 .map(s => s.item);
         }
-        
+
         // Default: sort by original alphabetical order
         return filtered.sort((a, b) => a.originalIndex - b.originalIndex);
     }
@@ -162,14 +150,16 @@ export interface VirtualItem {
     // function to get content from a specific code card
     function getCodeFromSection(element: HTMLElement, sectionTitle: string): string {
         const codeCards = Array.from(element.querySelectorAll('.code-card'));
-        
+
         // select by title
         const targetCard = codeCards.find(card => {
             const title = card.querySelector('.title');
             return title?.textContent?.trim() === sectionTitle;
         });
-        if (!targetCard) return '';
-        
+        if (!targetCard) {
+            return '';
+        }
+
         // get all code element textContents from within that card
         return Array.from(targetCard.querySelectorAll('code'))
             .map(code => code.textContent?.toLowerCase() || '')
@@ -178,46 +168,53 @@ export interface VirtualItem {
 
     // assign search match score based on where the match was found/what was matched
     function scoreSearchMatch(item: VirtualItem, searchLower: string): number {
-        if (!searchLower) return 0;
+        if (!searchLower) {
+            return 0;
+        }
         let score = 0;
         const element = item.element;
-        
+
         const name = getTextNodeContent(element.querySelector('h3'))?.toLowerCase() || '';
         const description = element.querySelector('p')?.textContent?.toLowerCase() || '';
         const patterns = getCodeFromSection(element, 'Patterns');
         const examples = getCodeFromSection(element, 'Examples');
-        
-        // Exact match in name = highest score
-        if (name === searchLower) score += 1000;
-        // Name starts with search
-        else if (name.startsWith(searchLower)) score += 500;
-        // Name contains search
-        else if (name.includes(searchLower)) score += 200;
 
-        // pattern contains
-        if (patterns.includes(searchLower)) score += 100;
-        
-        // Description contains
-        if (description.includes(searchLower)) score += 50;
-        
-        // examples contain
-        if (examples.includes(searchLower)) score += 25;
-        
-        // prefer shorter names (more specific matches)
-        if (name.includes(searchLower)) {
+        // Exact match in name = highest score
+        if (name === searchLower) {
+            score += 1000;
+        }
+        // Name starts with search
+        else if (name.startsWith(searchLower)) {
+            score += 500;
+        }
+        // Name contains search
+        else if (name.includes(searchLower)) {
+            score += 200;
+            // prefer shorter names (more specific matches)
             score += Math.max(0, 50 - name.length);
         }
+
+        // pattern contains
+        if (patterns.includes(searchLower)) {
+            score += 100;
+        }
         
+        // Description contains
+        if (description.includes(searchLower)) {
+            score += 50;
+        }
+        
+        // examples contain
+        if (examples.includes(searchLower)) {
+            score += 25;
+        }
+
         return score;
     }
 
     // -------------
     // Sidebar stuff
     // -------------
-
-    const scrollableSidebar = document.querySelector('#starlight__sidebar');
-    if (!scrollableSidebar)
-        throw new Error("couldn't find sidebar!!!");
 
     let autoSyncEnabled = true;
 
@@ -228,14 +225,16 @@ export interface VirtualItem {
             console.warn('Sidebar API not available yet');
             return;
         }
-        
+
         sidebarAPI.rebuild(filteredItems);
     }
 
     // keeps the sidebar synchronized to the user's position in the main elements
     function syncSidebarScroll() {
-        if (!autoSyncEnabled || !filteredItems.length || wrapper == null) return;
-        
+        if (!autoSyncEnabled || filteredItems.length === 0 || !wrapper) {
+            return;
+        }
+
         const sidebarAPI = (window as any).__syntaxSidebar;
         if (!sidebarAPI) {
             console.warn('Sidebar API not available yet');
@@ -244,24 +243,24 @@ export interface VirtualItem {
 
         const viewportTop = window.scrollY;
         const viewportCenter = viewportTop + (window.innerHeight / 2);
-        
+
         let closestIndex = 0;
         let closestDistance = Infinity;
-        
+
         // determine which item is currently centered in the screen
         for (let i = 0; i < filteredItems.length; i++) {
             const itemTop = wrapper.offsetTop + positions[i];
             const itemBottom = wrapper.offsetTop + positions[i + 1];
             const itemCenter = (itemTop + itemBottom) / 2;
-            
+
             const distance = Math.abs(itemCenter - viewportCenter);
-            
+
             if (distance < closestDistance) {
                 closestDistance = distance;
                 closestIndex = i;
             }
         }
-        
+
         const middleItem = filteredItems[closestIndex];
         sidebarAPI.highlight(middleItem.syntaxId);
         sidebarAPI.scrollTo(middleItem.syntaxId);
@@ -270,74 +269,64 @@ export interface VirtualItem {
     // Listen for sidebar clicks
     window.addEventListener('sidebar-item-click', ((event: CustomEvent) => {
         const { syntaxId } = event.detail;
-        
-        autoSyncEnabled = false;
-        
-        const targetIndex = filteredItems.findIndex(item => item.syntaxId === syntaxId);
-        if (targetIndex !== -1) {
-            const targetY = wrapper.offsetTop + positions[targetIndex];
-            window.scrollTo({ 
-                top: targetY - 100,
-                behavior: 'smooth' 
-            });
-            
-            const sidebarAPI = (window as any).__syntaxSidebar;
-            if (sidebarAPI) {
-                sidebarAPI.highlight(syntaxId);
-                sidebarAPI.scrollTo(syntaxId);
-            }
 
-            // avoids the snap-back of the sync scrolling conflicting w/ auto scroll
-            setTimeout(() => {
-                autoSyncEnabled = true;
-                syncSidebarScroll();
-            }, 700);
+        autoSyncEnabled = false;
+
+        const targetIndex = filteredItems.findIndex(item => item.syntaxId === syntaxId);
+        if (targetIndex === -1) {
+            return;
         }
+
+        const sidebarAPI = (window as any).__syntaxSidebar;
+        if (sidebarAPI) {
+            sidebarAPI.highlight(syntaxId);
+            sidebarAPI.scrollTo(syntaxId);
+        }
+        setTimeout(() => {
+            autoSyncEnabled = true;
+            syncSidebarScroll();
+        }, 700);
     }) as EventListener);
 
     // --------------------
-    // Main rendering stuff
+    // Main Rendering Logic
     // --------------------
-
-    // Make viewport a flex container
-    viewport.style.display = 'flex';
-    viewport.style.flexDirection = 'column';
 
     // Updates which items are visible and sets display attr accordingly
     function renderVisible() {
         if (!wrapper || !viewport) return;
-        if (!filteredItems.length) {
+        if (filteredItems.length === 0) {
             allItems.forEach(item => {
                 item.element.style.display = 'none';
             });
             return;
         }
-        
+
         const rect = wrapper.getBoundingClientRect();
         const scrollTop = Math.max(0, -rect.top);
         const viewportHeight = window.innerHeight;
-        
+
         const newRange = findVisibleRange(scrollTop, viewportHeight);
-        
+
         // only update if range has changed
         if (newRange.start === visibleRange.start && newRange.end === visibleRange.end) {
             return;
         }
-        
+
         visibleRange = newRange;
-        
+
         // Hide all items first
         allItems.forEach(item => {
             item.element.style.display = 'none';
         });
-        
+
         // Show visible items and set their order
         for (let i = visibleRange.start; i < visibleRange.end; i++) {
             const item = filteredItems[i];
             item.element.style.display = '';
             item.element.style.order = i.toString(); // CSS flexbox order
         }
-        
+
         // Update viewport position
         viewport.style.transform = `translateY(${positions[visibleRange.start]}px)`;
 
@@ -352,13 +341,13 @@ export interface VirtualItem {
         // Get new filtered items
         filteredItems = getFilteredItems();
         positions = calculatePositions(filteredItems);
-        
+
         const totalHeight = positions[positions.length - 1] || 0;
         wrapper.style.height = `${totalHeight}px`;
-        
+
         // Reset visible range when filtering changes
         visibleRange = { start: -1, end: -1 };
-        
+
         updateSidebar();
         renderVisible();
     }

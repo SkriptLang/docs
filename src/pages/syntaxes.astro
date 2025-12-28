@@ -57,16 +57,29 @@ const syntaxes: Syntax[] = [
         frontmatter={{ title: `Syntaxes for Skript ${rawSyntaxes.source.version}`, tableOfContents: true, pagefind: false}}
         sidebar={syntaxes.map(syntax => ({ label: `${syntax.name}`, link: `syntaxes/#${syntax.id}`, attrs: { id: `sidebar-${syntax.id}` } }))}
 >
-    <div id="vs_wrapper">
-        <div id="vs_viewport">
-            <!-- used for virtual scroll -->
+    <div id="syntaxes-wrapper">
+        <div id="syntaxes-viewport">
+            {syntaxes.map(syntax => (
+                <SyntaxCard syntax={syntax} />
+            ))}
         </div>
-    </div>
-    <div id="syntaxes">
-        {syntaxes.map(syntax => (
-            <SyntaxCard syntax={syntax} />
-        ))}
     </div>
 
     <SyntaxDisplayManager />
 </StarlightPage>
+
+<style>
+    #syntaxes-wrapper {
+        position: relative;
+        width: 100%;
+    }
+
+    #syntaxes-viewport {
+        display: flex;
+        flex-direction: column;
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+    }
+</style>

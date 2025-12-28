@@ -17,16 +17,16 @@ import { SyntaxType } from '../../pages/syntaxes.astro'
         const { updateTypeFilter } = syntaxDisplayManager;
 
         // filter change event listener
-        document.querySelectorAll('[type-filter]').forEach(input => {
+        document.getElementById('type-filter-fieldset')?.querySelectorAll('[type-filter]').forEach(input => {
             input.addEventListener('change', event => {
                 const input = event.target as HTMLInputElement;
-                
+
                 if (input.checked) {
                     expectedTypes.add(input.id);
                 } else {
                     expectedTypes.delete(input.id);
                 }
-                
+
                 updateTypeFilter(expectedTypes);
             });
         });
@@ -37,7 +37,7 @@ import { SyntaxType } from '../../pages/syntaxes.astro'
 
 <h1>Filters</h1>
 
-<fieldset class="row">
+<fieldset id="type-filter-fieldset" class="row">
     <legend>Syntax Type</legend>
     {Object.values(SyntaxType).map(type => (
         <span>
