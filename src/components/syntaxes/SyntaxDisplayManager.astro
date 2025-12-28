@@ -278,6 +278,7 @@ export interface VirtualItem {
             }
             return;
         }
+        autoSyncEnabled = false;
         const targetY = wrapper.offsetTop + positions[targetIndex];
         window.scrollTo({
             top: targetY - 100,
@@ -291,7 +292,7 @@ export interface VirtualItem {
         setTimeout(() => {
             autoSyncEnabled = true;
             syncSidebarScroll();
-        }, 700);
+        }, 1500);
     }
 
     // Listen for sidebar clicks
