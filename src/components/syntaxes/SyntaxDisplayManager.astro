@@ -174,37 +174,38 @@ export interface VirtualItem {
         let score = 0;
         const element = item.element;
 
-        const name = getTextNodeContent(element.querySelector('h3'))?.toLowerCase() || '';
-        const description = element.querySelector('p')?.textContent?.toLowerCase() || '';
-        const patterns = getCodeFromSection(element, 'Patterns');
-        const examples = getCodeFromSection(element, 'Examples');
+        // Weigh ID
+        const id = item.syntaxId.toLowerCase();
+        if (id === searchLower) { // Exact match on syntax ID, immediately return
+            return Number.MAX_SAFE_INTEGER;
+        }
 
-        // Exact match in name = highest score
-        if (name === searchLower) {
+        // Weigh Name
+        const name = item.syntaxName.toLowerCase();
+        if (name === searchLower) { // Exact match in name = highest score
             score += 1000;
-        }
-        // Name starts with search
-        else if (name.startsWith(searchLower)) {
+        } else if (id.startsWith(searchLower) || name.startsWith(searchLower)) {
             score += 500;
-        }
-        // Name contains search
-        else if (name.includes(searchLower)) {
+        } else if (id.includes(searchLower) || name.includes(searchLower)) {
             score += 200;
             // prefer shorter names (more specific matches)
             score += Math.max(0, 50 - name.length);
         }
 
-        // pattern contains
+        // Weigh Patterns
+        const patterns = getCodeFromSection(element, 'Patterns');
         if (patterns.includes(searchLower)) {
             score += 100;
         }
         
-        // Description contains
+        // Weigh Description
+        const description = element.querySelector('p')?.textContent?.toLowerCase() || '';
         if (description.includes(searchLower)) {
             score += 50;
         }
         
-        // examples contain
+        // Weigh Examples
+        const examples = getCodeFromSection(element, 'Examples');
         if (examples.includes(searchLower)) {
             score += 25;
         }
@@ -277,6 +278,11 @@ export interface VirtualItem {
             return;
         }
 
+        const targetY = wrapper.offsetTop + positions[targetIndex];
+        window.scrollTo({
+            top: targetY - 100,
+            behavior: 'smooth'
+        });
         const sidebarAPI = (window as any).__syntaxSidebar;
         if (sidebarAPI) {
             sidebarAPI.highlight(syntaxId);
