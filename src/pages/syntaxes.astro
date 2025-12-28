@@ -30,7 +30,7 @@ export enum SyntaxType {
 function processRawEntries(entries: any, type: SyntaxType, prefix: string | undefined = undefined) : any {
     return [...entries].map(entry => {
         entry.type = type;
-        if (prefix) {
+        if (prefix && !(entry.id as String).startsWith(prefix)) {
             entry.id = prefix + entry.id;
         }
         return entry;
@@ -38,7 +38,7 @@ function processRawEntries(entries: any, type: SyntaxType, prefix: string | unde
 }
 
 const syntaxes: Syntax[] = [
-    ...processRawEntries(rawSyntaxes.classes, SyntaxType.TYPE, "Type"),
+    ...processRawEntries(rawSyntaxes.types, SyntaxType.TYPE, "Type"),
     ...processRawEntries(rawSyntaxes.structures, SyntaxType.STRUCTURE),
     ...processRawEntries(rawSyntaxes.sections, SyntaxType.SECTION),
     ...processRawEntries(rawSyntaxes.effects, SyntaxType.EFFECT),
@@ -54,7 +54,7 @@ const syntaxes: Syntax[] = [
 ---
 
 <StarlightPage
-        frontmatter={{ title: `Syntaxes for Skript ${rawSyntaxes.skriptVersion}`, tableOfContents: true, pagefind: false}}
+        frontmatter={{ title: `Syntaxes for Skript ${rawSyntaxes.source.version}`, tableOfContents: true, pagefind: false}}
         sidebar={syntaxes.map(syntax => ({ label: `${syntax.name}`, link: `syntaxes/#${syntax.id}`, attrs: { id: `sidebar-${syntax.id}` } }))}
 >
     <div id="vs_wrapper">
