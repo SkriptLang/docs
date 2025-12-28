@@ -15,7 +15,6 @@ const { syntax }: Props = Astro.props;
 <!-- Cards are hidden by default for SyntaxDisplayManager -->
 <section class=`syntax-card ${syntax.type.toString().toLowerCase()}`
     syntax-id={syntax.id} syntax-type={syntax.type} syntax-name={syntax.name}
-    style="display: none; order: 0;"
 >
     <div class="col">
         <AnchorHeading level='3' id={syntax.id}>

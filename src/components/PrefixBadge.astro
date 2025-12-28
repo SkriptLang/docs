@@ -5,7 +5,7 @@ import { type ComponentProps } from 'astro/types';
 interface Props {
     badgeProps: ComponentProps<typeof Badge>;
     text: string;
-    link: string;
+    link?: string;
 }
 
 const { badgeProps, text, link }: Props = Astro.props;

@@ -19,7 +19,7 @@ const { entries }: Props = Astro.props;
 <div class="sidebar-pane">
     <ul id="syntax-sidebar-list">
         {entries.map(entry => (
-            <li id={entry.attrs.id} class="syntax-sidebar-item" style="display: none;">
+            <li id={entry.attrs.id} class="syntax-sidebar-item">
                 {entry.label}
             </li>
         ))}
