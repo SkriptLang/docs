@@ -1,10 +1,27 @@
 ---
 // SyntaxSidebar.astro - Replacement sidebar for syntaxes page
+
+interface SidebarEntry {
+    label: string,
+    link: string,
+    attrs: {
+        id: string,
+    },
+}
+
+interface Props {
+    entries: SidebarEntry[],
+}
+
+const { entries }: Props = Astro.props;
 ---
 
-
 <div class="sidebar-pane">
-    <div id="syntax-sidebar-container"></div>
+    <ul id="syntax-sidebar-list">
+        {entries.map(entry => (
+            <li id={entry.attrs.id} class="syntax-sidebar-item">{entry.label}</li>
+        ))}
+    </ul>
 </div>
 
 <script>
@@ -15,70 +32,45 @@
         scrollTo: (syntaxId: string) => void;
     }
 
-    const container = document.getElementById('syntax-sidebar-container');
-    if (!container) throw new Error('Sidebar container not found');
+    const sidebarList = document.getElementById('syntax-sidebar-list') as HTMLElement;
+    for (const child of sidebarList.children) {
+        const syntaxId = child.id.substring("sidebar-".length);
+        child.addEventListener('click', (event) => {
+            event.preventDefault();
 
-    let dynamicList: HTMLElement | null = null;
-
-    function createList() {
-        const list = document.createElement('ul');
-        list.className = 'syntax-sidebar-list';
-        container.appendChild(list);
-        return list;
+            // Dispatch event that SDM will listen to
+            window.dispatchEvent(new CustomEvent('sidebar-item-click', {
+                detail: { syntaxId: syntaxId, element: event.currentTarget }
+            }));
+        })
     }
 
-    function rebuild(filteredItems: VirtualItem[]) {        
-        if (!dynamicList) {
-            dynamicList = createList();
+    function rebuild(filteredItems: VirtualItem[]) {
+        // hide all elements
+        for (const child of sidebarList.children) {
+            (child as HTMLElement).style.display = 'none';
+            (child as HTMLElement).style.order = '0';
         }
 
-        dynamicList.innerHTML = '';
-
-        filteredItems.forEach(item => {
-            const li = document.createElement('li');
-            li.className = 'syntax-sidebar-item';
-            li.textContent = item.syntaxName;
-            li.dataset.syntaxId = item.syntaxId;
-
-            li.addEventListener('click', (event) => {
-                event.preventDefault();
-                
-                // Dispatch event that SDM will listen to
-                window.dispatchEvent(new CustomEvent('sidebar-item-click', {
-                    detail: { syntaxId: item.syntaxId, element: event.currentTarget }
-                }));
-            });
-
-            item.sidebarElement = li;
-            dynamicList.appendChild(li);
+        filteredItems.forEach((item, index) => {
+            const entry = item.sidebarElement as HTMLElement;
+            entry.style.display = '';
+            entry.style.order = `${index}`;
         });
     }
 
     function highlight(syntaxId: string) {
-        if (!dynamicList) return;
-
         // Remove all highlights
-        dynamicList.querySelectorAll('.syntax-sidebar-item').forEach(item => {
-            item.classList.remove('active-syntax');
-        });
+        for (const child of sidebarList.children) {
+            child.classList.remove('active-syntax');
+        }
 
         // Add highlight to target
-        const target = dynamicList.querySelector(`[data-syntax-id="${syntaxId}"]`);
-        if (target) {
-            target.classList.add('active-syntax');
-        }
+        document.getElementById(`sidebar-${syntaxId}`)?.classList.add('active-syntax');
     }
 
     function scrollTo(syntaxId: string) {
-        if (!dynamicList) return;
-
-        const target = dynamicList.querySelector(`[data-syntax-id="${syntaxId}"]`) as HTMLElement;
-        if (!target) return;
-
-        const sidebarPane = document.querySelector('.sidebar-pane') as HTMLElement;
-        if (!sidebarPane) return;
-
-        target.scrollIntoView({
+        document.getElementById(`sidebar-${syntaxId}`)?.scrollIntoView({
             behavior: 'smooth',
             block: 'center',
             inline: 'nearest'
@@ -95,15 +87,13 @@
 
 <style>
     .sidebar-pane {
-        min-height: 100%;
-        min-width: 100%;
-    }
-
-    #syntax-sidebar-container {
+        height: 100%;
         width: 100%;
     }
 
-    :global(.syntax-sidebar-list) {
+    :global(#syntax-sidebar-list) {
+        display: flex;
+        flex-direction: column;
         list-style: none;
         padding: 0;
         margin: 0;
