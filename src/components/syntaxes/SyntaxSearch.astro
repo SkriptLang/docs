@@ -44,34 +44,11 @@ import { Icon } from '@astrojs/starlight/components';
             return;
         }
 
-        // use the virtual items from SDM to serach through instead of direct DOM elements
-        const { allItems, updateSearchFilter } = syntaxDisplayManager;
-
-        // updates SDM search filter based on search input matching any text in the card 
-        function searchSyntaxes(search: string) {
-            const searchLower = search.toLowerCase();
-            const matchingIds = new Set<string>();
-
-            allItems.forEach((item: any) => {
-                const matches = [...item.element.querySelectorAll("a, p, h1, span")]
-                    .some(child => (child.textContent?.toLowerCase() ?? "").includes(searchLower));
-                
-                if (matches) {
-                    matchingIds.add(item.syntaxId);
-                }
-                
-                if (item.sidebarElement) {
-                    item.sidebarElement.classList.toggle('search-hidden', !matches);
-                }
-            });
-
-            // Pass the search query so cards can be re-ordered by relevance
-            updateSearchFilter(matchingIds, search);
-        }
-
+        // Pass search query to SDM
+        const { updateSearchQuery } = syntaxDisplayManager;
         const searchInput = document.getElementById('syntax-search-input') as HTMLInputElement;
         searchInput.addEventListener('input', () => {
-            searchSyntaxes(searchInput.value);
+            updateSearchQuery(searchInput.value);
         });
 
         // Listen for `ctrl + k` and `cmd + k` keyboard shortcuts.

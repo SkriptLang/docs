@@ -98,8 +98,8 @@ export interface VirtualItem {
     let filteredItems: VirtualItem[] = [];
 
     let typeFilter = new Set<string>();
-    let searchFilter: Set<string> | null = null;
-    let currentSearchQuery: string = '';
+
+    let searchCache: Map<string, number> = new Map<string, number>();
 
     // get what VirtualItems should actually "exist" based on the filters
     function getFilteredItems(): VirtualItem[] {   
@@ -108,43 +108,41 @@ export interface VirtualItem {
             ? [...allItems]
             : allItems.filter(item => typeFilter.has(item.syntaxType));
 
-        // search filter
-        if (searchFilter) {
-            if (searchFilter.size === 0) {
-                filtered = [];
-            } else {
-                filtered = filtered.filter(item => (searchFilter as Set<string>).has(item.syntaxId));
-            }
-        }
-
-        // Sort by search relevance if searching, otherwise by original order
-        if (currentSearchQuery && currentSearchQuery.trim()) {
-            const searchLower = currentSearchQuery.toLowerCase();
+        if (searchCache.size !== 0) { // need to filter and sort based on search cache
             return filtered
-                // assign scores
-                .map(item => ({ 
-                    item,
-                    score: scoreSearchMatch(item, searchLower)
-                }))
-                // sort
+                .filter(item => searchCache.has(item.syntaxId))
                 .sort((a, b) => {
-                    if (b.score !== a.score) {
-                        return b.score - a.score;
+                    const aScore = searchCache.get(a.syntaxId)!;
+                    const bScore = searchCache.get(b.syntaxId)!;
+                    if (bScore !== aScore) {
+                        return bScore - aScore;
                     }
-                    return a.item.originalIndex - b.item.originalIndex;
+                    return a.originalIndex - b.originalIndex;
                 })
-                // get items in order
-                .map(s => s.item);
         }
 
         // Default: sort by original alphabetical order
         return filtered.sort((a, b) => a.originalIndex - b.originalIndex);
     }
 
-    // function for getting just the text nodes from an element, without any child text (avoids the badge text)
-    // from stackoverflow
-    function getTextNodeContent(parentElement: any): any {
-        return [].reduce.call(parentElement.childNodes, function(a: any, b: any): any { return a + (b.nodeType === 3 ? b.textContent : ''); }, '');
+    function recomputeSearchCache(query: string): void {
+        // invalidate cache
+        searchCache.clear();
+
+        // prepare query
+        const queryLower = query.toLowerCase().trim();
+        if (queryLower.length === 0) {
+            return;
+        }
+
+        // filter for matches and store them
+        allItems
+            .map(item => ({
+                item,
+                score: scoreSearchMatch(item, queryLower)
+            }))
+            .filter(s => s.score !== 0)
+            .forEach(s => searchCache.set(s.item.syntaxId, s.score))
     }
 
     // function to get content from a specific code card
@@ -385,9 +383,8 @@ export interface VirtualItem {
             typeFilter = types;
             fullRender();
         },
-        updateSearchFilter: (matchingIds: Set<string> | null, searchQuery: string = '') => {
-            searchFilter = matchingIds;
-            currentSearchQuery = searchQuery;
+        updateSearchQuery: (searchQuery: string = '') => {
+            recomputeSearchCache(searchQuery);
             fullRender();
         }
     };
