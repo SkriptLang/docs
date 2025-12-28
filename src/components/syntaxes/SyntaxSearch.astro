@@ -36,30 +36,32 @@ import { Icon } from '@astrojs/starlight/components';
 </script>
 
 <script>
-    const syntaxes = document.getElementById('syntaxes') as HTMLElement;
-    function hideSyntaxes(search: string) {
-        for (const element of syntaxes.children) {
-            const hide = ![...element.querySelectorAll("a, p, h1, span")!!]
-                .map((child) => (child.textContent?.toLowerCase() ?? "").includes(search))
-                .reduce((acc, curr) => acc || curr, false);
-            element.classList.toggle('search-hidden', hide);
-            document.getElementById(`sidebar-${element.getAttribute('syntax-id')}`)?.classList.toggle('search-hidden', hide);
+    // Wait for syntaxDisplayManager to initialize
+    function initSearch() {
+        const syntaxDisplayManager = (window as any).__syntaxDisplayManager;
+        if (!syntaxDisplayManager) {
+            setTimeout(initSearch, 100);
+            return;
         }
+
+        // Pass search query to SDM
+        const { updateSearchQuery } = syntaxDisplayManager;
+        const searchInput = document.getElementById('syntax-search-input') as HTMLInputElement;
+        searchInput.addEventListener('input', () => {
+            updateSearchQuery(searchInput.value);
+        });
+
+        // Listen for `ctrl + k` and `cmd + k` keyboard shortcuts.
+        window.addEventListener('keydown', (event) => {
+            if ((event.metaKey === true || event.ctrlKey === true) && event.key === 'k') {
+                // TODO unfocus if possible?
+                searchInput.focus();
+                event.preventDefault();
+            }
+        });
     }
 
-    const searchInput = document.getElementById('syntax-search-input') as HTMLInputElement;
-    searchInput.addEventListener('input', () => {
-        hideSyntaxes(searchInput.value.toLowerCase());
-    })
-
-    // Listen for `ctrl + k` and `cmd + k` keyboard shortcuts.
-    window.addEventListener('keydown', (e) => {
-        if ((e.metaKey === true || e.ctrlKey === true) && e.key === 'k') {
-            // TODO unfocus if possible?
-            searchInput.focus();
-            e.preventDefault();
-        }
-    });
+    initSearch();
 </script>
 
 <style>

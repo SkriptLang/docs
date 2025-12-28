@@ -1,7 +1,7 @@
 ---
-import { Aside, Badge, Card, Code } from '@astrojs/starlight/components';
+import { Badge } from '@astrojs/starlight/components';
 import AnchorHeading from '@astrojs/starlight/components/AnchorHeading.astro';
-import { type Syntax, SyntaxType } from '../../pages/syntaxes.astro'
+import { type Syntax } from '../../pages/syntaxes.astro'
 import CodeCard from "../CodeCard.astro";
 
 interface Props {
@@ -11,7 +11,11 @@ interface Props {
 const { syntax }: Props = Astro.props;
 ---
 
-<section class=`syntax-card ${syntax.type.toString().toLowerCase()}` syntax-id={syntax.id} syntax-type={syntax.type}>
+<!-- Cards are hidden by default for SyntaxDisplayManager -->
+<section class=`syntax-card ${syntax.type.toString().toLowerCase()}`
+    syntax-id={syntax.id} syntax-type={syntax.type} syntax-name={syntax.name}
+    style="display: none; order: 0;"
+>
     <div class="col">
         <AnchorHeading level='3' id={syntax.id}>
             <Badge text={syntax.type} class="cb" size='large'/>
@@ -30,7 +34,7 @@ const { syntax }: Props = Astro.props;
     </div>
     <div class="col">
         {syntax.patterns && (
-            <CodeCard title="Patterns" code={syntax.patterns.filter(pattern => pattern.trim().length !== 0)}/>
+            <CodeCard title="Patterns" code={[syntax.patterns.filter(pattern => pattern.trim().length !== 0).join("\n")]}/>
         )}
         {syntax.examples && (
             <CodeCard title="Examples" code={syntax.examples.filter(example => example.trim().length !== 0)}/>
@@ -54,6 +58,7 @@ const { syntax }: Props = Astro.props;
         gap: 0 2%;
         margin: 0 0 2.5rem 0;
         padding: 1rem;
+        line-height: 1.5rem;
 
         border-radius: 0.5rem;
         background-color: var(--sl-color-bg-nav);

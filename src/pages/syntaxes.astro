@@ -1,6 +1,7 @@
 ---
 import StarlightPage from '@astrojs/starlight/components/StarlightPage.astro';
 import SyntaxCard from "../components/syntaxes/SyntaxCard.astro";
+import SyntaxDisplayManager from "../components/syntaxes/SyntaxDisplayManager.astro";
 import rawSyntaxes from "../assets/syntaxes.json"
 
 export interface Syntax {
@@ -29,7 +30,7 @@ export enum SyntaxType {
 function processRawEntries(entries: any, type: SyntaxType, prefix: string | undefined = undefined) : any {
     return [...entries].map(entry => {
         entry.type = type;
-        if (prefix) {
+        if (prefix && !(entry.id as String).startsWith(prefix)) {
             entry.id = prefix + entry.id;
         }
         return entry;
@@ -37,7 +38,7 @@ function processRawEntries(entries: any, type: SyntaxType, prefix: string | unde
 }
 
 const syntaxes: Syntax[] = [
-    ...processRawEntries(rawSyntaxes.classes, SyntaxType.TYPE, "Type"),
+    ...processRawEntries(rawSyntaxes.types, SyntaxType.TYPE, "Type"),
     ...processRawEntries(rawSyntaxes.structures, SyntaxType.STRUCTURE),
     ...processRawEntries(rawSyntaxes.sections, SyntaxType.SECTION),
     ...processRawEntries(rawSyntaxes.effects, SyntaxType.EFFECT),
@@ -53,12 +54,32 @@ const syntaxes: Syntax[] = [
 ---
 
 <StarlightPage
-        frontmatter={{ title: `Syntaxes for Skript ${rawSyntaxes.skriptVersion}`, tableOfContents: true, pagefind: false}}
+        frontmatter={{ title: `Syntaxes for Skript ${rawSyntaxes.source.version}`, tableOfContents: true, pagefind: false}}
         sidebar={syntaxes.map(syntax => ({ label: `${syntax.name}`, link: `syntaxes/#${syntax.id}`, attrs: { id: `sidebar-${syntax.id}` } }))}
 >
-    <div id="syntaxes">
-        {syntaxes.map(syntax => (
-            <SyntaxCard syntax={syntax} />
-        ))}
+    <div id="syntaxes-wrapper">
+        <div id="syntaxes-viewport">
+            {syntaxes.map(syntax => (
+                <SyntaxCard syntax={syntax} />
+            ))}
+        </div>
     </div>
+
+    <SyntaxDisplayManager />
 </StarlightPage>
+
+<style>
+    #syntaxes-wrapper {
+        position: relative;
+        width: 100%;
+    }
+
+    #syntaxes-viewport {
+        display: flex;
+        flex-direction: column;
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+    }
+</style>

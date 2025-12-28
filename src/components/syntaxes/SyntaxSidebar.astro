@@ -1,0 +1,120 @@
+---
+// SyntaxSidebar.astro - Replacement sidebar for syntaxes page
+
+interface SidebarEntry {
+    label: string,
+    link: string,
+    attrs: {
+        id: string,
+    },
+}
+
+interface Props {
+    entries: SidebarEntry[],
+}
+
+const { entries }: Props = Astro.props;
+---
+
+<div class="sidebar-pane">
+    <ul id="syntax-sidebar-list">
+        {entries.map(entry => (
+            <li id={entry.attrs.id} class="syntax-sidebar-item" style="display: none;">
+                {entry.label}
+            </li>
+        ))}
+    </ul>
+</div>
+
+<script>
+    import type { VirtualItem } from "./SyntaxDisplayManager.astro";
+    interface SidebarAPI {
+        rebuild: (filteredItems: VirtualItem[]) => void;
+        highlight: (syntaxId: string) => void;
+        scrollTo: (syntaxId: string) => void;
+    }
+
+    const sidebarList = document.getElementById('syntax-sidebar-list') as HTMLElement;
+    for (const child of sidebarList.children) {
+        const syntaxId = child.id.substring("sidebar-".length);
+        child.addEventListener('click', (event) => {
+            event.preventDefault();
+
+            // Dispatch event that SDM will listen to
+            window.dispatchEvent(new CustomEvent('sidebar-item-click', {
+                detail: { syntaxId: syntaxId, element: event.currentTarget }
+            }));
+        })
+    }
+
+    function rebuild(filteredItems: VirtualItem[]) {
+        // hide all elements
+        for (const child of sidebarList.children) {
+            (child as HTMLElement).style.display = 'none';
+            (child as HTMLElement).style.order = '0';
+        }
+
+        filteredItems.forEach((item, index) => {
+            const entry = item.sidebarElement as HTMLElement;
+            entry.style.display = '';
+            entry.style.order = `${index}`;
+        });
+    }
+
+    function highlight(syntaxId: string) {
+        // Remove all highlights
+        for (const child of sidebarList.children) {
+            child.classList.remove('active-syntax');
+        }
+
+        // Add highlight to target
+        document.getElementById(`sidebar-${syntaxId}`)?.classList.add('active-syntax');
+    }
+
+    function scrollTo(syntaxId: string) {
+        document.getElementById(`sidebar-${syntaxId}`)?.scrollIntoView({
+            behavior: 'smooth',
+            block: 'center',
+            inline: 'nearest'
+        });
+    }
+
+    // Expose API
+    (window as any).__syntaxSidebar = {
+        rebuild,
+        highlight,
+        scrollTo
+    } as SidebarAPI;
+</script>
+
+<style>
+    .sidebar-pane {
+        height: 100%;
+        width: 100%;
+    }
+
+    :global(#syntax-sidebar-list) {
+        display: flex;
+        flex-direction: column;
+        list-style: none;
+        padding: 0;
+        margin: 0;
+    }
+
+    :global(.syntax-sidebar-item) {
+        padding: 0.5rem 0.75rem;
+        cursor: pointer;
+        border-radius: 0.25rem;
+        transition: background-color 0.2s;
+        font-size: 0.9rem;
+        color: var(--sl-color-gray-2);
+    }
+
+    :global(.syntax-sidebar-item:hover, .syntax-sidebar-item.active-syntax) {
+        background-color: var(--sl-color-gray-5);
+        color: var(--sl-color-white);
+    }
+    :global([data-theme='light'] .syntax-sidebar-item:hover, [data-theme='light'] .syntax-sidebar-item.active-syntax) {
+        background-color: var(--sl-color-gray-6);
+    }
+</style>

@@ -1,0 +1,11 @@
+---
+import Default from '@astrojs/starlight/components/Sidebar.astro';
+import SyntaxSidebar from './syntaxes/SyntaxSidebar.astro';
+
+const isSyntaxesPage = Astro.locals.starlightRoute.id === 'syntaxes';
+const { sidebar } = Astro.locals.starlightRoute;
+---
+
+{
+    isSyntaxesPage ? (<SyntaxSidebar entries={sidebar as any}/>) : (<Default><slot /></Default>)
+}

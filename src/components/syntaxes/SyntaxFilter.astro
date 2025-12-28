@@ -3,40 +3,41 @@ import { SyntaxType } from '../../pages/syntaxes.astro'
 ---
 
 <script>
-    const expectedTypes: string[] = [];
+    const expectedTypes = new Set<string>();
 
-    function shouldHideElement(element: Element) : boolean {
-        if (expectedTypes.length != 0 && !expectedTypes.includes(element.getAttribute('syntax-type') as string)) {
-            return true;
+    function initFilters() {
+        // Wait for syntaxDisplayManager to initialize
+        const syntaxDisplayManager = (window as any).__syntaxDisplayManager;
+        if (!syntaxDisplayManager) {
+            setTimeout(initFilters, 100);
+            return;
         }
-        return false;
+
+        // we send updated type filter info to the display manager
+        const { updateTypeFilter } = syntaxDisplayManager;
+
+        // filter change event listener
+        document.getElementById('type-filter-fieldset')?.querySelectorAll('[type-filter]').forEach(input => {
+            input.addEventListener('change', event => {
+                const input = event.target as HTMLInputElement;
+
+                if (input.checked) {
+                    expectedTypes.add(input.id);
+                } else {
+                    expectedTypes.delete(input.id);
+                }
+
+                updateTypeFilter(expectedTypes);
+            });
+        });
     }
 
-    const syntaxes = document.getElementById('syntaxes') as HTMLElement;
-    function processFilters() {
-        for (const element of syntaxes.children) {
-            const hide = shouldHideElement(element);
-            element.classList.toggle('filter-hidden', hide);
-            document.getElementById(`sidebar-${element.getAttribute('syntax-id')}`)?.classList.toggle('filter-hidden', hide);
-        }
-    }
-
-    document.querySelectorAll('[type-filter]').forEach(input => {
-        input.addEventListener('change', event => {
-            const input = event.target as HTMLInputElement;
-            if (input.checked) {
-                expectedTypes.push(input.id);
-            } else {
-                expectedTypes.splice(expectedTypes.indexOf(input.id), 1);
-            }
-            processFilters();
-        })
-    });
+    initFilters();
 </script>
 
 <h1>Filters</h1>
 
-<fieldset class="row">
+<fieldset id="type-filter-fieldset" class="row">
     <legend>Syntax Type</legend>
     {Object.values(SyntaxType).map(type => (
         <span>
