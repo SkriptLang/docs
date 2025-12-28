@@ -244,29 +244,16 @@ export interface VirtualItem {
             return;
         }
 
+        // determine first element whose name is visible
         const viewportTop = window.scrollY;
-        const viewportCenter = viewportTop + (window.innerHeight / 2);
-
-        let closestIndex = 0;
-        let closestDistance = Infinity;
-
-        // determine which item is currently centered in the screen
         for (let i = 0; i < filteredItems.length; i++) {
             const itemTop = wrapper.offsetTop + positions[i];
-            const itemBottom = wrapper.offsetTop + positions[i + 1];
-            const itemCenter = (itemTop + itemBottom) / 2;
-
-            const distance = Math.abs(itemCenter - viewportCenter);
-
-            if (distance < closestDistance) {
-                closestDistance = distance;
-                closestIndex = i;
+            if (itemTop > viewportTop) {
+                sidebarAPI.highlight(filteredItems[i].syntaxId);
+                sidebarAPI.scrollTo(filteredItems[i].syntaxId);
+                break; 
             }
         }
-
-        const middleItem = filteredItems[closestIndex];
-        sidebarAPI.highlight(middleItem.syntaxId);
-        sidebarAPI.scrollTo(middleItem.syntaxId);
     }
 
     function scrollTo(syntaxId: string): void {
@@ -291,7 +278,6 @@ export interface VirtualItem {
         }
         setTimeout(() => {
             autoSyncEnabled = true;
-            syncSidebarScroll();
         }, 1500);
     }
 
@@ -319,6 +305,8 @@ export interface VirtualItem {
             return;
         }
 
+        
+
         const rect = wrapper.getBoundingClientRect();
         const scrollTop = Math.max(0, -rect.top);
         const viewportHeight = window.innerHeight;
@@ -327,6 +315,8 @@ export interface VirtualItem {
 
         // only update if range has changed
         if (newRange.start === visibleRange.start && newRange.end === visibleRange.end) {
+            // Sync sidebar scroll regardless
+            syncSidebarScroll();
             return;
         }
 
