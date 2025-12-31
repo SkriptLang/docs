@@ -383,6 +383,33 @@ export interface VirtualItem {
     }
 
     // ---------------------
+    // Syntax Card Dialog
+    // ---------------------
+
+    const cardDialog = document.getElementById('syntaxes-card-dialog') as HTMLDialogElement;
+    const cardDialogFrame = document.getElementById('syntaxes-card-dialog-frame')!;
+
+    document.getElementById('syntaxes-card-dialog-title')!.children[0].addEventListener('click', () => {
+        cardDialog.close();
+    });
+
+    document.querySelectorAll("[card-dialog]").forEach(element => {
+        element.addEventListener("click", () => {
+            showSyntaxDialog(element.getAttribute("card-dialog-id")!);
+        });
+    });
+
+    function showSyntaxDialog(syntaxId: string) {
+        const cardElement = document.getElementById(`card-${syntaxId}`)!;
+        const dialogCardElement = cardElement.cloneNode(true) as HTMLElement;
+        dialogCardElement.id = '';
+        dialogCardElement.style.display = '';
+        dialogCardElement.style.margin = '0';
+        cardDialogFrame.replaceChildren(dialogCardElement);
+        cardDialog.showModal();
+    }
+
+    // ---------------------
     // Initialize everything
     // ---------------------
 

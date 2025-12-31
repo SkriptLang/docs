@@ -5,19 +5,19 @@ import { type ComponentProps } from 'astro/types';
 interface Props {
     badgeProps: ComponentProps<typeof Badge>;
     text: string;
-    link?: string;
+    cardRef?: string;
 }
 
-const { badgeProps, text, link }: Props = Astro.props;
+const { badgeProps, text, cardRef }: Props = Astro.props;
 ---
 
 <span class="prefix-badge">
     <Badge {...badgeProps} class="cb" />
-    {link ? (
-        <a href={link}>
+    {cardRef ? (
+        <p card-dialog card-dialog-id={cardRef}>
             {text}
             <Icon name="right-arrow"/>
-        </a>
+        </p>
     ) : text}
 </span>
 
@@ -25,10 +25,14 @@ const { badgeProps, text, link }: Props = Astro.props;
     .prefix-badge:not(:last-of-type) {
         margin-bottom: 0.75em;
     }
-    a {
+    p {
         display: inline-flex;
         align-items: center;
         text-decoration: none;
         color: inherit;
+        user-select: none;
+    }
+    p:hover {
+        cursor: pointer;
     }
 </style>
