@@ -70,11 +70,6 @@ const { syntax }: Props = Astro.props;
         background-color: var(--sl-color-bg-nav);
         border-left: var(--custom-badge-light) 0.5em solid;
     }
-    .row {
-        display: flex;
-        flex-direction: row;
-        gap: 0 2%;
-    }
     .col {
         display: flex;
         flex-direction: column;
@@ -89,6 +84,19 @@ const { syntax }: Props = Astro.props;
         height: 1px;
         border: 0;
         background-color: var(--sl-color-gray-5);
+    }
+    @media (max-width: 50rem) {
+        .syntax-card {
+            flex-direction: column;
+        }
+        .col {
+            display: flex;
+            flex-direction: column;
+            max-width: 100%;
+        }
+        .col:not(:last-of-type) {
+            margin-bottom: 1rem;
+        }
     }
 
     .type {

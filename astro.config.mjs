@@ -14,9 +14,10 @@ export default defineConfig({
             },
 			social: [{ icon: 'github', label: 'GitHub', href: 'https://github.com/SkriptLang' }],
             components: {
+                MobileTableOfContents: './src/components/MobileTableOfContents.astro',
                 Search: './src/components/Search.astro',
-                TableOfContents: './src/components/TableOfContents.astro',
                 Sidebar: './src/components/Sidebar.astro',
+                TableOfContents: './src/components/TableOfContents.astro',
             },
             customCss: [
                 // Relative path to your custom CSS file

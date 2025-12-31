@@ -1,5 +1,11 @@
 ---
 import { SyntaxType } from '../../pages/syntaxes.astro'
+
+interface Props {
+    isMobile?: boolean;
+}
+
+const { isMobile } = Astro.props;
 ---
 
 <script>
@@ -17,39 +23,49 @@ import { SyntaxType } from '../../pages/syntaxes.astro'
         const { updateTypeFilter } = syntaxDisplayManager;
 
         // filter change event listener
-        document.getElementById('type-filter-fieldset')?.querySelectorAll('[type-filter]').forEach(input => {
+        const typeInputFieldsets = [
+            document.getElementById(`type-filter-fieldset`)!,
+            document.getElementById(`type-filter-mobile-fieldset`)!,
+        ];
+        typeInputFieldsets.forEach(fieldset => fieldset.querySelectorAll('[type-filter]').forEach(input => {
             input.addEventListener('change', event => {
                 const input = event.target as HTMLInputElement;
 
+                const type = input.getAttribute('type-filter')!;
                 if (input.checked) {
-                    expectedTypes.add(input.id);
+                    expectedTypes.add(type);
                 } else {
-                    expectedTypes.delete(input.id);
+                    expectedTypes.delete(type);
                 }
 
                 updateTypeFilter(expectedTypes);
             });
-        });
+        }));
     }
 
     initFilters();
 </script>
 
-<h1>Filters</h1>
+<div class="filter-container">
+    <h1>Filters</h1>
 
-<fieldset id="type-filter-fieldset" class="row">
-    <legend>Syntax Type</legend>
-    {Object.values(SyntaxType).map(type => (
-        <span>
-           <label for={type} class="checkbox">
-               <input type="checkbox" name={type} id={type} type-filter/>
-               {type}
-           </label>
-        </span>
-    ))}
-</fieldset>
+    <fieldset id=`type-filter-${isMobile ? 'mobile-' : ''}fieldset` class="row">
+        <legend>Syntax Type</legend>
+        {Object.values(SyntaxType).map(type => (
+            <span>
+               <label for=`type-filter-${isMobile ? 'mobile-' : ''}${type}` class="checkbox">
+                   <input type="checkbox" name={type} id=`type-filter-${isMobile ? 'mobile-' : ''}${type}` type-filter={type}/>
+                   {type}
+               </label>
+            </span>
+        ))}
+    </fieldset>
+</div>
 
 <style>
+    .filter-container {
+        padding: 0.5rem;
+    }
     fieldset {
         border-color: var(--sl-color-hairline);
         border-style: solid;
@@ -67,6 +83,6 @@ import { SyntaxType } from '../../pages/syntaxes.astro'
     }
     .checkbox {
         white-space: nowrap;
-        margin-right: 0.5em;
+        margin-right: 50%;
     }
 </style>
