@@ -14,12 +14,21 @@ const { syntax }: Props = Astro.props;
 
 <section id=`card-${syntax.id}` class=`syntax-card ${syntax.type.toString().toLowerCase()}`
     syntax-id={syntax.id} syntax-type={syntax.type} syntax-name={syntax.name}
+    data-syntax-keywords={syntax.keywords}
 >
     <div class="col">
         <AnchorHeading level='3' id={syntax.id}>
             <Badge text={syntax.type} class="cb" size='large'/>
             {syntax.name}
         </AnchorHeading>
+        <div class="row">
+            {syntax.deprecated && (
+                <Badge variant="danger" size='medium' text="Deprecated"/>
+            )}
+            {syntax.requirements && (
+                <Badge class="sb" size='medium' text={syntax.requirements.join(", ")}/>
+            )}
+        </div>
         {syntax.description && syntax.description.map(line => (
             <p set:html={line}></p>
         ))}
@@ -27,14 +36,19 @@ const { syntax }: Props = Astro.props;
         {syntax.since && (
             <SyntaxBadge
                 badgeProps={{text: "Since", size: 'medium'}}
-                text={Array.isArray(syntax.since) ? syntax.since.join(", ") : syntax.since}
+                entries={[{text: Array.isArray(syntax.since) ? syntax.since.join(", ") : syntax.since}]}
             />
         )}
         {syntax.returns && (
             <SyntaxBadge
                 badgeProps={{text: "Return Type", size: 'medium'}}
-                text={syntax.returns.name}
-                cardRef={syntax.returns.id}
+                entries={[{text: syntax.returns.name, cardRef: syntax.returns.id}]}
+            />
+        )}
+        {syntax.events && (
+            <SyntaxBadge
+                badgeProps={{text: "Applicable Events", size: 'medium'}}
+                entries={syntax.events.map(event => ({text: event.name, cardRef: event.id}))}
             />
         )}
     </div>
@@ -57,6 +71,14 @@ const { syntax }: Props = Astro.props;
         --sl-color-bg-badge: var(--custom-badge-light);
         --sl-color-border-badge: var(--custom-badge-light);
     }
+    :global(.sb) {
+        --sl-color-bg-badge: var(--sl-color-gray-5);
+        --sl-color-border-badge: var(--sl-color-gray-4);
+    }
+    :global([data-theme='light'] .sb) {
+        --sl-color-bg-badge: var(--sl-color-gray-3);
+        --sl-color-border-badge: var(--sl-color-gray-4);
+    }
 
     .syntax-card {
         display: flex;
@@ -69,6 +91,16 @@ const { syntax }: Props = Astro.props;
         border-radius: 0.5rem;
         background-color: var(--sl-color-bg-nav);
         border-left: var(--custom-badge-light) 0.5em solid;
+    }
+    .row {
+        display: flex;
+        flex-direction: row;
+        margin: 0;
+        padding: 0;
+        gap: 0 2%;
+    }
+    .row:has(*) {
+        margin-top: 0.5rem;
     }
     .col {
         display: flex;

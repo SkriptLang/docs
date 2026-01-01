@@ -194,6 +194,16 @@ export interface VirtualItem {
             score += Math.max(0, 50 - name.length);
         }
 
+        // Weigh Keywords
+        const keywords = element.dataset.syntaxKeywords?.split(',');
+        if (keywords) {
+            for (const keyword of keywords) {
+                if (searchLower.includes(keyword.toLowerCase())) {
+                    score += 100;
+                }
+            }
+        }
+
         // Weigh Patterns
         const patterns = getCodeFromSection(element, 'Patterns');
         if (patterns.includes(searchLower)) {
@@ -395,7 +405,7 @@ export interface VirtualItem {
 
     document.querySelectorAll("[card-dialog]").forEach(element => {
         element.addEventListener("click", () => {
-            showSyntaxDialog(element.getAttribute("card-dialog-id")!);
+            showSyntaxDialog(element.getAttribute("card-dialog")!);
         });
     });
 

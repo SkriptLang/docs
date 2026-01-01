@@ -3,22 +3,26 @@ import { Badge, Icon } from '@astrojs/starlight/components';
 import { type ComponentProps } from 'astro/types';
 
 interface Props {
-    badgeProps: ComponentProps<typeof Badge>;
-    text: string;
-    cardRef?: string;
+    badgeProps: ComponentProps<typeof Badge>,
+    entries: {
+        text: string,
+        cardRef?: string,
+    }[],
 }
 
-const { badgeProps, text, cardRef }: Props = Astro.props;
+const { badgeProps, entries }: Props = Astro.props;
 ---
 
 <span class="prefix-badge">
-    <Badge {...badgeProps} class="cb" />
-    {cardRef ? (
-        <p card-dialog card-dialog-id={cardRef}>
-            {text}
-            <Icon name="right-arrow"/>
-        </p>
-    ) : text}
+    <Badge {...badgeProps} class="cb"/>
+    {entries.map(({ text, cardRef }) => (
+        cardRef ? (
+            <p card-dialog={cardRef}>
+                {text}
+                <Icon name="right-arrow"/>
+            </p>
+        ) : text
+    ))}
 </span>
 
 <style>
@@ -28,9 +32,15 @@ const { badgeProps, text, cardRef }: Props = Astro.props;
     p {
         display: inline-flex;
         align-items: center;
+        padding: 0;
+        margin: 0;
+
         text-decoration: none;
         color: inherit;
         user-select: none;
+    }
+    p:not(:last-child) {
+        margin-right: 0.25rem;
     }
     p:hover {
         cursor: pointer;

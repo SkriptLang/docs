@@ -13,10 +13,19 @@ export interface Syntax {
     description?: string[],
     examples?: string[],
     since: string[],
+    deprecated: boolean,
+    requirements?: string[],
+    keywords?: string[],
+
     returns?: {
         id: string,
         name: string,
     },
+
+    events?: {
+        id: string,
+        name: string,
+    }[],
 }
 
 export enum SyntaxType {
