@@ -55,41 +55,63 @@ if (response.ok) {
         const { updateTypeFilter, updateVersionFilter } = syntaxDisplayManager;
 
         // Type Filter
-        [
-            document.getElementById(`type-filter-fieldset`)!,
-            document.getElementById(`type-filter-mobile-fieldset`)!,
-        ].forEach(fieldset => fieldset.querySelectorAll('input').forEach(input => {
-            input.addEventListener('change', event => {
-                const input = event.target as HTMLInputElement;
-                const type = input.dataset.filterKey!;
-                if (input.checked) {
-                    expectedTypes.add(type);
-                } else {
-                    expectedTypes.delete(type);
-                }
-                updateTypeFilter(expectedTypes);
+        function handleTypeInputChange(input: HTMLInputElement) {
+            const type = input.dataset.filterKey!;
+            if (input.checked) {
+                expectedTypes.add(type);
+            } else {
+                expectedTypes.delete(type);
+            }
+            updateTypeFilter(expectedTypes);
+        }
+        // Mirror changes between mobile and regular views
+        document.getElementById(`type-filter-fieldset-mobile`)!.querySelectorAll('input').forEach(input => {
+            input.addEventListener('change', () => {
+                const regularInput = document.getElementById(input.id.slice(0, -7))! as HTMLInputElement;
+                regularInput.checked = input.checked;
+                handleTypeInputChange(regularInput);
             });
-        }));
+        });
+        document.getElementById(`type-filter-fieldset`)!.querySelectorAll('input').forEach(input => {
+            input.addEventListener('change', () => {
+                const mobileInput = document.getElementById(input.id + "-mobile") as HTMLInputElement;
+                mobileInput.checked = input.checked;
+                handleTypeInputChange(input);
+            });
+        });
 
         // Version Filter
-        let rawVersions: string[] = [];
         let versionData: VersionFilterData = { versions: [], range: 'strict', type: 'any' };
-        [
-            document.getElementById(`version-filter-fieldset`)!,
-            document.getElementById(`version-filter-mobile-fieldset`)!,
-        ].forEach(fieldset => fieldset.querySelectorAll('select').forEach(input => {
-            input.addEventListener('change', event => {
-                const input = event.target as HTMLSelectElement;
-                const key = input.dataset.filterKey!;
-                if (key === 'versions') {
-                    rawVersions = [...input.selectedOptions].map(element => element.value);
-                } else {
-                    // @ts-ignore
-                    versionData[key] = input.selectedOptions[0].value;
+        let rawVersions: string[] = [];
+        function handleVersionSelectChange(select: HTMLSelectElement) {
+            const key = select.dataset.filterKey!;
+            if (key === 'versions') {
+                rawVersions = [...select.selectedOptions].map(element => element.value);
+            } else {
+                // @ts-ignore
+                versionData[key] = select.selectedOptions[0].value;
+            }
+            updateVersionFilter(versionData, rawVersions);
+        }
+        // Mirror changes between mobile and regular views
+        document.getElementById(`version-filter-fieldset-mobile`)!.querySelectorAll('select').forEach(select => {
+            select.addEventListener('change', () => {
+                const regularSelect = document.getElementById(select.id.slice(0, -7))! as HTMLSelectElement;
+                for (let i = 0; i < select.options.length; i++) {
+                    regularSelect.options[i].selected = select.options[i].selected;
                 }
-                updateVersionFilter(versionData, rawVersions);
+                handleVersionSelectChange(regularSelect);
             });
-        }));
+        });
+        document.getElementById(`version-filter-fieldset`)!.querySelectorAll('select').forEach(select => {
+            select.addEventListener('change', () => {
+                const mobileSelect = document.getElementById(select.id + "-mobile")! as HTMLSelectElement;
+                for (let i = 0; i < select.options.length; i++) {
+                    mobileSelect.options[i].selected = select.options[i].selected;
+                }
+                handleVersionSelectChange(select);
+            });
+        });
     }
 
     initFilters();
@@ -98,39 +120,39 @@ if (response.ok) {
 <div class="filter-container">
     <h1>Filters</h1>
 
-    <fieldset id=`type-filter-${isMobile ? 'mobile-' : ''}fieldset` class="checkboxes">
+    <fieldset id=`type-filter-fieldset${isMobile ? '-mobile' : ''}` class="checkboxes">
         <legend>Syntax Type</legend>
         {Object.values(SyntaxType).map(type => (
             <span>
-               <label for=`type-filter-${isMobile ? 'mobile-' : ''}${type}`>
-                   <input type="checkbox" name={type} id=`type-filter-${isMobile ? 'mobile-' : ''}${type}` data-filter-key={type}/>
+               <label for=`type-filter-${type}${isMobile ? '-mobile' : ''}`>
+                   <input type="checkbox" name={type} id=`type-filter-${type}${isMobile ? '-mobile' : ''}` data-filter-key={type}/>
                    {type}
                </label>
             </span>
         ))}
     </fieldset>
 
-    <fieldset id=`version-filter-${isMobile ? 'mobile-' : ''}fieldset` class="dropdowns">
+    <fieldset id=`version-filter-fieldset${isMobile ? '-mobile' : ''}` class="dropdowns">
         <legend>Syntax Version</legend>
-        <label for=`version-filter-${isMobile ? 'mobile-' : ''}version`>
+        <label for=`version-filter-version${isMobile ? '-mobile' : ''}`>
             Version
-            <select multiple name="version-filter-version" id=`version-filter-${isMobile ? 'mobile-' : ''}version` data-filter-key="versions">
+            <select multiple name="version-filter-version" id=`version-filter-version${isMobile ? '-mobile' : ''}` data-filter-key="versions">
                 {versions.map(version => (
                     <option value={version}>{version}</option>
                 ))}
             </select>
         </label>
-        <label for=`version-filter-${isMobile ? 'mobile-' : ''}range`>
+        <label for=`version-filter-range${isMobile ? '-mobile' : ''}`>
             Range
-            <select name="version-filter-range" id=`version-filter-${isMobile ? 'mobile-' : ''}range` data-filter-key="range">
+            <select name="version-filter-range" id=`version-filter-range${isMobile ? '-mobile' : ''}` data-filter-key="range">
                 <option selected value="strict">Strict</option>
                 <option value="above">Above</option>
                 <option value="below">Below</option>
             </select>
         </label>
-        <label for=`version-filter-${isMobile ? 'mobile-' : ''}type`>
+        <label for=`version-filter-type${isMobile ? '-mobile' : ''}`>
             Type
-            <select name="version-filter-type" id=`version-filter-${isMobile ? 'mobile-' : ''}type` data-filter-key="type">
+            <select name="version-filter-type" id=`version-filter-type${isMobile ? '-mobile' : ''}` data-filter-key="type">
                 <option selected value="any">Any</option>
                 <option value="added">Added In</option>
                 <option value="changed">Changed In</option>
