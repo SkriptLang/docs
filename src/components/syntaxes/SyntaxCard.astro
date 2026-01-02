@@ -7,9 +7,10 @@ import SyntaxBadge from "./SyntaxBadge.astro";
 
 interface Props {
     syntax: Syntax,
+    isNew?: boolean;
 }
 
-const { syntax }: Props = Astro.props;
+const { syntax, isNew }: Props = Astro.props;
 ---
 
 <section id=`card-${syntax.id}` class=`syntax-card ${syntax.type.toString().toLowerCase()}`
@@ -22,6 +23,9 @@ const { syntax }: Props = Astro.props;
             {syntax.name}
         </AnchorHeading>
         <div class="row">
+            {isNew && (
+                <Badge variant="success" size='medium' text="New"/>
+            )}
             {syntax.deprecated && (
                 <Badge variant="danger" size='medium' text="Deprecated"/>
             )}

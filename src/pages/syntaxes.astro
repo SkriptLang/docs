@@ -12,7 +12,7 @@ export interface Syntax {
     patterns?: string[],
     description?: string[],
     examples?: string[],
-    since: string[],
+    since: string | string[],
     deprecated: boolean,
     requirements?: string[],
     keywords?: string[],
@@ -65,6 +65,8 @@ const syntaxes: Syntax[] = [
 
 ].toSorted((x, y) => x.name.localeCompare(y.name)) as Syntax[]
 
+const currentVersion = rawSyntaxes.source.version.split("-")[0];
+
 ---
 
 <StarlightPage
@@ -75,7 +77,10 @@ const syntaxes: Syntax[] = [
     <div id="syntaxes-wrapper">
         <div id="syntaxes-viewport">
             {syntaxes.map(syntax => (
-                <SyntaxCard syntax={syntax}/>
+                <SyntaxCard
+                    syntax={syntax}
+                    isNew={syntax.since !== null && (Array.isArray(syntax.since) ? syntax.since.join() : syntax.since).includes(currentVersion)}
+                />
             ))}
         </div>
     </div>
