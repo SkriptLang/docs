@@ -492,7 +492,7 @@ export interface VersionFilterData {
         cardDialog.close();
     });
 
-    document.querySelectorAll("[card-dialog]").forEach(element => {
+    document.querySelectorAll("[data-card-dialog]").forEach(element => {
         element.addEventListener("click", () => {
             showSyntaxDialog((element as HTMLElement).dataset.cardDialog!);
         });
