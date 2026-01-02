@@ -40,6 +40,7 @@ if (response.ok) {
 
 <script>
     import type { VersionFilterData} from "./SyntaxDisplayManager.astro";
+    import { getParam, setParam } from "../../utils/utils";
 
     const expectedTypes = new Set<string>();
 
@@ -62,10 +63,20 @@ if (response.ok) {
             } else {
                 expectedTypes.delete(type);
             }
+            setParam('types', [...expectedTypes].join(","));
+            updateTypeFilter(expectedTypes);
+        }
+        // Read from params
+        const typesParam = getParam('types');
+        if (typesParam) {
+            for (const type of typesParam.split(",")) {
+                expectedTypes.add(type);
+            }
             updateTypeFilter(expectedTypes);
         }
         // Mirror changes between mobile and regular views
         document.getElementById(`type-filter-fieldset-mobile`)!.querySelectorAll('input').forEach(input => {
+            input.checked = expectedTypes.has(input.dataset.filterKey!);
             input.addEventListener('change', () => {
                 const regularInput = document.getElementById(input.id.slice(0, -7))! as HTMLInputElement;
                 regularInput.checked = input.checked;
@@ -73,6 +84,7 @@ if (response.ok) {
             });
         });
         document.getElementById(`type-filter-fieldset`)!.querySelectorAll('input').forEach(input => {
+            input.checked = expectedTypes.has(input.dataset.filterKey!);
             input.addEventListener('change', () => {
                 const mobileInput = document.getElementById(input.id + "-mobile") as HTMLInputElement;
                 mobileInput.checked = input.checked;
@@ -87,14 +99,50 @@ if (response.ok) {
             const key = select.dataset.filterKey!;
             if (key === 'versions') {
                 rawVersions = [...select.selectedOptions].map(element => element.value);
+                setParam("versions", rawVersions.join(","));
             } else {
+                const value = select.selectedOptions[0].value;
                 // @ts-ignore
-                versionData[key] = select.selectedOptions[0].value;
+                versionData[key] = value;
+                setParam("versions-" + key, (value === 'strict' || value === 'any') ? '' : value);
             }
             updateVersionFilter(versionData, rawVersions);
         }
+        // Read from params
+        let changed = false;
+        const versionsParam = getParam('versions');
+        if (versionsParam) {
+            rawVersions = versionsParam.split(",");
+            changed = true;
+        }
+        const versionsRangeParam = getParam('versions-range');
+        if (versionsRangeParam && (versionsRangeParam === 'above' || versionsRangeParam === 'below')) {
+            versionData.range = versionsRangeParam;
+            changed = true;
+        }
+        const versionsTypeParam = getParam('versions-type');
+        if (versionsTypeParam && (versionsTypeParam === 'added' || versionsTypeParam === 'changed')) {
+            versionData.type = versionsTypeParam;
+            changed = true;
+        }
+        if (changed) {
+            updateVersionFilter(versionData, rawVersions);
+        }
+        function syncVersionParams(select: HTMLSelectElement) {
+            for (const option of select.options) {
+                const key = option.value;
+                if (key === 'above' || key === 'below') {
+                    option.selected = key === versionData.range;
+                } else if (key === 'added' || key === 'changed') {
+                    option.selected = key === versionData.type;
+                } else {
+                    option.selected = rawVersions.includes(key);
+                }
+            }
+        }
         // Mirror changes between mobile and regular views
         document.getElementById(`version-filter-fieldset-mobile`)!.querySelectorAll('select').forEach(select => {
+            syncVersionParams(select);
             select.addEventListener('change', () => {
                 const regularSelect = document.getElementById(select.id.slice(0, -7))! as HTMLSelectElement;
                 for (let i = 0; i < select.options.length; i++) {
@@ -104,6 +152,7 @@ if (response.ok) {
             });
         });
         document.getElementById(`version-filter-fieldset`)!.querySelectorAll('select').forEach(select => {
+            syncVersionParams(select);
             select.addEventListener('change', () => {
                 const mobileSelect = document.getElementById(select.id + "-mobile")! as HTMLSelectElement;
                 for (let i = 0; i < select.options.length; i++) {
