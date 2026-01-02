@@ -1,14 +1,46 @@
 ---
 import { SyntaxType } from '../../pages/syntaxes.astro'
+import rawSyntaxes from "../../assets/syntaxes.json"
 
 interface Props {
     isMobile?: boolean;
 }
 
 const { isMobile } = Astro.props;
+
+const response = await fetch('https://api.github.com/repos/SkriptLang/Skript/releases?per_page=100', {
+    headers: {
+        'Accept': 'application/vnd.github+json',
+        'X-GitHub-Api-Version': '2022-11-28',
+        'User-Agent': 'SkriptLang',
+    },
+});
+
+let versions: string[] = [];
+if (response.ok) {
+    const versionPattern = /.*?(\d+\.\d+(?:\.\d+)?).*/i;
+    versions = (await response.json())
+        .flatMap((entry: any) => {
+            const matches = versionPattern.exec(entry.tag_name);
+            if (!matches) {
+                return [];
+            }
+            const name = matches[1];
+            return [name];
+        });
+    // remove duplicates
+    versions = [...new Set(versions)];
+} else { // fallback
+    const currentMinor = parseInt(rawSyntaxes.source.version.split(".")[1]);
+    for (let minor = 0; minor <= currentMinor; minor++) {
+        versions.unshift(`2.${minor}`);
+    }
+}
 ---
 
 <script>
+    import type { VersionFilterData} from "./SyntaxDisplayManager.astro";
+
     const expectedTypes = new Set<string>();
 
     function initFilters() {
@@ -20,25 +52,42 @@ const { isMobile } = Astro.props;
         }
 
         // we send updated type filter info to the display manager
-        const { updateTypeFilter } = syntaxDisplayManager;
+        const { updateTypeFilter, updateVersionFilter } = syntaxDisplayManager;
 
-        // filter change event listener
-        const typeInputFieldsets = [
+        // Type Filter
+        [
             document.getElementById(`type-filter-fieldset`)!,
             document.getElementById(`type-filter-mobile-fieldset`)!,
-        ];
-        typeInputFieldsets.forEach(fieldset => fieldset.querySelectorAll('[type-filter]').forEach(input => {
+        ].forEach(fieldset => fieldset.querySelectorAll('[type-filter]').forEach(input => {
             input.addEventListener('change', event => {
                 const input = event.target as HTMLInputElement;
-
                 const type = input.getAttribute('type-filter')!;
                 if (input.checked) {
                     expectedTypes.add(type);
                 } else {
                     expectedTypes.delete(type);
                 }
-
                 updateTypeFilter(expectedTypes);
+            });
+        }));
+
+        // Version Filter
+        let rawVersions: string[] = [];
+        let versionData: VersionFilterData = { versions: [], range: 'strict', type: 'any' };
+        [
+            document.getElementById(`version-filter-fieldset`)!,
+            document.getElementById(`version-filter-mobile-fieldset`)!,
+        ].forEach(fieldset => fieldset.querySelectorAll('select').forEach(input => {
+            input.addEventListener('change', event => {
+                const input = event.target as HTMLSelectElement;
+                const key = input.dataset.filterKey;
+                if (key === 'versions') {
+                    rawVersions = [...input.selectedOptions].map(element => element.value);
+                } else {
+                    // @ts-ignore
+                    versionData[key] = input.selectedOptions[0].value;
+                }
+                updateVersionFilter(versionData, rawVersions);
             });
         }));
     }
@@ -49,16 +98,44 @@ const { isMobile } = Astro.props;
 <div class="filter-container">
     <h1>Filters</h1>
 
-    <fieldset id=`type-filter-${isMobile ? 'mobile-' : ''}fieldset` class="row">
+    <fieldset id=`type-filter-${isMobile ? 'mobile-' : ''}fieldset` class="checkboxes">
         <legend>Syntax Type</legend>
         {Object.values(SyntaxType).map(type => (
             <span>
-               <label for=`type-filter-${isMobile ? 'mobile-' : ''}${type}` class="checkbox">
+               <label for=`type-filter-${isMobile ? 'mobile-' : ''}${type}`>
                    <input type="checkbox" name={type} id=`type-filter-${isMobile ? 'mobile-' : ''}${type}` type-filter={type}/>
                    {type}
                </label>
             </span>
         ))}
+    </fieldset>
+
+    <fieldset id=`version-filter-${isMobile ? 'mobile-' : ''}fieldset` class="dropdowns">
+        <legend>Syntax Version</legend>
+        <label for=`version-filter-${isMobile ? 'mobile-' : ''}version`>
+            Version
+            <select multiple name="version-filter-version" id=`version-filter-${isMobile ? 'mobile-' : ''}version` data-filter-key="versions">
+                {versions.map(version => (
+                    <option value={version}>{version}</option>
+                ))}
+            </select>
+        </label>
+        <label for=`version-filter-${isMobile ? 'mobile-' : ''}range`>
+            Range
+            <select name="version-filter-range" id=`version-filter-${isMobile ? 'mobile-' : ''}range` data-filter-key="range">
+                <option selected value="strict">Strict</option>
+                <option value="above">Above</option>
+                <option value="below">Below</option>
+            </select>
+        </label>
+        <label for=`version-filter-${isMobile ? 'mobile-' : ''}type`>
+            Type
+            <select name="version-filter-type" id=`version-filter-${isMobile ? 'mobile-' : ''}type` data-filter-key="type">
+                <option selected value="any">Any</option>
+                <option value="added">Added In</option>
+                <option value="changed">Changed In</option>
+            </select>
+        </label>
     </fieldset>
 </div>
 
@@ -71,18 +148,25 @@ const { isMobile } = Astro.props;
         border-style: solid;
     }
     fieldset > legend {
-        font-size: 1.5em;
+        font-size: 1.5rem;
     }
     label {
         user-select: none;
     }
-    .row {
-        display: block;
-        column-count: 2;
-        column-fill: balance;
+    select {
+        font-size: .9rem;
     }
-    .checkbox {
-        white-space: nowrap;
-        margin-right: 50%;
+
+    .checkboxes {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+    }
+
+    .dropdowns > label {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+    }
+    .dropdowns > label:not(:last-of-type) {
+        margin-bottom: 0.5rem;
     }
 </style>

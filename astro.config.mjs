@@ -8,11 +8,14 @@ export default defineConfig({
 		starlight({
 			title: 'Skript',
             favicon: '/favicon.svg',
-            logo: {
+            /*logo: {
                 src: './src/assets/banner.webp',
                 replacesTitle: true,
-            },
-			social: [{ icon: 'github', label: 'GitHub', href: 'https://github.com/SkriptLang' }],
+            },*/
+            social: [
+                { icon: 'github', label: 'GitHub', href: 'https://github.com/SkriptLang' },
+                { icon: 'discord', label: 'Discord', href: 'https://discord.gg/ZPsZAg6ygu' },
+            ],
             components: {
                 MobileTableOfContents: './src/components/MobileTableOfContents.astro',
                 Search: './src/components/Search.astro',

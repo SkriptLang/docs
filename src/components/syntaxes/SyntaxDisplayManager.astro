@@ -10,6 +10,18 @@ export interface VirtualItem {
     height: number;       // actual height of the html element
     originalIndex: number; // index to sort the items properly
 }
+
+export interface Version {
+    major: number;
+    minor: number;
+    patch: number;
+}
+
+export interface VersionFilterData {
+    versions: Version[];
+    range: 'strict' | 'above' | 'below';
+    type: 'any' | 'added' | 'changed';
+}
 ---
 
 <script>
@@ -19,7 +31,7 @@ export interface VirtualItem {
     // -------------------
     // Setup
     // -------------------
-    import type { VirtualItem } from "./SyntaxDisplayManager.astro";
+    import type { VirtualItem, Version, VersionFilterData } from "./SyntaxDisplayManager.astro";
 
     // obtain container references
     const wrapper = document.getElementById('syntaxes-wrapper')!;
@@ -99,6 +111,9 @@ export interface VirtualItem {
     let filteredItems: VirtualItem[] = [];
 
     let typeFilter = new Set<string>();
+    let versionFilter: VersionFilterData = {
+        versions: [], range: 'strict', type: 'any',
+    };
 
     let hasSearch = false;
     let searchCache: Map<string, number> = new Map<string, number>();
@@ -109,6 +124,46 @@ export interface VirtualItem {
         let filtered = typeFilter.size === 0 
             ? [...allItems]
             : allItems.filter(item => typeFilter.has(item.syntaxType));
+
+        // Version filter
+        if (versionFilter.versions.length > 0) {
+            filtered = filtered.filter(item => {
+                let since: string[] | undefined = item.element.dataset.syntaxSince?.split(",");
+                if (!since) {
+                    return false;
+                }
+
+                // process type
+                if (versionFilter.type === 'added') { // only consider the first version
+                    since = since.slice(0, 1);
+                } else if (versionFilter.type === 'changed') { // ignore the first version
+                    since = since.slice(1);
+                }
+
+                for (const desired of versionFilter.versions) {
+                    for (const entry of since) {
+                        const provided = parseVersion(entry);
+                        if (provided === null) {
+                            continue;
+                        }
+                        if (provided.patch === undefined) { // if patch is not specified, assume 0
+                            provided.patch = 0;
+                        }
+
+                        const result = compareVersions(desired, provided);
+                        // process range
+                        if ((result === 0 && versionFilter.range !== 'strict')
+                            || (result === 1 && versionFilter.range !== 'below')
+                            || (result === -1 && versionFilter.range !== 'above')) {
+                            continue;
+                        }
+
+                        return true;
+                    }
+                }
+                return false;
+            });
+        }
 
         if (hasSearch) { // need to filter and sort based on search cache
             return filtered
@@ -125,6 +180,40 @@ export interface VirtualItem {
 
         // Default: sort by original alphabetical order
         return filtered.sort((a, b) => a.originalIndex - b.originalIndex);
+    }
+
+    const versionPattern = /.*?(\d+)\.(\d+)(?:\.(\d+))?.*/i;
+    export function parseVersion(version: string): Version | null {
+        const matches = versionPattern.exec(version);
+        if (!matches) {
+            return null;
+        }
+        return {
+            major: parseInt(matches[1]),
+            minor: parseInt(matches[2]),
+            patch: matches[3] !== undefined ? parseInt(matches[3]) : 0,
+        }
+    }
+
+    /**
+     * @return Whether <code>a</code> is less than, equal to, or greater than <code>b</code>.
+     * Expressed as -1, 0, or 1 respectively.
+     */
+    function compareVersions(a: Version, b: Version) : number {
+        if (a.major > b.major) {
+            return 1;
+        } else if (a.major < b.major) {
+            return -1;
+        } else if (a.minor > b.minor) {
+            return 1;
+        } else if (a.minor < b.minor) {
+            return -1;
+        } else if (a.patch > b.patch) {
+            return 1;
+        } else if (a.patch < b.patch) {
+            return -1;
+        }
+        return 0;
     }
 
     function recomputeSearchCache(query: string): void {
@@ -315,8 +404,6 @@ export interface VirtualItem {
             return;
         }
 
-        
-
         const rect = wrapper.getBoundingClientRect();
         const scrollTop = Math.max(0, -rect.top);
         const viewportHeight = window.innerHeight;
@@ -435,6 +522,11 @@ export interface VirtualItem {
         allItems,
         updateTypeFilter: (types: Set<string>) => {
             typeFilter = types;
+            fullRender();
+        },
+        updateVersionFilter: (data: VersionFilterData, rawVersions: string[]) => {
+            data.versions = rawVersions.map(version => parseVersion(version)!);
+            versionFilter = data;
             fullRender();
         },
         updateSearchQuery: (searchQuery: string = '') => {
