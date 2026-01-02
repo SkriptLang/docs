@@ -14,7 +14,7 @@ const { syntax, isNew }: Props = Astro.props;
 ---
 
 <section id=`card-${syntax.id}` class=`syntax-card ${syntax.type.toString().toLowerCase()}`
-    syntax-id={syntax.id} syntax-type={syntax.type} syntax-name={syntax.name}
+    data-syntax-type={syntax.type} data-syntax-id={syntax.id} data-syntax-name={syntax.name}
     data-syntax-since={syntax.since} data-syntax-keywords={syntax.keywords}
 >
     <div class="col">

@@ -17,7 +17,7 @@ const { badgeProps, entries }: Props = Astro.props;
     <Badge {...badgeProps} class="cb"/>
     {entries.map(({ text, cardRef }) => (
         cardRef ? (
-            <p card-dialog={cardRef}>
+            <p data-card-dialog={cardRef}>
                 {text}
                 <Icon name="right-arrow"/>
             </p>

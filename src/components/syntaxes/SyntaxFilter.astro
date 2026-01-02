@@ -58,10 +58,10 @@ if (response.ok) {
         [
             document.getElementById(`type-filter-fieldset`)!,
             document.getElementById(`type-filter-mobile-fieldset`)!,
-        ].forEach(fieldset => fieldset.querySelectorAll('[type-filter]').forEach(input => {
+        ].forEach(fieldset => fieldset.querySelectorAll('input').forEach(input => {
             input.addEventListener('change', event => {
                 const input = event.target as HTMLInputElement;
-                const type = input.getAttribute('type-filter')!;
+                const type = input.dataset.filterKey!;
                 if (input.checked) {
                     expectedTypes.add(type);
                 } else {
@@ -80,7 +80,7 @@ if (response.ok) {
         ].forEach(fieldset => fieldset.querySelectorAll('select').forEach(input => {
             input.addEventListener('change', event => {
                 const input = event.target as HTMLSelectElement;
-                const key = input.dataset.filterKey;
+                const key = input.dataset.filterKey!;
                 if (key === 'versions') {
                     rawVersions = [...input.selectedOptions].map(element => element.value);
                 } else {
@@ -103,7 +103,7 @@ if (response.ok) {
         {Object.values(SyntaxType).map(type => (
             <span>
                <label for=`type-filter-${isMobile ? 'mobile-' : ''}${type}`>
-                   <input type="checkbox" name={type} id=`type-filter-${isMobile ? 'mobile-' : ''}${type}` type-filter={type}/>
+                   <input type="checkbox" name={type} id=`type-filter-${isMobile ? 'mobile-' : ''}${type}` data-filter-key={type}/>
                    {type}
                </label>
             </span>
