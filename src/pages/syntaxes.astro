@@ -65,7 +65,10 @@ const syntaxes: Syntax[] = [
 
 ].toSorted((x, y) => x.name.localeCompare(y.name)) as Syntax[]
 
-const currentVersion = rawSyntaxes.source.version.split("-")[0];
+let currentVersion = rawSyntaxes.source.version.split("-")[0];
+if (currentVersion.endsWith(".0")) {
+    currentVersion = currentVersion.slice(0, -2);
+}
 
 ---
 
