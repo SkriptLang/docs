@@ -510,6 +510,13 @@ export interface VersionFilterData {
         cardDialog.close();
     });
 
+    // allow closing dialog by clicking on the side
+    document.getElementById('syntaxes-card-dialog')!.addEventListener('click', event => {
+        if (event.target instanceof HTMLDialogElement) {
+            cardDialog.close();
+        }
+    });
+
     document.querySelectorAll("[data-card-dialog]").forEach(element => {
         element.addEventListener("click", () => {
             showSyntaxDialog((element as HTMLElement).dataset.cardDialog!);
