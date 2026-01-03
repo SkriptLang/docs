@@ -19,7 +19,7 @@ export interface Version {
 
 export interface VersionFilterData {
     versions: Version[];
-    range: 'strict' | 'above' | 'below';
+    range: 'strict' | 'above' | 'below' | 'below_and_equal' | 'above_and_equal';
     type: 'any' | 'added' | 'changed';
 }
 ---
@@ -155,9 +155,9 @@ export interface VersionFilterData {
 
                         const result = compareVersions(desired, provided);
                         // process range
-                        if ((result === 0 && versionFilter.range !== 'strict')
-                            || (result === 1 && versionFilter.range !== 'below')
-                            || (result === -1 && versionFilter.range !== 'above')) {
+                        if ((result === 0 && (versionFilter.range == 'above' || versionFilter.range == 'below'))
+                            || (result === 1 && versionFilter.range !== 'below' && versionFilter.range !== 'below_and_equal')
+                            || (result === -1 && versionFilter.range !== 'above' && versionFilter.range !== 'above_and_equal')) {
                             continue;
                         }
 

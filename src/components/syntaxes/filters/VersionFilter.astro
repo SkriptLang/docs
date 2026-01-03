@@ -124,7 +124,7 @@ const INITIAL_VISIBLE_COUNT = 3;
         let filterData: VersionFilterData;
         
         if (versionFilterType === 'present') {
-            filterData = { versions: [], range: 'below', type: 'any' };
+            filterData = { versions: [], range: 'below_and_equal', type: 'any' };
         } else if (versionFilterType === 'changed') {
             filterData = { versions: [], range: 'strict', type: 'changed' };
         } else if (versionFilterType === 'added') {
