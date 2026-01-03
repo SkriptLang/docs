@@ -479,10 +479,14 @@ export interface VersionFilterData {
         } else {
             noResultsElement.style.display = 'none';
         }
-        window.scrollTo({
-            top: 0,
-            behavior: 'smooth',
-        })
+        if (window.location.hash) {
+            scrollTo(window.location.hash.substring(1))
+        } else { 
+            window.scrollTo({
+                top: 0,
+                behavior: 'smooth',
+            })
+        }
     }
 
     // Use RAF for smooth scrolling - claude addition
