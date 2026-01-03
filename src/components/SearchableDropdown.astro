@@ -1,0 +1,172 @@
+---
+interface Props {
+    isMobile?: boolean;
+    options?: string[];
+}
+
+const { 
+    isMobile, 
+    options
+} = Astro.props;
+
+const suffix = isMobile ? '-mobile' : '';
+---
+
+<script>
+    // use a custom element to make init easy
+    class SearchableDropdown extends HTMLElement {
+        private input: HTMLInputElement;
+        private list: HTMLElement;
+        private noResults: HTMLElement;
+        private items: HTMLElement[];
+
+        constructor() {
+            super();
+            this.input = this.querySelector('.dropdown-input')!;
+            this.list = this.querySelector('.dropdown-list')!;
+            this.noResults = this.querySelector('.no-results')!;
+            this.items = Array.from(this.querySelectorAll('.dropdown-item'));
+        }
+
+        // when element added
+        connectedCallback() {
+            this.input.addEventListener('input', (e) => this.handleInput(e));
+            this.input.addEventListener('focus', () => this.showDropdown());
+            
+            this.items.forEach(item => {
+                item.addEventListener('click', () => this.selectItem(item.dataset.value!));
+            });
+            document.addEventListener('click', this.handleOutsideClick);
+        }
+
+        // when element removed
+        disconnectedCallback() {
+            document.removeEventListener('click', this.handleOutsideClick);
+        }
+
+        private handleOutsideClick = (e: MouseEvent) => {
+            if (!this.contains(e.target as Node)) {
+                this.hideDropdown();
+            }
+        }
+
+        private handleInput(e: Event) {
+            const searchTerm = (e.target as HTMLInputElement).value.toLowerCase();
+            let visibleCount = 0;
+
+            this.items.forEach(item => {
+                const value = item.dataset.value?.toLowerCase() || '';
+                const isMatch = value.includes(searchTerm);
+                item.style.display = isMatch ? 'block' : 'none';
+                if (isMatch) visibleCount++;
+            });
+
+            const hasInput = searchTerm.length > 0;
+            this.list.style.display = visibleCount > 0 ? 'block' : 'none';
+            this.noResults.style.display = (visibleCount === 0 && hasInput) ? 'block' : 'none';
+        }
+
+        private showDropdown() {
+            const hasVisibleItems = this.items.some(item => item.style.display !== 'none');
+            if (hasVisibleItems) this.list.style.display = 'block';
+        }
+
+        private hideDropdown() {
+            this.list.style.display = 'none';
+            this.noResults.style.display = 'none';
+        }
+
+        private selectItem(value: string) {
+            this.input.value = value;
+            this.hideDropdown();
+            this.input.dispatchEvent(new Event('input', { bubbles: true }));
+        }
+    }
+
+    // Register the custom element
+    customElements.define('searchable-dropdown', SearchableDropdown);
+</script>
+
+<searchable-dropdown data-suffix={suffix}>
+    <input
+        type="text"
+        id={`return-type-filter-input${suffix}`}
+        placeholder="e.g., number, text, player"
+        class="dropdown-input"
+        autocomplete="off"
+    />
+
+    <ul class="dropdown-list" style="display: none;">
+        {options?.map((option) => (
+            <li class="dropdown-item" data-value={option}>
+                {option}
+            </li>
+        ))}
+    </ul>
+    
+    <div class="no-results" style="display: none;">
+        No matches found
+    </div>
+</div>
+
+<style>
+    searchable-dropdown {
+        position: relative;
+        width: 16rem;
+    }
+    
+    .dropdown-input {
+        width: 100%;
+        padding: 0.5rem 0.75rem;
+        border: 1px solid #d1d5db;
+        border-radius: 0.375rem;
+        outline: none;
+    }
+    
+    .dropdown-input:focus {
+        ring: 2px;
+        ring-color: #3b82f6;
+        border-color: #3b82f6;
+    }
+    
+    .dropdown-list {
+        position: absolute;
+        z-index: 10;
+        width: 100%;
+        margin-top: 0.25rem;
+        background-color: white;
+        border: 1px solid #d1d5db;
+        border-radius: 0.375rem;
+        box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+        max-height: 15rem;
+        overflow-y: auto;
+        list-style: none;
+        padding: 0;
+        margin: 0.25rem 0 0 0;
+    }
+    
+    .dropdown-item {
+        padding: 0.5rem 0.75rem;
+        cursor: pointer;
+        transition: background-color 0.15s;
+    }
+    
+    .dropdown-item:hover {
+        background-color: #eff6ff;
+    }
+    
+    .no-results {
+        position: absolute;
+        z-index: 10;
+        width: 100%;
+        margin-top: 0.25rem;
+        background-color: white;
+        border: 1px solid #d1d5db;
+        border-radius: 0.375rem;
+        box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+        padding: 0.75rem;
+        color: #6b7280;
+        font-size: 0.875rem;
+    }
+</style>
+    

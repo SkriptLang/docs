@@ -1,4 +1,5 @@
 ---
+import ReturnTypeFilter from './filters/ReturnTypeFilter.astro';
 import TypeFilter from './filters/TypeFilter.astro'
 import VersionFilter from './filters/VersionFilter.astro'
 
@@ -13,6 +14,7 @@ const { isMobile } = Astro.props;
     <h1>Filters</h1>
     <TypeFilter isMobile={isMobile} />
     <VersionFilter isMobile={isMobile} />
+    <ReturnTypeFilter isMobile={isMobile} />
 </div>
 
 <style>

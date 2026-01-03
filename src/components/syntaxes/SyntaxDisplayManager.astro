@@ -116,6 +116,7 @@ export interface VersionFilterData {
     let versionFilter: VersionFilterData = {
         versions: [], range: 'strict', type: 'any',
     };
+    let returnTypeFilter: string | null = null;
 
     let hasSearch = false;
     let searchCache: Map<string, number> = new Map<string, number>();
@@ -165,6 +166,19 @@ export interface VersionFilterData {
                 }
                 return false;
             });
+        }
+
+        // return type filter
+        if (returnTypeFilter) {
+            const target = returnTypeFilter.toLowerCase();
+            filtered = filtered.filter(item => {
+                if (item.element.dataset.syntaxReturns) {
+                    const candidate = (item.element.dataset.syntaxReturns as string).toLowerCase();
+                    // todo: inheritance mapping?
+                    return candidate.includes(target);
+                }
+                return false;
+            })          
         }
 
         if (hasSearch) { // need to filter and sort based on search cache
@@ -529,6 +543,10 @@ export interface VersionFilterData {
         updateVersionFilter: (data: VersionFilterData, rawVersions: string[]) => {
             data.versions = rawVersions.map(version => parseVersion(version)!);
             versionFilter = data;
+            fullRender();
+        },
+        updateReturnTypeFilter: (type: string) => {
+            returnTypeFilter = type;
             fullRender();
         },
         updateSearchQuery: (searchQuery: string = '') => {

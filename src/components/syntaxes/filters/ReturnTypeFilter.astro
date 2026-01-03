@@ -1,0 +1,138 @@
+---
+import SearchableDropdown from '../../SearchableDropdown.astro';
+import rawSyntaxes from "../../../assets/syntaxes.json"
+
+interface Props {
+    isMobile?: boolean;
+}
+const { isMobile } = Astro.props;
+const suffix = isMobile ? '-mobile' : '';
+
+// Define the options for the return type filter
+const returnTypeOptions = rawSyntaxes.types.map((type: any) => type.name);
+---
+<script>
+    import { getParam, setParam } from "../../../utils/utils";
+    
+    let expectedType: string = '';
+    let updateReturnTypeFilter: ((type: string) => void) | null = null;
+    
+    function handleReturnTypeFilterChange(input: HTMLInputElement) {
+        expectedType = input.value.trim();
+        setParam('return_type', expectedType);
+        
+        if (updateReturnTypeFilter) {
+            updateReturnTypeFilter(expectedType);
+        }
+    }
+    
+    function syncReturnTypeInput(regular: HTMLInputElement, mobile: HTMLInputElement) {
+        regular.value = mobile.value = expectedType;
+    }
+    
+    function setupMirroredInputs() {
+        const regular = document.getElementById('return-type-filter-input');
+        const mobile = document.getElementById('return-type-filter-input-mobile');
+        
+        if (!regular || !mobile) return;
+        
+        const regularInput = regular as HTMLInputElement;
+        const mobileInput = mobile as HTMLInputElement;
+        
+        syncReturnTypeInput(regularInput, mobileInput);
+        
+        regularInput.addEventListener('input', () => {
+            mobileInput.value = regularInput.value;
+            handleReturnTypeFilterChange(regularInput);
+        });
+        
+        mobileInput.addEventListener('input', () => {
+            regularInput.value = mobileInput.value;
+            handleReturnTypeFilterChange(mobileInput);
+        });
+    }
+    
+    function initReturnTypeFilter() {
+        const syntaxDisplayManager = (window as any).__syntaxDisplayManager;
+        if (!syntaxDisplayManager) {
+            setTimeout(initReturnTypeFilter, 100);
+            return;
+        }
+        
+        updateReturnTypeFilter = syntaxDisplayManager.updateReturnTypeFilter;
+        
+        const typeParam = getParam('return_type');
+        if (typeParam) {
+            expectedType = typeParam;
+        }
+        
+        setupMirroredInputs();
+        
+        if (typeParam && updateReturnTypeFilter) {
+            updateReturnTypeFilter(expectedType);
+        }
+    }
+    
+    initReturnTypeFilter();
+</script>
+
+<fieldset id={`return-type-filter-fieldset${suffix}`} class="text-input">
+    <legend>Return Type</legend>
+    <label for={`return-type-filter-input${suffix}`}>
+        <SearchableDropdown isMobile={isMobile} options={returnTypeOptions} />
+    </label>
+</fieldset>
+
+<style>
+    fieldset {
+        border-color: var(--sl-color-hairline);
+        border-style: solid;
+        padding: 1rem;
+    }
+    
+    fieldset > legend {
+        font-size: 1.5rem;
+    }
+    
+    label {
+        user-select: none;
+        cursor: pointer;
+        display: block;
+    }
+    
+    /* Override SearchableDropdown styles to match your theme */
+    :global(.searchable-dropdown) {
+        width: 100%;
+    }
+    
+    :global(.dropdown-input) {
+        width: 100%;
+        padding: 0.5rem;
+        border: 1px solid var(--sl-color-gray-5);
+        border-radius: 0.25rem;
+        background-color: var(--sl-color-bg);
+        color: var(--sl-color-white);
+        font-size: 1rem;
+    }
+    
+    :global(.dropdown-input:focus) {
+        outline: none;
+        border-color: var(--sl-color-accent);
+    }
+    
+    :global(.dropdown-list) {
+        background-color: var(--sl-color-bg);
+        border-color: var(--sl-color-gray-5);
+        color: var(--sl-color-white);
+    }
+    
+    :global(.dropdown-item:hover) {
+        background-color: var(--sl-color-gray-6);
+    }
+    
+    :global(.no-results) {
+        background-color: var(--sl-color-bg);
+        border-color: var(--sl-color-gray-5);
+        color: var(--sl-color-gray-3);
+    }
+</style>
