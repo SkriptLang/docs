@@ -1,0 +1,122 @@
+---
+import { SyntaxType } from '../../../pages/syntaxes.astro'
+
+interface Props {
+    isMobile?: boolean;
+}
+
+const { isMobile } = Astro.props;
+const suffix = isMobile ? '-mobile' : '';
+---
+
+<script>
+    import { getParam, setParam } from "../../../utils/utils";
+
+    const expectedTypes = new Set<string>();
+    let updateTypeFilter: ((types: Set<string>) => void) | null = null;
+
+    function handleTypeFilterChange(input: HTMLInputElement) {
+        const type = input.dataset.filterKey!;
+        
+        if (input.checked) {
+            expectedTypes.add(type);
+        } else {
+            expectedTypes.delete(type);
+        }
+        
+        setParam('types', [...expectedTypes].join(","));
+        
+        if (updateTypeFilter) {
+            updateTypeFilter(expectedTypes);
+        }
+    }
+
+    function syncTypeOptions(regular: HTMLInputElement, mobile: HTMLInputElement) {
+        regular.checked = mobile.checked = expectedTypes.has(regular.dataset.filterKey!);
+    }
+
+    function setupMirroredInputs() {
+        const regular = document.getElementById('type-filter-fieldset');
+        const mobile = document.getElementById('type-filter-fieldset-mobile');
+        
+        if (!regular || !mobile) return;
+
+        regular.querySelectorAll<HTMLInputElement>('input').forEach((regularElement) => {
+            const mobileElement = document.getElementById(regularElement.id + '-mobile') as HTMLInputElement;
+            if (!mobileElement) return;
+            
+            syncTypeOptions(regularElement, mobileElement);
+            
+            regularElement.addEventListener('change', () => {
+                mobileElement.checked = (regularElement).checked;
+                handleTypeFilterChange(regularElement);
+            });
+            
+            mobileElement.addEventListener('change', () => {
+                (regularElement).checked = mobileElement.checked;
+                handleTypeFilterChange(regularElement);
+            });
+        });
+    }
+
+    function initTypeFilter() {
+        const syntaxDisplayManager = (window as any).__syntaxDisplayManager;
+        if (!syntaxDisplayManager) {
+            setTimeout(initTypeFilter, 100);
+            return;
+        }
+
+        updateTypeFilter = syntaxDisplayManager.updateTypeFilter;
+
+        const typesParam = getParam('types');
+        if (typesParam) {
+            typesParam.split(",").forEach(type => expectedTypes.add(type));
+        }
+
+        setupMirroredInputs();
+
+        if (typesParam && updateTypeFilter) {
+            updateTypeFilter(expectedTypes);
+        }
+    }
+
+    initTypeFilter();
+</script>
+
+<fieldset id={`type-filter-fieldset${suffix}`} class="checkboxes">
+    <legend>Syntax Type</legend>
+    {Object.values(SyntaxType).map(type => (
+        <span>
+           <label for={`type-filter-${type}${suffix}`}>
+               <input 
+                   type="checkbox" 
+                   name={type} 
+                   id={`type-filter-${type}${suffix}`} 
+                   data-filter-key={type}
+               />
+               {type}
+           </label>
+        </span>
+    ))}
+</fieldset>
+
+<style>
+    .checkboxes {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+    }
+
+    fieldset {
+        border-color: var(--sl-color-hairline);
+        border-style: solid;
+    }
+    
+    fieldset > legend {
+        font-size: 1.5rem;
+    }
+    
+    label {
+        user-select: none;
+        cursor: pointer;
+    }
+</style>

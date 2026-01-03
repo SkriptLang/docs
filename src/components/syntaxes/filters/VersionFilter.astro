@@ -1,0 +1,528 @@
+---
+import rawSyntaxes from "../../../assets/syntaxes.json"
+
+interface Props {
+    isMobile?: boolean;
+}
+
+const { isMobile } = Astro.props;
+
+interface VersionGroup {
+    major: string;
+    versions: string[];
+}
+
+// Fetch and organize versions
+const response = await fetch('https://api.github.com/repos/SkriptLang/Skript/releases?per_page=100', {
+    headers: {
+        'Accept': 'application/vnd.github+json',
+        'X-GitHub-Api-Version': '2022-11-28',
+        'User-Agent': 'SkriptLang',
+    },
+});
+
+let versionGroups: VersionGroup[] = [];
+
+if (response.ok) {
+    const versionPattern = /.*?(\d+\.\d+(?:\.\d+)?).*/i;
+    const allVersions: string[] = (await response.json())
+        .flatMap((entry: any) => {
+            const matches = versionPattern.exec(entry.tag_name);
+            return matches ? [matches[1]] : [];
+        });
+    
+    const uniqueVersions = [...new Set(allVersions)];
+    
+    // Group by major version (e.g., "2.13")
+    const groupMap = new Map<string, string[]>();
+    uniqueVersions.forEach(version => {
+        const parts = version.split('.');
+        const major = `${parts[0]}.${parts[1]}`;
+        if (!groupMap.has(major)) {
+            groupMap.set(major, []);
+        }
+        groupMap.get(major)!.push(version);
+    });
+    
+    // Convert to array and sort
+    versionGroups = Array.from(groupMap.entries())
+        .map(([major, versions]) => ({ 
+            major, 
+            versions: versions.sort((a, b) => b.localeCompare(a, undefined, { numeric: true }))
+        }))
+        .sort((a, b) => b.major.localeCompare(a.major, undefined, { numeric: true }));
+} else {
+    // Fallback
+    const currentMinor = parseInt(rawSyntaxes.source.version.split(".")[1]);
+    for (let minor = currentMinor; minor >= 0; minor--) {
+        versionGroups.push({
+            major: `2.${minor}`,
+            versions: [`2.${minor}`]
+        });
+    }
+}
+
+const suffix = isMobile ? '-mobile' : '';
+const INITIAL_VISIBLE_COUNT = 3;
+---
+
+<script>
+    import type { VersionFilterData } from "../SyntaxDisplayManager.astro";
+    import { getParam, setParam } from "../../../utils/utils";
+
+    const selectedVersions = new Set<string>();
+    let versionFilterType: 'present' | 'changed' | 'added' | 'both' = 'both';
+    let updateVersionFilter: ((data: VersionFilterData, versions: string[]) => void) | null = null;
+
+    function handleVersionTypeChange(input: HTMLInputElement) {
+        const type = input.value as 'present' | 'changed' | 'added';
+        
+        const isMobile = input.id.includes('-mobile');
+        const suffix = isMobile ? '-mobile' : '';
+        const presentCheckbox = document.getElementById(`version-type-present${suffix}`) as HTMLInputElement;
+        const changedCheckbox = document.getElementById(`version-type-changed${suffix}`) as HTMLInputElement;
+        const addedCheckbox = document.getElementById(`version-type-added${suffix}`) as HTMLInputElement;
+        
+        if (type === 'present') {
+            if (input.checked) {
+                versionFilterType = 'present';
+                if (changedCheckbox) changedCheckbox.checked = false;
+                if (addedCheckbox) addedCheckbox.checked = false;
+            } else {
+                versionFilterType = 'both';
+                if (changedCheckbox) changedCheckbox.checked = true;
+                if (addedCheckbox) addedCheckbox.checked = true;
+            }
+        } else {
+            if (input.checked && presentCheckbox) {
+                presentCheckbox.checked = false;
+            }
+            
+            const changedChecked = changedCheckbox?.checked ?? false;
+            const addedChecked = addedCheckbox?.checked ?? false;
+            
+            if (changedChecked && addedChecked) {
+                versionFilterType = 'both';
+            } else if (changedChecked) {
+                versionFilterType = 'changed';
+            } else if (addedChecked) {
+                versionFilterType = 'added';
+            } else {
+                versionFilterType = 'both';
+                if (changedCheckbox) changedCheckbox.checked = true;
+                if (addedCheckbox) addedCheckbox.checked = true;
+            }
+        }
+        
+        setParam('versionType', versionFilterType);
+        applyVersionFilter();
+    }
+
+    function applyVersionFilter() {
+        if (!updateVersionFilter) return;
+
+        let filterData: VersionFilterData;
+        
+        if (versionFilterType === 'present') {
+            filterData = { versions: [], range: 'below', type: 'any' };
+        } else if (versionFilterType === 'changed') {
+            filterData = { versions: [], range: 'strict', type: 'changed' };
+        } else if (versionFilterType === 'added') {
+            filterData = { versions: [], range: 'strict', type: 'added' };
+        } else {
+            filterData = { versions: [], range: 'strict', type: 'any' };
+        }
+        
+        updateVersionFilter(filterData, [...selectedVersions]);
+    }
+
+    function toggleVersionGroup(checkbox: HTMLInputElement) {
+        const childList = checkbox.parentElement?.querySelector('.version-children');
+        if (!childList) return;
+        if (childList.classList.contains('expanded')) {
+            childList.classList.remove('expanded');
+        } else {
+            childList.classList.add('expanded');
+        }
+    }
+
+    function handleVersionCheckboxChange(checkbox: HTMLInputElement) {
+        const version = checkbox.dataset.version!;
+        const isMajor = checkbox.dataset.isMajor === 'true';
+        
+        if (checkbox.checked) {
+            if (isMajor) {
+                // expand and check children
+                const childList = checkbox.parentElement?.parentElement?.querySelector('.version-children');
+                if (childList) {
+                    childList.classList.add('expanded');
+                    
+                    childList.querySelectorAll<HTMLInputElement>('input[type="checkbox"]')
+                        .forEach(childCheckbox => {
+                            childCheckbox.checked = true;
+                            selectedVersions.add(childCheckbox.dataset.version!);
+                        });
+                }
+            } else {
+                // is child, just add to versions
+                selectedVersions.add(version);                
+            }
+        } else {
+            if (isMajor) {
+                // collapse and uncheck children
+                const childList = checkbox.parentElement?.parentElement?.querySelector('.version-children');
+                if (childList) {
+                    childList.classList.remove('expanded');
+                    
+                    childList.querySelectorAll<HTMLInputElement>('input[type="checkbox"]')
+                        .forEach(childCheckbox => {
+                            childCheckbox.checked = false;
+                            selectedVersions.delete(childCheckbox.dataset.version!);
+                        });
+                }
+            } else {
+                // is child, just remove
+                selectedVersions.delete(version);
+                // if all children of parent unchecked, collapse and uncheck parent     
+                const parent = checkbox.closest('.version-children')?.previousElementSibling?.querySelector('input[type="checkbox"]') as HTMLInputElement;
+                if (parent) {
+                    const childList = checkbox.closest('.version-children');
+                    const anyChildChecked = Array.from(childList?.querySelectorAll<HTMLInputElement>('input[type="checkbox"]') || [])
+                        .some(cb => cb.checked);
+                    
+                    if (!anyChildChecked) {
+                        parent.checked = false;
+                        childList?.classList.remove('expanded');
+                    }
+                }           
+            }
+        }
+        
+        setParam('versions', [...selectedVersions].join(','));
+        applyVersionFilter();
+    }
+
+    function toggleShowMore(button: HTMLButtonElement) {
+        const container = button.previousElementSibling as HTMLElement;
+        const isExpanded = container.classList.contains('show-all');
+        
+        if (isExpanded) {
+            container.classList.remove('show-all');
+            button.textContent = 'Show more versions';
+        } else {
+            container.classList.add('show-all');
+            button.textContent = 'Show fewer versions';
+        }
+    }
+
+    function initVersionFilter() {
+        const syntaxDisplayManager = (window as any).__syntaxDisplayManager;
+        if (!syntaxDisplayManager) {
+            setTimeout(initVersionFilter, 100);
+            return;
+        }
+
+        updateVersionFilter = syntaxDisplayManager.updateVersionFilter;
+
+        // Read version type from URL params
+        const versionTypeParam = getParam('versionType') as 'present' | 'changed' | 'added' | 'both' | null;
+        if (versionTypeParam) {
+            versionFilterType = versionTypeParam;
+        }
+        
+        // Set initial checkbox states
+        document.querySelectorAll<HTMLInputElement>('[name="version-type"]').forEach(checkbox => {
+            if (versionFilterType === 'both') {
+                checkbox.checked = checkbox.value === 'changed' || checkbox.value === 'added';
+            } else {
+                checkbox.checked = checkbox.value === versionFilterType;
+            }
+        });
+        
+        // Setup version type checkboxes
+        document.querySelectorAll<HTMLInputElement>('[name="version-type"]').forEach(checkbox => {
+            checkbox.addEventListener('change', () => {
+                handleVersionTypeChange(checkbox);
+                
+                const otherId = checkbox.id.includes('-mobile') 
+                    ? checkbox.id.slice(0, -7) 
+                    : checkbox.id + '-mobile';
+                const other = document.getElementById(otherId) as HTMLInputElement;
+                if (other) {
+                    other.checked = checkbox.checked;
+                }
+            });
+        });
+
+        // Read from URL params
+        const versionsParam = getParam('versions');
+        if (versionsParam) {
+            versionsParam.split(',').forEach(v => selectedVersions.add(v));
+        }
+
+        // Setup all version checkboxes
+        document.querySelectorAll<HTMLInputElement>('[data-version]').forEach(checkbox => {
+            if (selectedVersions.has(checkbox.dataset.version!)) {
+                checkbox.checked = true;
+                
+                if (checkbox.dataset.isMajor !== 'true') {
+                    const childList = checkbox.closest('.version-children');
+                    if (childList) {
+                        childList.classList.add('expanded');
+                        const majorCheckbox = childList.previousElementSibling?.querySelector<HTMLInputElement>('[data-is-major=true]');
+                        if (majorCheckbox) {
+                            majorCheckbox.checked = true;
+                        }
+                    }
+                }
+            }
+            
+            checkbox.addEventListener('change', () => {
+                handleVersionCheckboxChange(checkbox);
+                
+                const otherId = checkbox.id.includes('-mobile') 
+                    ? checkbox.id.slice(0, -7) 
+                    : checkbox.id + '-mobile';
+                const other = document.getElementById(otherId) as HTMLInputElement;
+                if (other) {
+                    other.checked = checkbox.checked;
+                }
+            });
+            
+            if (checkbox.dataset.isMajor === 'true') {
+                checkbox.addEventListener('click', (e) => {
+                    toggleVersionGroup(checkbox);
+                });
+            }
+        });
+
+        // Setup show more buttons
+        document.querySelectorAll<HTMLButtonElement>('.show-more-versions').forEach(button => {
+            button.addEventListener('click', () => {
+                toggleShowMore(button);
+                
+                const otherId = button.id.includes('-mobile')
+                    ? button.id.slice(0, -7)
+                    : button.id + '-mobile';
+                const other = document.getElementById(otherId) as HTMLButtonElement;
+                if (other) {
+                    toggleShowMore(other);
+                }
+            });
+        });
+
+        // Apply initial filter if params existed
+        if (versionsParam || versionTypeParam) {
+            applyVersionFilter();
+        }
+    }
+
+    initVersionFilter();
+</script>
+
+
+<fieldset id={`version-filter-fieldset${suffix}`} class="version-tree">
+    <legend>Syntax Version</legend>
+    
+    <div class="version-list">
+        {versionGroups.slice(0, INITIAL_VISIBLE_COUNT).map(group => (
+            <div class="version-group">
+                <label class="version-major">
+                    <input 
+                        type="checkbox" 
+                        id={`version-${group.major}${suffix}`}
+                        data-version={group.major}
+                        data-is-major="true"
+                    />
+                    {group.major}
+                </label>
+                {group.versions.length >= 1 && (
+                    <ul class="version-children">
+                        {group.versions.map(version => (
+                            <li>
+                                <label>
+                                    <input 
+                                        type="checkbox"
+                                        id={`version-${version}${suffix}`}
+                                        data-version={version}
+                                        data-is-major="false"
+                                    />
+                                    {version}
+                                </label>
+                            </li>
+                        ))}
+                    </ul>
+                )}
+            </div>
+        ))}
+    </div>
+    
+    {versionGroups.length > INITIAL_VISIBLE_COUNT && (
+        <>
+            <div class="version-list-hidden">
+                {versionGroups.slice(INITIAL_VISIBLE_COUNT).map(group => (
+                    <div class="version-group">
+                        <label class="version-major">
+                            <input 
+                                type="checkbox" 
+                                id={`version-${group.major}${suffix}`}
+                                data-version={group.major}
+                                data-is-major="true"
+                            />
+                            {group.major}
+                        </label>
+                        {group.versions.length >= 1 && (
+                            <ul class="version-children">
+                                {group.versions.map(version => (
+                                    <li>
+                                        <label>
+                                            <input 
+                                                type="checkbox"
+                                                id={`version-${version}${suffix}`}
+                                                data-version={version}
+                                                data-is-major="false"
+                                            />
+                                            {version}
+                                        </label>
+                                    </li>
+                                ))}
+                            </ul>
+                        )}
+                    </div>
+                ))}
+            </div>
+            <button 
+                type="button" 
+                class="show-more-versions"
+                id={`show-more-versions${suffix}`}
+            >
+                Show more versions
+            </button>
+        </>
+    )}
+</fieldset>
+
+<fieldset id={`version-type-fieldset${suffix}`}>
+    <legend>Version Filter Type</legend>
+    <span>
+        <label for={`version-type-present${suffix}`}>
+            <input 
+                type="checkbox" 
+                name="version-type"
+                id={`version-type-present${suffix}`} 
+                value="present"
+            />
+            Present in
+        </label>
+    </span>
+    <span>
+        <label for={`version-type-changed${suffix}`}>
+            <input 
+                type="checkbox" 
+                name="version-type"
+                id={`version-type-changed${suffix}`} 
+                value="changed"
+            />
+            Changed in
+        </label>
+    </span>
+    <span>
+        <label for={`version-type-added${suffix}`}>
+            <input 
+                type="checkbox" 
+                name="version-type"
+                id={`version-type-added${suffix}`} 
+                value="added"
+            />
+            Added in
+        </label>
+    </span>
+</fieldset>
+
+<style>
+    fieldset {
+        border-color: var(--sl-color-hairline);
+        border-style: solid;
+    }
+    
+    fieldset > legend {
+        font-size: 1.5rem;
+    }
+    
+    label {
+        user-select: none;
+        cursor: pointer;
+    }
+
+    #version-type-fieldset,
+    #version-type-fieldset-mobile {
+        display: flex;
+        flex-direction: column;
+        gap: 0.5rem;
+    }
+
+    .version-tree {
+        display: flex;
+        flex-direction: column;
+    }
+
+    .version-list,
+    .version-list-hidden {
+        display: flex;
+        flex-direction: column;
+        gap: 0.5rem;
+    }
+
+    .version-list-hidden {
+        display: none;
+    }
+
+    .show-all.version-list-hidden {
+        display: flex;
+        margin-top: 0.5rem;
+    }
+
+    .version-group {
+        display: flex;
+        flex-direction: column;
+    }
+
+    .version-major {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        font-weight: 500;
+    }
+
+    .version-children {
+        list-style: none;
+        padding-left: 2rem;
+        margin: 0.25rem 0 0 0;
+        max-height: 0;
+        overflow: hidden;
+        transition: max-height 0.3s ease-out;
+    }
+
+    .version-children.expanded {
+        max-height: 500px;
+    }
+
+    .version-children li {
+        margin: 0.25rem 0;
+    }
+
+    .show-more-versions {
+        margin-top: 0.75rem;
+        padding: 0.5rem 1rem;
+        background-color: var(--sl-color-gray-6);
+        border: 1px solid var(--sl-color-gray-5);
+        border-radius: 0.25rem;
+        cursor: pointer;
+        color: var(--sl-color-white);
+        transition: background-color 0.2s;
+    }
+
+    .show-more-versions:hover {
+        background-color: var(--sl-color-gray-5);
+    }
+</style>
