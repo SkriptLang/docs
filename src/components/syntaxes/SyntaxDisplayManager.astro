@@ -327,6 +327,14 @@ export interface VersionFilterData {
             score += 25;
         }
 
+        // if multiple words, add score from each word / 10
+        let words = searchLower.split(" ");
+        if (score == 0 && words.length > 1) {
+            words.forEach(word => {
+                score += scoreSearchMatch(item, word) / 10
+            })
+        }
+
         return score;
     }
 
