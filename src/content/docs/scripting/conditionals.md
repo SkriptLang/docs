@@ -1,5 +1,7 @@
 ---
 title: Conditionals
+sidebar:
+    order: 20
 ---
 
 Conditions are ways to control what code in your program executes and what doesn't. In other words, they allow you to do something if another thing passes some kind of check. Traditionally the check is something can be narrowed down to true or false answer, like a yes or no question. For example, "Do you have a pen on you?". That can be answered with a simple yes or no (true or false).

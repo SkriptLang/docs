@@ -4,9 +4,9 @@ import starlight from '@astrojs/starlight';
 
 // https://astro.build/config
 export default defineConfig({
-	integrations: [
-		starlight({
-			title: 'Skript',
+    integrations: [
+        starlight({
+            title: 'Skript',
             favicon: '/favicon.svg',
             /*logo: {
                 src: './src/assets/banner.webp',
@@ -29,9 +29,55 @@ export default defineConfig({
             editLink: {
                 baseUrl: 'https://github.com/SkriptLang/docs/edit/master/',
             },
-            pagination: false,
-		}),
-	],
+            sidebar: [
+                {
+                    label: 'Scripting',
+                    collapsed: true,
+                    autogenerate: {
+                        directory: 'scripting',
+                    },
+                },
+                {
+                    label: 'API',
+                    collapsed: true,
+                    items: [
+                        'api',
+                        {
+                            label: 'Skript',
+                            collapsed: true,
+                            autogenerate: {
+                                directory: 'api/skript',
+                            },
+                        },
+                        {
+                            label: 'Localization',
+                            collapsed: true,
+                            autogenerate: {
+                                directory: 'api/localization',
+                            },
+                        },
+                        {
+                            label: 'Syntax',
+                            collapsed: true,
+                            autogenerate: {
+                                directory: 'api/syntax',
+                            },
+                        },
+                        {
+                            label: 'Registries',
+                            collapsed: true,
+                            autogenerate: {
+                                directory: 'api/registries',
+                            },
+                        },
+                    ],
+                },
+            ],
+            expressiveCode: {
+                tabWidth: 4,
+            },
+        }),
+    ],
     redirects: {
         "tutorials": "/scripting",
         "events": "/syntaxes",

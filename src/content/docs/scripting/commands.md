@@ -1,5 +1,7 @@
 ---
 title: Commands
+sidebar:
+    order: 40
 ---
 
 ```applescript

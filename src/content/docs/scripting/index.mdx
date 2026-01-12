@@ -1,6 +1,10 @@
 ---
 title: Getting Started
 tableOfContents: false
+sidebar:
+    order: 0
+prev: false
+next: false
 ---
 
 import { CardGrid, LinkCard } from "@astrojs/starlight/components";
@@ -11,24 +15,29 @@ Below, you can find a collection of our most popular tutorials.
 Have fun!
 
 <CardGrid>
-  <LinkCard
-    title="Conditionals"
-    description="Control whether blocks of code execute"
-    href="/scripting/conditionals"
-  />
-  <LinkCard
-    title="Loops"
-    description="Run code repeatedly"
-    href="/scripting/loops"
-  />
-  <LinkCard
-    title="Commands"
-    description="Register new commands to power your server"
-    href="/scripting/commands"
-  />
-  <LinkCard
-    title="Functions"
-    description="Reuse code without copy/pasting"
-    href="/scripting/functions"
-  />
+    <LinkCard
+        title="Text"
+        description="Format your messages with colors and other decorations."
+        href="text"
+    />
+    <LinkCard
+        title="Conditionals"
+        description="Control whether blocks of code execute."
+        href="conditionals"
+    />
+    <LinkCard
+        title="Loops"
+        description="Run code repeatedly."
+        href="loops"
+    />
+    <LinkCard
+        title="Commands"
+        description="Register new commands to power your server."
+        href="commands"
+    />
+    <LinkCard
+        title="Functions"
+        description="Reuse code without copy/pasting."
+        href="functions"
+    />
 </CardGrid>

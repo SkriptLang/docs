@@ -1,5 +1,7 @@
 ---
 title: Functions
+sidebar:
+    order: 50
 ---
 
 ## What Is a Function?

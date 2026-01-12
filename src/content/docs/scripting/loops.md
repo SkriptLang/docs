@@ -1,5 +1,7 @@
 ---
 title: Loops
+sidebar:
+    order: 30
 ---
 
 Loops are fantastic tools for anyone to have in their skill set. Loops allow you to repeat code, create countdowns, draw things, look for certain entities or items, and much more. They, along with conditionals, are your bread and butter for controlling how your program flows.

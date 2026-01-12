@@ -1,8 +1,55 @@
 ---
 title: Getting Started
 tableOfContents: false
+sidebar:
+    order: 0
+prev: false
+next: false
 ---
+
+Welcome to the official documentation for Skript's API!
+
+Skript comprises dozens of interworking systems, each contributing to the process that makes it tick.
+It is important to understand that many parts of this API have been around since the beginning (more than 14 years ago), undergoing little to no change since then.
+While these systems continue to work, their age shows.
+They are intricately interwoven, and rewriting them to modern standards is no simple task, though we are making progress.
+As a result, some of these systems will seem relatively modern while others are in desperate need of attention.
+Regardless of status, the purpose of these pages is to provide a deeper explanation of how to best use these systems.
+
+## Expectations
+When working with Skript's API, it is strongly recommended that:
+- You have a strong understanding of Java
+- You have a strong understanding of using Skript
+    - That is, you can comfortably write scripts
+- You are not scared by old, cobweb-ridden code :)
+
+## Organization
+This documentation is organized by breaking up Skript into its major components (systems), and by breaking up each of these components into their subcomponents.
+For example, *syntax* is a major component of Skript, and there are many different kinds of syntax (expressions, statements, etc.).
+
+The cards below cover the major components covered by this documentation.
 
 import { CardGrid, LinkCard } from "@astrojs/starlight/components";
 
-We're happy to see you're interested in learning about the Skript API.
+<CardGrid>
+    <LinkCard
+        title="Skript"
+        description="The heart of Skript, where your journey begins."
+        href="skript"
+    />
+    <LinkCard
+        title="Localization"
+        description="Localization powers dynamic messages based on a user's preferences."
+        href="localization"
+    />
+    <LinkCard
+        title="Syntax"
+        description="Syntax is Skript's most core component, powering the scripts you write."
+        href="syntax"
+    />
+    <LinkCard
+        title="Registries"
+        description="Registries provide dynamic ways to interact with and expand Skript's functionality."
+        href="registries"
+    />
+</CardGrid>

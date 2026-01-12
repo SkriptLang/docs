@@ -1,5 +1,7 @@
 ---
 title: Text
+sidebar:
+    order: 10
 ---
 
 Skript allows you to write pieces of text (aka strings). This is done by putting the text inside double quotes, for example: `"this is text"`.
