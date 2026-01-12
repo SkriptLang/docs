@@ -4,24 +4,23 @@ sidebar:
     order: 5
 ---
 
-## SyntaxInfos
+## Syntax infos
+In Skript, every syntax is defined by a syntax info that describes the properties of that syntax.
+A syntax info is described by the [SyntaxInfo](https://github.com/SkriptLang/Skript/blob/master/src/main/java/org/skriptlang/skript/registration/SyntaxInfo.java) interface.
 
-In Skript, every syntax is defined by a [SyntaxInfo](https://github.com/SkriptLang/Skript/blob/master/src/main/java/org/skriptlang/skript/registration/SyntaxInfo.java)
-that describes the properties of that syntax.
-
-### Creating SyntaxInfos
-Skript provides a standard implementation and builder for SyntaxInfos.
-A new builder can be created by using the `builder(Class)` method on SyntaxInfo.
-It takes one parameter: the class implementing the syntax.
-As an example, let's start by creating a new builder for a SyntaxInfo:
+### Creating syntax infos
+Skript provides a standard implementation and builder for creating syntax infos.
+A new builder can be created by using the `builder(Class)` method from the SyntaxInfo interface.
+It takes one parameter: the Class implementing the syntax.
+As an example, let's start by creating a new builder for a syntax info:
 ```java
 var builder = SyntaxInfo.builder(MySyntax.class);
 ```
-We recommend using `var` for SyntaxInfo builders to simplify generics handling.
+We recommend using `var` for syntax info builders to simplify generics handling.
 
 ### Patterns
 Every syntax is made up of patterns that must be matched for your syntax implementation to be used.
-They can be accessed by calling the `patterns` method on a SyntaxInfo.
+They can be accessed by calling the `patterns` method on a syntax info.
 
 The simplest pattern is made up of literal characters:
 ```text
@@ -129,8 +128,8 @@ The pattern options summarized are:
 - Use angle brackets (`<expr>`) for regular expressions
 - Use colons (`tag:pattern`) for parse tags
 
-#### Adding patterns to a SyntaxInfo
-We can add patterns to a SyntaxInfo builder by using any of the following methods:
+#### Adding patterns to a syntax info
+When creating a syntax info, patterns can be added by using the following methods from the SyntaxInfo.Builder interface:
 - `addPattern(String)`
 - `addPatterns(String[])`
 - `addPatterns(Collection)`
@@ -144,12 +143,12 @@ builder.addPattern("(stop|shutdown) [the] server [in %-timespan%]");
 ```
 
 ### Type
-Every SyntaxInfo has a class that provides the implementation of the syntax it describes.
-It can be obtained by calling the `type` method on a SyntaxInfo.
+Every syntax info has a class that provides the implementation of the syntax it describes.
+It can be obtained by calling the `type` method of a SyntaxInfo.
 
 #### Creating new instances
-When Skript matches a SyntaxInfo during the parsing process, it needs to instantiate the class providing the implementation of the syntax.
-Skript uses the `instance` method of a SyntaxInfo for this instantiation.
+When Skript matches a syntax info during the parsing process, it needs to instantiate the class providing the implementation of the syntax.
+Skript invokes the `instance` method of a SyntaxInfo for this instantiation.
 
 By default, Skript uses reflection to instantiate new instances.
 This requires that the class have a nullary (zero argument) constructor.
@@ -161,41 +160,41 @@ builder.supplier(MySyntax::new); // equivalent to: () -> new MySyntax()
 ```
 
 ### Priority
-The priority of a SyntaxInfo dictates its position for matching during parsing.
-That is, a collection of SyntaxInfos will be sorted by their priority, and Skript will attempt to match each SyntaxInfo through order-based traversal.
+The priority of a syntax info dictates its position for matching during parsing.
+That is, a collection of syntax infos will be sorted by their priority, and Skript will attempt to match each syntax info through order-based traversal.
 It can be obtained by calling the `priority` method on a SyntaxInfo.
 
-There are three standard priorities used by Skript, available as constants on SyntaxInfo:
-- `SIMPLE` - For SyntaxInfos with patterns that only match simple text. That is, they do not contain any other expressions.
-- `COMBINED` For SyntaxInfos with patterns that contain other expressions.
-- `PATTERN_MATCHES_EVERYTHING` For SyntaxInfos with patterns that contain adjacent expressions.
+There are three standard priorities used by Skript, available as constants on the SyntaxInfo interface:
+- `SIMPLE` - For syntax infos with patterns that only match simple text. That is, they do not contain any other expressions.
+- `COMBINED` For syntax infos with patterns that contain other expressions.
+- `PATTERN_MATCHES_EVERYTHING` For syntax infos with patterns that contain adjacent expressions.
 
 `SIMPLE` is the earliest priority, with `COMBINED` coming directly after, followed by `PATTERN_MATCHES_EVERYTHING`.
 
-The default SyntaxInfo builders will automatically assign a priority based on these criteria.
+The default builders will automatically assign a priority based on these criteria.
 Thus, it is generally unnecessary to specify a priority.
-However, if there is a need to override the automatic assignment, a priority can be specified by calling the `priority` method on a SyntaxInfo builder, for example:
+However, if there is a need to override the automatic assignment, a priority can be specified by calling the `priority` method on a builder, for example:
 ```java
 var builder = SyntaxInfo.builder(MySyntax.class);
 builder.priority(SyntaxInfo.PATTERN_MATCHES_EVERYTHING);
 ```
 
 ### Origin
-The origin of a SyntaxInfo provides information about its source, such as the [SkriptAddon](../../skript/addons) that registered it.
+The origin of a syntax info provides information about its source, such as the [addon](../../skript/addons) that registered it.
 It can be obtained by calling the `origin` method on a SyntaxInfo.
 
-The default Skript implementation will automatically assign an origin to a SyntaxInfo when it is registered (if one was not specified during building).
-For documentation purposes, it can be helpful to provide more information than just the addon that registered a SyntaxInfo.
-For example, if using the [AddonModule](../../skript/addons#addon-modules) system, an origin that also describes the module can be created:
+The default Skript implementation will automatically assign an origin to a syntax info when it is registered (if one was not specified during building).
+For documentation purposes, it can be helpful to provide more information than just the addon that registered a syntax info.
+For example, if using the [addon module](../../skript/addons#addon-modules) system, an origin that also describes the module can be created:
 ```java
 var builder = SyntaxInfo.builder(MySyntax.class);
 builder.origin(AddonModule.origin(addonInstance, moduleInstance));
 ```
 
-## The SyntaxRegistry
-The [SyntaxRegistry](https://github.com/SkriptLang/Skript/blob/master/src/main/java/org/skriptlang/skript/registration/SyntaxRegistry.java) is the central store of all registered SyntaxInfos.
+## The Syntax Registry
+The Syntax Registry, described by the [SyntaxRegistry](https://github.com/SkriptLang/Skript/blob/master/src/main/java/org/skriptlang/skript/registration/SyntaxRegistry.java) interface, is the central store of all registered syntax infos.
 
-It can be accessed by calling the `syntaxRegistry` method on SkriptAddon.
+It can be accessed by calling the `syntaxRegistry` method on a SkriptAddon.
 :::note
 This is the same as calling:
 ```java
@@ -204,13 +203,13 @@ SyntaxRegistry syntaxRegistry = addon.registry(SyntaxRegistry.class);
 ```
 :::
 
-With a SyntaxRegistry, you can obtain all registered SyntaxInfos or all registered SyntaxInfos of a specific type (key, described further below).
-It is also possible to register and unregister SyntaxInfos.
+A syntax registry can be used to obtain all registered syntax infos or all registered syntax infos of a specific type (key, described further below).
+It is also possible to register and unregister syntax infos.
 
 ### Keys
-Keys are used to store SyntaxInfos based on the type of syntax they represent.
+Keys are used to store syntax infos based on the type of syntax they represent.
 
-Skript provides the following keys (based on the standard types of syntax), available as constants on SyntaxRegistry:
+Skript provides the following keys (based on the standard types of syntax), available as constants on the SyntaxRegistry interface:
 - `STRUCTURE`
 - `SECTION`
 - `STATEMENT`
@@ -218,8 +217,8 @@ Skript provides the following keys (based on the standard types of syntax), avai
 - `CONDITION` (child of `STATEMENT`)
 - `EXPRESSION`
 
-Keys can be created using the `of` method on Key.
-It takes one parameter: a string typically representing the name of the syntax element type represented by the key.
+Keys can be created using the `of` method from the Key interface (a subinterface of the SyntaxRegistry interface).
+It takes one parameter: a String typically representing the name of the syntax element type represented by the key.
 ```java
 Key<SyntaxInfo<? extends Statement>> STATEMENT = Key.of("statement");
 ```
@@ -232,16 +231,19 @@ Thus, the syntax stored under `STATEMENT` includes the union of the syntaxes sto
 While it is possible to register syntax only under the `STATEMENT` key, this is atypical and may result in unexpected behavior.
 :::
 
-Child keys can be created using the `of` method on ChildKey, for example:
+Child keys can be created using the `of` method from the ChildKey interface (a subinterface of the SyntaxRegistry interface).
+It takes two parameters:
+- A Key representing the parent
+- A String (typically representing the name of the syntax element type represented by the key)
 ```java
 Key<SyntaxInfo<? extends Effect>> EFFECT = ChildKey.of(STATEMENT, "effect");
 ```
 
 ### Registering syntax
-A SyntaxInfo can be registered using the `register(Key, SyntaxInfo)` method.
+A syntax info can be registered using the `register(Key, SyntaxInfo)` method.
 It takes in two parameters:
-- The key to register the SyntaxInfo under (see above)
-- The SyntaxInfo to register
+- A Key to register the syntax info under (see above)
+- A SyntaxInfo to register
 For example, combining everything we have learned so far, we are ready to register a syntax:
 ```java
 var key = ...; // key to be determined by the type of syntax you are registering (see above)
@@ -254,8 +256,8 @@ addon.syntaxRegistry().register(key, builder.build());
 #### Unregistering syntax
 There exists a similar method for unregistering syntax: `unregister(Key, SyntaxInfo)`.
 It takes in the same parameters as the `register` method:
-- The key the SyntaxInfo is stored under
-- The SyntaxInfo to unregister
+- A Key to register the syntax info under (see above)
+- A SyntaxInfo to register
 
 If this all still seems confusing, that is understandable.
 The rest of these pages will provide information about registering and implementing syntax for each of Skript's built-in syntax types.

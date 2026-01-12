@@ -13,10 +13,10 @@ However, there will be no breaking changes to methods detailed below.
 If necessary, they would only be deprecated for future removal.
 :::
 
-The Localizer is an **experimental** interface defining the methods available for localization.
-Currently, it is only used by addons to load their language files, which is described below.
+Localizer is an **experimental** interface describing the methods available for localization.
+Currently, it is only used by addons to load their language files, which is detailed below.
 
-## Obtaining a Localizer
+## Obtaining a localizer
 A Localizer instance is available through your [registered addon](../../skript/addons) by calling the `localizer()` method:
 ```java
 SkriptAddon addon = ...;
@@ -24,7 +24,7 @@ Localizer addonLocalizer = addon.localizer();
 ```
 
 ## Loading language files
-The localizer currently provides a single method, `setSourceDirectories(String, String)` for loading an addon's language files.
+The Localizer interface currently describes a single method, `setSourceDirectories(String, String)` for loading an addon's language files.
 It takes two parameters:
 - A string representing the path to the directory (on the jar) containing language files
 - A string representing the path to the directory (on the disk) containing language files
