@@ -73,8 +73,8 @@ if (currentVersion.endsWith(".0")) {
 ---
 
 <StarlightPage
-        frontmatter={{ title: `Syntaxes for Skript ${rawSyntaxes.source.version}`, tableOfContents: true, pagefind: false}}
-        sidebar={syntaxes.map(syntax => ({ label: `${syntax.name}`, link: `syntaxes/#${syntax.id}`, attrs: { id: `sidebar-${syntax.id}` } }))}
+        frontmatter={{ title: `Syntaxes for Skript ${rawSyntaxes.source.version}`, tableOfContents: true, pagefind: false, prev: false, next: false}}
+        sidebar={syntaxes.map(syntax => ({ label: `${syntax.name}`, link: `syntaxes/#${syntax.id}`, attrs: { id: `sidebar-${syntax.id}`, type: syntax.type } }))}
 >
     <h1 id="syntaxes-no-results" style="display: none;">No results were found.</h1>
     <div id="syntaxes-wrapper">

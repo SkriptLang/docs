@@ -6,6 +6,7 @@ interface SidebarEntry {
     link: string,
     attrs: {
         id: string,
+        type: string,
     },
 }
 
@@ -14,13 +15,21 @@ interface Props {
 }
 
 const { entries }: Props = Astro.props;
+const duplicatesMap = new Set([...entries.map(entry => entry.label)
+    .reduce((accumulator, value) => {
+        value = value.toLowerCase();
+        accumulator.set(value, (accumulator.get(value) || 0) + 1);
+        return accumulator;
+    }, new Map() as Map<string, number>)]
+    .filter(([_, value]) => value != 1)
+    .map(([label, _]) => label));
 ---
 
 <div class="sidebar-pane">
     <ul id="syntax-sidebar-list">
         {entries.map(entry => (
             <li id={entry.attrs.id} class="syntax-sidebar-item">
-                {entry.label}
+                {entry.label} {duplicatesMap.has(entry.label.toLowerCase()) ? `(${entry.attrs.type})` : ""}
             </li>
         ))}
     </ul>
