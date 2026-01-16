@@ -1,6 +1,5 @@
 ---
-import rawSyntaxes from "../../../assets/syntaxes.json"
-
+import {getCollection} from "astro:content";
 interface Props {
     isMobile?: boolean;
 }
@@ -53,7 +52,9 @@ if (response.ok) {
         .sort((a, b) => b.major.localeCompare(a.major, undefined, { numeric: true }));
 } else {
     // Fallback
-    const currentMinor = parseInt(rawSyntaxes.source.version.split(".")[1]);
+    const syntaxes: any[] = (await getCollection("syntaxes"))
+        .filter(syntax => syntax.id === Astro.params.id || (syntax.id === 'syntaxes' && !Astro.params.id))
+    const currentMinor = parseInt(syntaxes[0].data.source.version.split(".")[1]);
     for (let minor = currentMinor; minor >= 0; minor--) {
         versionGroups.push({
             major: `2.${minor}`,

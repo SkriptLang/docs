@@ -2,7 +2,7 @@
 import Default from '@astrojs/starlight/components/Sidebar.astro';
 import SyntaxSidebar from './syntaxes/SyntaxSidebar.astro';
 
-const isSyntaxesPage = Astro.locals.starlightRoute.id === 'syntaxes';
+const isSyntaxesPage = Astro.locals.starlightRoute.id.startsWith('syntaxes');
 const { sidebar } = Astro.locals.starlightRoute;
 ---
 

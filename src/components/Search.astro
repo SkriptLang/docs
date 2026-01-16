@@ -2,7 +2,7 @@
 import Default from '@astrojs/starlight/components/Search.astro';
 import SyntaxSearch from "./syntaxes/SyntaxSearch.astro";
 
-const isSyntaxesPage = Astro.locals.starlightRoute.id === 'syntaxes';
+const isSyntaxesPage = Astro.locals.starlightRoute.id.startsWith('syntaxes');
 ---
 
 {

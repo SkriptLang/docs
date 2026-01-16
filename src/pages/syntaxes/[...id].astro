@@ -1,9 +1,17 @@
 ---
+import { getCollection } from "astro:content";
 import StarlightPage from '@astrojs/starlight/components/StarlightPage.astro';
 import { Icon } from '@astrojs/starlight/components'
-import SyntaxCard from "../components/syntaxes/SyntaxCard.astro";
-import SyntaxDisplayManager from "../components/syntaxes/SyntaxDisplayManager.astro";
-import rawSyntaxes from "../assets/syntaxes.json"
+import SyntaxCard from "../../components/syntaxes/SyntaxCard.astro";
+import SyntaxDisplayManager from "../../components/syntaxes/SyntaxDisplayManager.astro";
+
+export async function getStaticPaths() {
+    const syntaxes = await getCollection("syntaxes");
+    return syntaxes.map(syntax => ({
+        params: { id: (syntax.id === 'syntaxes' ? undefined : syntax.id) },
+        props: { rawSyntaxes: syntax.data as any}
+    }));
+}
 
 export interface Syntax {
     type: SyntaxType,
@@ -50,6 +58,12 @@ function processRawEntries(entries: any, type: SyntaxType, prefix: string | unde
         return entry;
     })
 }
+
+interface Props {
+    rawSyntaxes: any;
+}
+
+const { rawSyntaxes } = Astro.props;
 
 const syntaxes: Syntax[] = [
     ...processRawEntries(rawSyntaxes.types, SyntaxType.TYPE),

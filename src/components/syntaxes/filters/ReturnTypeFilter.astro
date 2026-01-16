@@ -1,6 +1,6 @@
 ---
+import { getCollection } from "astro:content";
 import SearchableDropdown from '../../SearchableDropdown.astro';
-import rawSyntaxes from "../../../assets/syntaxes.json"
 
 interface Props {
     isMobile?: boolean;
@@ -9,7 +9,9 @@ const { isMobile } = Astro.props;
 const suffix = isMobile ? '-mobile' : '';
 
 // Define the options for the return type filter
-const returnTypeOptions = rawSyntaxes.types.map((type: any) => type.name);
+const syntaxes: any[] = (await getCollection("syntaxes"))
+    .filter(syntax => syntax.id === Astro.params.id || (syntax.id === 'syntaxes' && !Astro.params.id))
+const returnTypeOptions = syntaxes[0].data.types.map((type: any) => type.name);
 ---
 <script>
     import { getParam, setParam } from "../../../utils/utils";
