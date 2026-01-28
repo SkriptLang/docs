@@ -34,6 +34,8 @@ export interface Syntax {
         id: string,
         name: string,
     }[],
+
+    addon?: string,
 }
 
 export enum SyntaxType {
@@ -49,9 +51,12 @@ export enum SyntaxType {
     EVENT = "Event",
 }
 
-function processRawEntries(entries: any, type: SyntaxType, prefix: string | undefined = undefined) : any {
+function processRawEntries(entries: any, type: SyntaxType, addon: string | null, prefix: string | undefined = undefined) : any {
     return [...entries].map(entry => {
         entry.type = type;
+        if (addon) {
+            entry.addon = addon;
+        }
         if (prefix && !(entry.id as String).startsWith(prefix)) {
             entry.id = prefix + entry.id;
         }
@@ -65,19 +70,32 @@ interface Props {
 
 const { rawSyntaxes } = Astro.props;
 
-const syntaxes: Syntax[] = [
-    ...processRawEntries(rawSyntaxes.types, SyntaxType.TYPE),
-    ...processRawEntries(rawSyntaxes.structures, SyntaxType.STRUCTURE),
-    ...processRawEntries(rawSyntaxes.sections, SyntaxType.SECTION),
-    ...processRawEntries(rawSyntaxes.effects, SyntaxType.EFFECT),
-    ...processRawEntries(rawSyntaxes.conditions, SyntaxType.CONDITION),
-    ...processRawEntries(rawSyntaxes.expressions, SyntaxType.EXPRESSION),
+function processSyntaxJson(rawSyntaxes: any): Syntax[] {
+    const addon = rawSyntaxes.source.name === "Skript" ? null : rawSyntaxes.source.name;
+    return [
+        ...processRawEntries(rawSyntaxes.types, SyntaxType.TYPE, addon),
+        ...processRawEntries(rawSyntaxes.structures, SyntaxType.STRUCTURE, addon),
+        ...processRawEntries(rawSyntaxes.sections, SyntaxType.SECTION, addon),
+        ...processRawEntries(rawSyntaxes.effects, SyntaxType.EFFECT, addon),
+        ...processRawEntries(rawSyntaxes.conditions, SyntaxType.CONDITION, addon),
+        ...processRawEntries(rawSyntaxes.expressions, SyntaxType.EXPRESSION, addon),
 
-    ...processRawEntries(rawSyntaxes.functions, SyntaxType.FUNCTION, "Func"),
+        ...processRawEntries(rawSyntaxes.functions, SyntaxType.FUNCTION, addon, "Func"),
 
-    ...processRawEntries(rawSyntaxes.events, SyntaxType.EVENT),
+        ...processRawEntries(rawSyntaxes.events, SyntaxType.EVENT, addon),
+    ];
+}
 
-].toSorted((x, y) => x.name.localeCompare(y.name)) as Syntax[]
+let addonSyntaxes: Syntax[][];
+if (Astro.params.id) {
+    addonSyntaxes = [];
+} else {
+    addonSyntaxes = (await getCollection("addonSyntaxes"))
+        .map(syntax => processSyntaxJson(syntax.data as any));
+}
+const syntaxes: Syntax[] = processSyntaxJson(rawSyntaxes)
+    .concat(...addonSyntaxes)
+    .toSorted((x, y) => x.name.localeCompare(y.name))
 
 let currentVersion = rawSyntaxes.source.version.split("-")[0];
 if (currentVersion.endsWith(".0")) {

@@ -14,4 +14,10 @@ export const collections = {
             base: './src/assets/syntaxes/',
         }),
     }),
+    addonSyntaxes: defineCollection({
+        loader: glob({
+            pattern: '*.json',
+            base: './src/assets/syntaxes/addons/',
+        }),
+    }),
 };

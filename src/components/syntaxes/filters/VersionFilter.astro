@@ -12,13 +12,22 @@ interface VersionGroup {
 }
 
 // Fetch and organize versions
-const response = await fetch('https://api.github.com/repos/SkriptLang/Skript/releases?per_page=100', {
-    headers: {
-        'Accept': 'application/vnd.github+json',
-        'X-GitHub-Api-Version': '2022-11-28',
-        'User-Agent': 'SkriptLang',
-    },
-});
+
+let response: Response;
+if (Astro.params.id) { // generating nightly docs, skip version fetch
+    // fake response
+    response = {
+        ok: false,
+    } as Response;
+} else {
+    response = await fetch('https://api.github.com/repos/SkriptLang/Skript/releases?per_page=100', {
+        headers: {
+            'Accept': 'application/vnd.github+json',
+            'X-GitHub-Api-Version': '2022-11-28',
+            'User-Agent': 'SkriptLang',
+        },
+    });
+}
 
 let versionGroups: VersionGroup[] = [];
 

@@ -20,8 +20,11 @@ const { syntax, isNew }: Props = Astro.props;
 >
     <div class="col">
         <AnchorHeading level='3' id={syntax.id}>
-            <Badge text={syntax.type} class="cb" size='large'/>
-            {syntax.name}
+            {syntax.name + " "}
+            <Badge class="cb" size='large' text={syntax.type}/>
+            {syntax.addon && (
+                <Badge variant="caution" size='large' text={syntax.addon}/>
+            )}
         </AnchorHeading>
         <div class="row">
             {isNew && (
@@ -31,7 +34,7 @@ const { syntax, isNew }: Props = Astro.props;
                 <Badge variant="danger" size='medium' text="Deprecated"/>
             )}
             {syntax.requirements && (
-                <Badge class="sb" size='medium' text={syntax.requirements.join(", ")}/>
+                <Badge class="sb" size='medium' text={"Requires " + syntax.requirements.join(", ")}/>
             )}
         </div>
         {syntax.description && syntax.description.map(line => (
