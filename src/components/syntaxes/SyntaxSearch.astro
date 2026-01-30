@@ -47,7 +47,7 @@ import { Icon } from '@astrojs/starlight/components';
         }
 
         // Pass search query to SDM
-        const { updateSearchQuery } = syntaxDisplayManager;
+        const updateSearchQuery: ((searchQuery: string) => void) = syntaxDisplayManager.updateSearchQuery;
         const searchInput = document.getElementById('syntax-search-input') as HTMLInputElement;
         searchInput.addEventListener('input', () => {
             setParam('search', searchInput.value);

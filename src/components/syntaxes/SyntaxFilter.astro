@@ -2,6 +2,7 @@
 import ReturnTypeFilter from './filters/ReturnTypeFilter.astro';
 import TypeFilter from './filters/TypeFilter.astro'
 import VersionFilter from './filters/VersionFilter.astro'
+import AddonFilter from "./filters/AddonFilter.astro";
 
 interface Props {
     isMobile?: boolean;
@@ -15,6 +16,7 @@ const { isMobile } = Astro.props;
     <TypeFilter isMobile={isMobile} />
     <VersionFilter isMobile={isMobile} />
     <ReturnTypeFilter isMobile={isMobile} />
+    <AddonFilter isMobile={isMobile} />
 </div>
 
 <style>

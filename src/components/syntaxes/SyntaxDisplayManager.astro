@@ -117,6 +117,7 @@ export interface VersionFilterData {
         versions: [], range: 'strict', type: 'any',
     };
     let returnTypeFilter: string | null = null;
+    let addonFilter = new Set<string>();
 
     let hasSearch = false;
     let searchCache: Map<string, number> = new Map<string, number>();
@@ -179,6 +180,17 @@ export interface VersionFilterData {
                 }
                 return false;
             })          
+        }
+
+        if (addonFilter.size != 0) {
+            filtered = filtered.filter(item => {
+                const itemAddon = item.element.dataset.syntaxAddon;
+                if (itemAddon) {
+                    return addonFilter.has(itemAddon);
+                }
+                // no addon means it is from Skript
+                return addonFilter.has("Skript");
+            });
         }
 
         if (hasSearch) { // need to filter and sort based on search cache
@@ -566,6 +578,10 @@ export interface VersionFilterData {
         },
         updateReturnTypeFilter: (type: string) => {
             returnTypeFilter = type;
+            fullRender();
+        },
+        updateAddonFilter: (addons: Set<string>) => {
+            addonFilter = addons;
             fullRender();
         },
         updateSearchQuery: (searchQuery: string = '') => {
