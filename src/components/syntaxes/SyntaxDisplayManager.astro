@@ -302,12 +302,19 @@ export interface VersionFilterData {
             return Number.MAX_SAFE_INTEGER;
         }
 
+        const escapedSearch = searchLower.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+        const wordBoundaryRegex = new RegExp(`\\b${escapedSearch}\\b`);
+
         // Weigh Name
         const name = item.syntaxName.toLowerCase();
         if (name === searchLower) { // Exact match in name = highest score
             score += 1000;
         } else if (id.startsWith(searchLower) || name.startsWith(searchLower)) {
             score += 500;
+        } else if (wordBoundaryRegex.test(id) || wordBoundaryRegex.test(name)) {
+            score += 300;
+            // prefer shorter names (more specific matches)
+            score += Math.max(0, 50 - name.length);
         } else if (id.includes(searchLower) || name.includes(searchLower)) {
             score += 200;
             // prefer shorter names (more specific matches)
@@ -325,20 +332,26 @@ export interface VersionFilterData {
         }
 
         // Weigh Patterns
-        const patterns = getCodeFromSection(element, 'Patterns');
-        if (patterns.includes(searchLower)) {
-            score += 100;
+        const patterns = getCodeFromSection(element, 'Syntax Patterns');
+        if (wordBoundaryRegex.test(patterns)) {
+            score += 300;
+        } else if (patterns.includes(searchLower)) {
+            score += 150;
         }
 
         // Weigh Description
         const description = element.querySelector('p')?.textContent?.toLowerCase() || '';
-        if (description.includes(searchLower)) {
+        if (wordBoundaryRegex.test(description)) {
+            score += 100;
+        } else if (description.includes(searchLower)) {
             score += 50;
         }
 
         // Weigh Examples
-        const examples = getCodeFromSection(element, 'Examples');
-        if (examples.includes(searchLower)) {
+        const examples = getCodeFromSection(element, 'Usage Examples');
+        if (wordBoundaryRegex.test(examples)) {
+            score += 50;
+        } else if (examples.includes(searchLower)) {
             score += 25;
         }
 
