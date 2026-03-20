@@ -578,7 +578,6 @@ export interface VersionFilterData {
 
     // scroll/resize listeners
     window.addEventListener('scroll', scheduleScroll, { passive: true });
-    window.addEventListener('resize', fullRender, { passive: true });
 
     // Expose API for other components
     (window as any).__syntaxDisplayManager = {
