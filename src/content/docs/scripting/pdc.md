@@ -4,15 +4,19 @@ sidebar:
     order: 100
 ---
 
-Persistent data tags (also called PDC, short for persistent data container) are a way to store custom data directly on players, entities, items, blocks, chunks, and worlds. Unlike variables, which are stored separately from the game itself, persistent data tags are a part of the object they're attached to. 
+Persistent data tags (also called PDC, short for persistent data container) are a way to store custom data directly on players, entities, items, blocks, chunks, and worlds.
+Unlike variables, which are stored separately from the game itself, persistent data tags are a part of the object they're attached to.
 
 :::note
-Persistent data tags require Skript 2.15 or higher.
+Persistent data tags require Skript 2.15 or newer.
 :::
 
 ## What are Persistent Data Tags?
 
-Think of persistent data tags as sticky notes attached directly to a game object. Stick a number on a sword, and that sword will always carry that number. Even if you move it between inventories, drop it on the ground, or pick it back up, it will always have the number available. This makes PDC tags specifically useful for item data, since items generally do not have unique identifiers you can use to access data in traditional Skript variables.
+Think of persistent data tags as sticky notes attached directly to a game object.
+Stick a number on a sword, and that sword will always carry that number.
+Even if you move it between inventories, drop it on the ground, or pick it back up, it will always have the number available.
+This makes PDC tags specifically useful for item data, since items generally do not have unique identifiers you can use to access data in traditional Skript variables.
 
 Here are some things you might use persistent data tags for:
 
@@ -21,19 +25,26 @@ Here are some things you might use persistent data tags for:
 - Storing flags on chunks or worlds for game state
 
 :::note
-Notably, PDC tags are ***NOT NBT tags***, despite them showing up when you look at the NBT of something. When you read or write NBT data, it's a separate representation of the item/entity/object that's generated on the fly. This means setting NBT values means all the changed nbt has to be re-written back into the original object, which can get very expensive! 
+Notably, PDC tags are ***NOT NBT tags***, despite them showing up when you look at the NBT of something.
+When you read or write NBT data, it's a separate representation of the item/entity/object that's generated on the fly.
+This means setting NBT values means all the changed nbt has to be re-written back into the original object, which can get very expensive! 
 
-PDC tags end up being saved in NBT format, but reading and writing them does not involve the same re-writing editing NBT causes. The PDC tags are part of the object and can be changed individually, like setting the name of an entity or the lore of an item. 
+PDC tags end up being saved in NBT format, but reading and writing them does not involve the same re-writing editing NBT causes.
+The PDC tags are part of the object and can be changed individually, like setting the name of an entity or the lore of an item.
 :::
 
 :::caution
-PDC tags are also ***NOT metadata tags***. They serve a very similar role, though, with the main difference being their abililty to be stored over server restarts and be attached to a specific entity/object. Paper is in the process of deprecating and removing metadata tags, so **we highly suggest switching your metadata tags to PDC tags instead**. It is unknown how long metadata tags will continue to stick around.
+PDC tags are also ***NOT metadata tags***.
+They serve a very similar role, though, with the main difference being their ability to be stored over server restarts and be attached to a specific entity/object.
+Paper is in the process of deprecating and removing metadata tags, so **we highly suggest switching your metadata tags to PDC tags instead**.
+It is unknown how long metadata tags will continue to stick around.
 :::
 
 
 ## Keys
 
-Every persistent data tag needs a name, called a **key**. Keys follow a **namespaced format**:
+Every persistent data tag needs a name, called a **key**.
+Keys follow a **namespaced format**:
 
 ```
 namespace:key-name
@@ -50,7 +61,8 @@ Uppercase letters will be automatically converted to lowercase for you.
 ```
 
 :::caution
-If you don't provide a namespace, the key defaults to `minecraft`. We advise using a specific namespace to avoid colliding with PDC from other scripts, but it is not required.
+If you don't provide a namespace, the key defaults to `minecraft`.
+We advise using a specific namespace to avoid colliding with PDC from other scripts, but it is not required.
 
 ```applescript
 # ok, stored as "minecraft:damage_bonus"
@@ -65,8 +77,8 @@ set data tag "myserver:damage_bonus" of player's tool to 10
 
 The core syntax is `the data tag "test" of {something}`:
 ```applescript
-[the] [persistent] [%-*classinfo%] [:list] data (value|tag) %string% of %objects%
-%objects%'[s] [persistent] [%-*classinfo%] data (value|tag) %string%
+[the] [persistent] [%classinfo%] [list] data (value|tag) %string% of %objects%
+%objects%'[s] [persistent] [%classinfo%] data (value|tag) %string%
 ```
 Some basic uses of the singular form:
 ```applescript
@@ -106,7 +118,9 @@ on damage:
 
 ## Specifying Types
 
-By default, Skript figures out the type of a tag automatically. When writing a tag, it infers the type from the value. When reading a tag, it tries each compatible type until it finds one that matches.
+By default, Skript figures out the type of a tag automatically.
+When writing a tag, it infers the type from the value.
+When reading a tag, it tries each compatible type until it finds one that matches.
 
 For most use cases, this works fine without any extra effort:
 
@@ -121,7 +135,8 @@ However, you can add a **specific type** before `data tag` to be explicit:
 set {_kills} to number data tag "myserver:kills" of player
 ```
 
-When a specific type is provided, Skript will only return a value if the stored tag matches that exact type, otherwise it returns nothing. This is most useful when you want to safely distinguish between different stored types, or if you want Skript to know for certain what type the tag will be returning.
+When a specific type is provided, Skript will only return a value if the stored tag matches that exact type, otherwise it returns nothing.
+This is most useful when you want to safely distinguish between different stored types, or if you want Skript to know for certain what type the tag will be returning.
 
 ```applescript
 on shoot:
@@ -160,12 +175,17 @@ set {_scores::*} to numbers data tag "myserver:scores" of player
 ```
 
 :::caution
-Unlike traditional NBT syntaxes like SkBee's, persistent data tags cannot be nested at this time. Each key stores a single flat value or list. There is no compound tag support. If you need deeply structured data, consider using multiple flat tags or Skript variables instead.
+Unlike traditional NBT syntaxes like SkBee's, persistent data tags cannot be nested at this time.
+Each key stores a single flat value or list.
+There is no compound tag support.
+If you need deeply structured data, consider using multiple flat tags or Skript variables instead.
 :::
 
 ## Supported Types
 
-PDC natively handles numbers and text. Beyond that, any Skript type that can be saved in a variable can also be stored in a persistent data tag, so, locations, items, offline players, and more are all valid types. Transient types like inventories, entities, and similar are not valid.
+PDC natively handles numbers and text.
+Beyond that, any Skript type that can be saved in a variable can also be stored in a persistent data tag, so, locations, items, offline players, and more are all valid types.
+Transient types like inventories and entities are not valid.
 
 ```applescript
 # numbers
@@ -234,7 +254,7 @@ Run `/data get entity <player-name>` and look for `BukkitValues`:
 /data get entity Steve
 ```
 
-![An output of /data get entity, showing BukkitValues with a location, integer, and string stored.](../../../assets/pdc/pdc_entity.jpg)
+![An output of /data get entity, showing BukkitValues with a location, integer, and string stored.](../../../assets/tutorials/pdc/pdc_entity.jpg)
 Simple types like numbers and strings appear directly under `BukkitValues`:
 
 ```
@@ -254,17 +274,24 @@ Items store their PDC inside a `minecraft:custom_data` component, which holds a 
 {id: "minecraft:diamond_sword", components: {"minecraft:custom_data": {PublicBukkitValues: {"myserver:damage_bonus": 10}}}}
 ```
 
-![An output of /data get entity @s SelectedItem, showing PublicBukkitValues with an integer stored.](../../../assets/pdc/pdc_item.png)
+![An output of /data get entity @s SelectedItem, showing PublicBukkitValues with an integer stored.](../../../assets/tutorials/pdc/pdc_item.png)
 
 ### Blocks
-PDC is only valid for blocks that are block entities, like chests, signs, and similar blocks. For more inert blocks, we advise storing data on the chunk instead.
-![An output of /data get block, showing PublicBukkitValues with an integer stored.](../../../assets/pdc/pdc_block.png)
+PDC is only valid for blocks that are block entities, like chests, signs, and similar blocks.
+For more inert blocks, we advise storing data on the chunk instead.
+![An output of /data get block, showing PublicBukkitValues with an integer stored.](../../../assets/tutorials/pdc/pdc_block.png)
 
 ### Chunks, Worlds, and others:
-Other PDC holders will generally fall into the same format as blocks. Though `/data` cannot show the data of chunks or worlds, viewing their NBT with other tools will show a similar format.
+Other PDC holders will generally fall into the same format as blocks.
+Though `/data` cannot show the data of chunks or worlds, viewing their NBT with other tools will show a similar format.
 
 :::note
-Complex types like offline players or locations are stored as nested compounds inside `PublicBukkitValues`. Skript uses these to reconstruct the original object when you read the tag back. It's not necessary to understand the full format, but take note of the `skript:type` tag, as it shows you what type of data Skript has stored. The following tags may be legible or they may be a long string of random letters and numbers. It depends on how easy it is to store that specific type of data. We have attempted to make it as legible as possible.
+Complex types like offline players or locations are stored as nested compounds inside `PublicBukkitValues`.
+Skript uses these to reconstruct the original object when you read the tag back.
+It's not necessary to understand the full format, but take note of the `skript:type` tag, as it shows you what type of data Skript has stored.
+The following tags may be legible or they may be a long string of random letters and numbers.
+It depends on how easy it is to store that specific type of data.
+We have attempted to make it as legible as possible.
 
 ```
 {"myserver:owner": {"skript:type": "offlineplayer", "skript:uuid": {...}}}
