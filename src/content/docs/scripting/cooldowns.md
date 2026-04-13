@@ -189,15 +189,6 @@ Be careful with `wait` in commands. After the wait, the player might have logged
 
 ## A Note on Variables
 
-If you're using variable-based cooldowns (the `{cooldown::...}` pattern), keep in mind that these are global variables. They get saved to disk and persist through restarts, which is great for long cooldowns like daily rewards but unnecessary for short ones like a 5-second ability cooldown. For short cooldowns that don't need to survive restarts, consider using temporary global variables: `{-cooldown::...}`.
+If you're using variable-based cooldowns (the `{cooldown::...}` pattern), keep in mind that these are global variables. They get saved to disk and persist through restarts, which is great for long cooldowns like daily rewards but unnecessary for short ones like a 5-second ability cooldown.
 
-## Summary
-
-| Method | Best For | Persists Through Restart? |
-|---|---|---|
-| Command cooldowns | Commands | Only with `cooldown storage:` |
-| Item cooldowns | Vanilla-style item use limits | No |
-| Variable-based (timestamp) | Events, abilities, custom mechanics | Yes (global variables) |
-| Delays (`wait`) | Warmups, cast times | N/A |
-
-Each method has its place. Command cooldowns are the easiest when you're working with commands. Item cooldowns give you that nice visual overlay. Variable-based cooldowns are the most flexible and work anywhere. And delays are for when you need the player to wait before something happens, not after.
+For short cooldowns that don't need to survive restarts, consider using a storage solution that keeps data in memory only, so you're not writing to disk every few seconds for cooldowns that will expire before anyone notices.
