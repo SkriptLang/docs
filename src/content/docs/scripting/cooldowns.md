@@ -125,7 +125,7 @@ on right click holding iron sword:
     send "Ground slam!"
 ```
 
-Let's break down what's happening. When the player right-clicks, we check the `difference between now` and the last time they used the ability. If it's been less than 10 seconds, we stop. Otherwise, we update the timestamp to `now` and run the ability.
+Let's break down what's happening. When the player right-clicks, we check the `difference between now` and the last time they used the ability. If it's been less than 10 seconds, the ability does not get activated. Otherwise, we update the timestamp to `now` and activate the ability.
 
 ### Showing Remaining Time
 
