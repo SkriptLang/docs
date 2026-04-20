@@ -21,7 +21,7 @@ command /kit:
         send "Enjoy your kit!"
 ```
 
-That's it. The player now has to wait an hour before using `/kit` again. Skript handles all the timing for you.
+The player now has to wait an hour before using `/kit` again. Skript handles all the timing for you.
 
 ### Cooldown Messages
 
