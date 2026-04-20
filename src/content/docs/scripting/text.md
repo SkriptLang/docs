@@ -4,13 +4,15 @@ sidebar:
     order: 10
 ---
 
-Skript allows you to write pieces of text (aka strings). This is done by putting the text inside double quotes, for example: `"this is text"`.
+Skript allows you to write pieces of text (aka strings). 
+This is done by putting the text inside double quotes, for example: `"this is text"`.
 
 If an effect, expression, condition, trigger or function accepts something of type text or string, you can use this format to create a new string.
 
 ## Colors and Formatting
 
-Skript uses [Adventure](https://docs.advntr.dev/) and [MiniMessage](https://docs.papermc.io/adventure/minimessage/format) for text formatting. MiniMessage is a tag-based system that uses angle brackets, and it is the recommended way to format text in Skript:
+Skript uses [Adventure](https://docs.advntr.dev/) and [MiniMessage](https://docs.papermc.io/adventure/minimessage/format) for text formatting. 
+MiniMessage is a tag-based system that uses angle brackets, and it is the recommended way to format text in Skript:
 
 ```applescript
 send "<red>Hello there <bold>%player%!" to player
@@ -57,7 +59,8 @@ send "<#ff6b6b>Warning!" to player
 You can also format colours in the verbose MiniMessage format: `<color:yellow>`, but using `_` instead of spaces is mandatory.
 
 :::note
-Legacy `§` and `&` color codes are still supported for backwards compatibility. However, [MiniMessage tags](https://docs.papermc.io/adventure/minimessage/format/#color) are the recommended approach going forward.
+Legacy `§` and `&` color codes are still supported for backwards compatibility. 
+However, [MiniMessage tags](https://docs.papermc.io/adventure/minimessage/format/#color) are the recommended approach going forward.
 
 If you encounter a syntax that expects legacy codes, you may need to use `formatted` or `colored` to ensure the formatting is properly handled.
 :::
@@ -100,38 +103,36 @@ You can read more about all available MiniMessage tags on [Paper's documentation
 
 ### Safe Tags
 
-Not all MiniMessage tags are processed automatically. To prevent unintended formatting (for example, from player input being included in a message), Skript only parses a set of **safe tags** by default. Tags outside this list are left as plain text unless you use the `formatted` expression (see below).
+Not all MiniMessage tags are processed automatically. 
+To prevent unintended formatting (for example, from player input being included in a message), Skript only parses a set of **safe tags** by default. 
+Tags outside this list are left as plain text unless you use the `formatted` expression (see below).
 
 The default safe tags are:
 
 | Tag(s) | Description |
 |--------|-------------|
 | `color` | Named colors and hex colors (`<red>`, `<#AABBCC>`, etc.) |
-| `decorations` | `<bold>`, `<italic>`, `<underlined>`, `<strikethrough>`, `<obfuscated>` |
-| `gradient` | `<gradient:...>` |
-| `rainbow` | `<rainbow>` |
-| `reset` | `<reset>` |
-| `transition` | `<transition:...>` |
+| `decorations` | Text styling (`<bold>`, `<italic>`, `<underlined>`, `<strikethrough>`, `<obfuscated>`) |
+| `gradient` | A gradient between multiple colours |
+| `rainbow` | A rainbow gradient |
+| `reset` | Resets all active formatting |
+| `transition` | A selected colour on a gradient scale |
 | `pride` | Pride-themed rainbow colors |
-| `shadowColor` | `<shadowColor:...>` — sets the shadow color of text |
+| `shadowColor` | Sets the drop shadow color of text |
 
 ### The `formatted` Expression
 
-When you need to process tags that are outside the safe tags list, use the `formatted` expression. This processes the full MiniMessage tag set on the given string:
+When you need to process tags that are outside the safe tags list, use the `formatted` expression. 
+This processes the full MiniMessage tag set on the given string:
 
 ```applescript
 # sprite tags are not safe by default, so we use formatted to process them
 send formatted "Look at my <sprite:blocks:block/stone>!" to player
 ```
 
-`formatted` also handles legacy `&` color codes, which are not processed automatically:
-
-```applescript
-send formatted "This is &4dark red &rand reset" to player
-```
-
 :::caution
-Only use `formatted` on strings you control. Using `formatted` on player-provided input could allow players to inject arbitrary formatting tags into messages.
+Only use `formatted` on strings you control. 
+Using `formatted` on player-provided input could allow players to inject arbitrary formatting tags into messages.
 :::
 
 ### Configuring Safe Tags
@@ -142,7 +143,8 @@ You can control which tags are parsed automatically by editing the `safe tags` o
 safe tags: color, decorations, gradient, rainbow, reset, transition, pride, shadowColor
 ```
 
-To allow additional tags to be parsed automatically, add them to the list. For example, to also allow `sprite` tags:
+To allow additional tags to be parsed automatically, add them to the list. 
+For example, to also allow `sprite` tags:
 
 ```yaml
 safe tags: color, decorations, gradient, rainbow, reset, transition, pride, shadowColor, sprite
@@ -156,7 +158,8 @@ safe tags: color, decorations
 
 ## Chat-only Formatting
 
-Skript also supports some custom names for certain features that are only available in chat messages. These use the same tag format:
+Skript also supports some custom names for certain features that are only available in chat messages. 
+These use the same tag format:
 
 ```applescript
 <name:parameter>
@@ -179,12 +182,13 @@ send formatted "<tooltip:'<yellow>This is a tooltip'>Hover over me!</hover>" to 
 send formatted "<link:https://skriptlang.org>Visit the Skript website</click>" to player
 ```
 
-Minimessage also supports more click and hover events, like opening dialogs, showing item tooltips, and more. These can all be viewed at [MiniMessage's docs](https://docs.papermc.io/adventure/minimessage/format/#click).
+Minimessage also supports more click and hover events, like opening dialogs, showing item tooltips, and more. 
+These can all be viewed at [MiniMessage's docs](https://docs.papermc.io/adventure/minimessage/format/#click).
 
 ## Unicode
 
-Skript supports Unicode characters in any text. To add them to your scripts, 
-paste the character inside the text, or use the provided Unicode tag. The unicode tag is not safe by default, so you will need to use `formatted`. Pasted characters do not need `formatted`.
+Skript supports Unicode characters in any text. To add them to your scripts, paste the character inside the text, or use the provided Unicode tag. 
+The unicode tag is not safe by default, so you will need to use `formatted`. Pasted characters do not need `formatted`.
 
 The tag uses the character's codepoint to replace it with the actual 
 character when the text is loaded.
