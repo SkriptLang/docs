@@ -59,7 +59,7 @@ You can also format colours in the verbose MiniMessage format: `<color:yellow>`,
 :::note
 Legacy `§` and `&` color codes are still supported for backwards compatibility. However, [MiniMessage tags](https://docs.papermc.io/adventure/minimessage/format/#color) are the recommended approach going forward.
 
-If you encounter a syntax that expects legacy codes, you may need to use `formatted` to ensure the formatting is properly handled.
+If you encounter a syntax that expects legacy codes, you may need to use `formatted` or `colored` to ensure the formatting is properly handled.
 :::
 
 ### Decoration Tags
