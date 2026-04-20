@@ -8,269 +8,181 @@ Skript allows you to write pieces of text (aka strings). This is done by putting
 
 If an effect, expression, condition, trigger or function accepts something of type text or string, you can use this format to create a new string.
 
-## Colors
+## Colors and Formatting
 
-Minecraft has 16 pre-set color codes to be used in text. 
-
-* Color name tags, for example `red`
-* Minecraft color codes, like `§c` (or `&c`)
-
-Here's a table of all colors, including both Skript names and color codes.
-
-<table>
-    <thead>
-        <tr>
-            <th>Color</th>
-            <th>Code</th>
-            <th>Name</th>
-            <th>Alternative Names</th>
-        </tr>
-    </thead>
-    <tbody>
-        <tr>
-            <td class="bg-[#000000]"></td>
-            <td>§0</td>
-            <td>black</td>
-            <td></td>
-        </tr>
-        <tr>
-            <td class="bg-[#0000AA]"></td>
-            <td>§1</td>
-            <td>blue</td>
-            <td>dark blue</td>
-        </tr>
-        <tr>
-            <td class="bg-[#00AA00]"></td>
-            <td>§2</td>
-            <td>green</td>
-            <td>dark green</td>
-        </tr>
-        <tr>
-            <td class="bg-[#00AAAA]"></td>
-            <td>§3</td>
-            <td>cyan</td>
-            <td>aqua, dark cyan, dark aqua, dark turquoise, dark turquois</td>
-        </tr>
-        <tr>
-            <td class="bg-[#AA0000]"></td>
-            <td>§4</td>
-            <td>red</td>
-            <td>dark red</td>
-        </tr>
-        <tr>
-            <td class="bg-[#AA00AA]"></td>
-            <td>§5</td>
-            <td>purple</td>
-            <td>dark purple</td>
-        </tr>
-        <tr>
-            <td class="bg-[#FFAA00]"></td>
-            <td>§6</td>
-            <td>orange</td>
-            <td>orange, gold, dark yellow</td>
-        </tr>
-        <tr>
-            <td class="bg-[#AAAAAA]"></td>
-            <td>§7</td>
-            <td>grey</td>
-            <td>light grey, gray, light gray, silver</td>
-        </tr>
-        <tr>
-            <td class="bg-[#555555]"></td>
-            <td>§8</td>
-            <td>dark gray</td>
-            <td>dark grey</td>
-        </tr>
-        <tr>
-            <td class="bg-[#5555FF]"></td>
-            <td>§9</td>
-            <td>light blue</td>
-            <td>light blue, indigo</td>
-        </tr>
-        <tr>
-            <td class="bg-[#55FF55]"></td>
-            <td>§a</td>
-            <td>light green</td>
-            <td>lime, lime green</td>
-        </tr>
-        <tr>
-            <td class="bg-[#55FFFF]"></td>
-            <td>§b</td>
-            <td>light cyan</td>
-            <td>light aqua, turquoise, turquois, light blue</td>
-        </tr>
-        <tr>
-            <td class="bg-[#FF5555]"></td>
-            <td>§c</td>
-            <td>light red</td>
-            <td>pink</td>
-        </tr>
-        <tr>
-            <td class="bg-[#FF55FF]"></td>
-            <td>§d</td>
-            <td>magenta</td>
-            <td>light purple</td>
-        </tr>
-        <tr>
-            <td class="bg-[#FFFF55]"></td>
-            <td>§e</td>
-            <td>yellow</td>
-            <td>light yellow</td>
-        </tr>
-        <tr>
-            <td class="bg-[#FFFFFF]"></td>
-            <td>§f</td>
-            <td>white</td>
-            <td></td>
-        </tr>
-    </tbody>
-</table>
-
-In Minecraft 1.16, support was added for 6-digit hexadecimal colors.
-A tag can be used to format with these colors, which looks like this: 
-
-```
-<#ABCDEF>
-<#ffb2c3>
-```
-
-Here's what the tag would look like when used in a script:
+Skript uses [Adventure](https://docs.advntr.dev/) and [MiniMessage](https://docs.papermc.io/adventure/minimessage/format) for text formatting. MiniMessage is a tag-based system that uses angle brackets, and it is the recommended way to format text in Skript:
 
 ```applescript
-send "<#123456>Hey %player%!" to player
+send "<red>Hello there <bold>%player%!" to player
 ```
 
-For information not related to Skript, see Minecraft Wiki page concerning colors. 
+Tags generally come in opening and closing pairs, though closing tags are usually optional for color and decoration tags:
 
+```applescript
+send "<red>This is red <bold>and bold</bold> but this is just red again" to player
+```
 
-Depending on the Skript configuration, 
-color codes may do more than just change color of text after them. 
-By default, for backwards compatibility, they clear following styles: 
-magic, bold, strikethrough, underlined, italic. 
-Other styles are not affected, and this feature can be toggled of in config.sk.
+### Color Tags
 
-## Formatting
+Minecraft has 16 legacy colors that can have named tag equivalents:
 
-Minecraft also has various other styles available. 
-The following are available everywhere, including item and entity names:
+| Tag | Legacy Code | Alternative Names |
+|-----|-------------|-------------------|
+| `<black>` | §0 | |
+| `<dark blue>` | §1 |  |
+| `<dark green>` | §2 |  |
+| `<cyan>` | §3 | `<dark aqua>`, `<dark cyan>`, `<dark turquoise>` |
+| `<dark red>` | §4 | |
+| `<purple>` | §5 | `<dark purple>` |
+| `<gold>` | §6 | `<orange>`, `<dark yellow>` |
+| `<gray>` | §7 | `<grey>`, `<light_gray>`, `<silver>` |
+| `<dark gray>` | §8 | `<dark grey>` |
+| `<blue>` | §9 | `<light blue>`, `<indigo>` |
+| `<green>` | §a | `<light green>`, `<lime>` |
+| `<aqua>` | §b | `<light aqua>`, `<turquoise>` |
+| `<red>` | §c | `<light red>` |
+| `<magenta>` | §d | `<light purple>`, `<pink>` |
+| `<yellow>` | §e | `<light yellow>` |
+| `<white>` | §f | |
 
-<table>
-    <thead>
-        <tr>
-            <th>Code</th>
-            <th>Name</th>
-            <th>Alternative Names</th>
-            <th>Description</th>
-        </tr>
-    </thead>
-    <tbody>
-        <tr>
-            <td>§k</td>
-            <td>magic</td>
-            <td>obfuscated</td>
-            <td>Makes the provided text unreadable.</td>
-        </tr>
-        <tr>
-            <td>§l</td>
-            <td>bold</td>
-            <td>b</td>
-            <td>Makes the provided text bold.</td>
-        </tr>
-        <tr>
-            <td>§m</td>
-            <td>strikethrough</td>
-            <td>strike, s</td>
-            <td>Makes the provided text appear 
-            with a line through the middle.</td>
-        </tr>
-        <tr>
-            <td>§n</td>
-            <td>underlined</td>
-            <td>underline, u</td>
-            <td>Makes the provided text underlined.</td>
-        </tr>
-        <tr>
-            <td>§o</td>
-            <td>italic</td>
-            <td>italics, i</td>
-            <td>Makes the provided text italic.</td>
-        </tr>
-        <tr>
-            <td>§r</td>
-            <td>reset</td>
-            <td>r</td>
-            <td>Resets all active formatting options. 
-            Usually used to indicate the end of a format.</td>
-        </tr>
-    </tbody>
-</table>
+Each colour can also be written with `_` instead of spaces: `<dark_blue>`.
 
-### Chat-only formatting
-Skript also supports certain newer features, which are only available in chat. Those do not have formatting codes, so you must use tags for them.
-                        
-<table>
-    <thead>
-        <tr>
-            <th>Name</th>
-            <th>Alternative Names</th>
-            <th>Description</th>
-        </tr>
-    </thead>
-    <tbody>
-        <tr>
-            <td>link</td>
-            <td>open url, url</td>
-            <td>Opens a link when player clicks on text</td>
-        </tr>
-        <tr>
-            <td>run command</td>
-            <td>command, cmd</td>
-            <td>Makes player execute a chat command when they click on text</td>
-        </tr>
-        <tr>
-            <td>suggest command</td>
-            <td>sgt</td>
-            <td>Adds a command to chat prompt of player when clicked</td>
-        </tr>
-        <tr>
-            <td>tooltip</td>
-            <td>show text, ttp</td>
-            <td>Shows a tooltip when player hovers over text with their mouse</td>
-        </tr>
-        <tr>
-            <td>font</td>
-            <td>f</td>
-            <td>Change the font of the text (1.16+)</td>
-        </tr>
-        <tr>
-            <td>insertion</td>
-            <td>insert, ins</td>
-            <td>Will append a text at player's current cursor in chat input only while holding SHIFT.</td>
-        </tr>
-    </tbody>
-</table>
+For a full spectrum of colors, you can use 6-digit hexadecimal color tags:
 
-These chat-only formats use the following tag format:  
+```applescript
+send "<#ABCDEF>Hey %player%!" to player
+send "<#ff6b6b>Warning!" to player
+```
+
+You can also format colours in the verbose MiniMessage format: `<color:yellow>`, but using `_` instead of spaces is mandatory.
+
+:::note
+Legacy `§` and `&` color codes are still supported for backwards compatibility. However, [MiniMessage tags](https://docs.papermc.io/adventure/minimessage/format/#color) are the recommended approach going forward.
+:::
+
+### Decoration Tags
+
+Text decorations work the same way as color tags:
+
+| Tag | Legacy Code | Description |
+|-----|-------------|-------------|
+| `<bold>` | §l | Makes the provided text bold. |
+| `<italic>` | §o | Makes the provided text italic. |
+| `<underlined>` | §n | Makes the provided text underlined. |
+| `<strikethrough>` | §m | Makes the provided text appear with a line through the middle. |
+| `<obfuscated>` | §k | Makes the provided text unreadable (rapidly cycling characters). |
+| `<reset>` | §r | Resets all active formatting. |
+
+Using `<!tag>` can be used to prevent that formatting instead:
+```applescript
+# Item names are naturally italicized by Minecraft:
+set name of player's tool to "<!i>Not Italicized!"
+``` 
+
+### Advanced Formatting Tags
+
+MiniMessage supports more advanced formatting options that have no legacy equivalents.
+
+```applescript
+# Gradient between two or more colors
+send "<gradient:#ff0000:#0000ff>Red to blue!</gradient>" to player
+
+# Rainbow cycling colors
+send "<rainbow>Wow this text is super colorful!</rainbow>" to player
+
+# Color transitions
+send "<transition:#ff0000:#ffffff:#0000ff:0.5>Transition!</transition>" to player
+```
+
+You can read more about all available MiniMessage tags on [Paper's documentation](https://docs.papermc.io/adventure/minimessage/format).
+
+### Safe Tags
+
+Not all MiniMessage tags are processed automatically. To prevent unintended formatting (for example, from player input being included in a message), Skript only parses a set of **safe tags** by default. Tags outside this list are left as plain text unless you use the `formatted` expression (see below).
+
+The default safe tags are:
+
+| Tag(s) | Description |
+|--------|-------------|
+| `color` | Named colors and hex colors (`<red>`, `<#AABBCC>`, etc.) |
+| `decorations` | `<bold>`, `<italic>`, `<underlined>`, `<strikethrough>`, `<obfuscated>` |
+| `gradient` | `<gradient:...>` |
+| `rainbow` | `<rainbow>` |
+| `reset` | `<reset>` |
+| `transition` | `<transition:...>` |
+| `pride` | Pride-themed rainbow colors |
+| `shadowColor` | `<shadowColor:...>` — sets the shadow color of text |
+
+### The `formatted` Expression
+
+When you need to process tags that are outside the safe tags list, use the `formatted` expression. This processes the full MiniMessage tag set on the given string:
+
+```applescript
+# sprite tags are not safe by default, so we use formatted to process them
+send formatted "Look at my <sprite:blocks:block/stone>!" to player
+```
+
+`formatted` also handles legacy `&` color codes, which are not processed automatically:
+
+```applescript
+send formatted "This is &4dark red &rand reset" to player
+```
+
+:::caution
+Only use `formatted` on strings you control. Using `formatted` on player-provided input could allow players to inject arbitrary formatting tags into messages.
+:::
+
+### Configuring Safe Tags
+
+You can control which tags are parsed automatically by editing the `safe tags` option in `config.sk`:
+
+```yaml
+safe tags: color, decorations, gradient, rainbow, reset, transition, pride, shadowColor
+```
+
+To allow additional tags to be parsed automatically, add them to the list. For example, to also allow `sprite` tags:
+
+```yaml
+safe tags: color, decorations, gradient, rainbow, reset, transition, pride, shadowColor, sprite
+```
+
+To restrict automatic parsing to only colors and decorations, simply remove unwanted entries:
+
+```yaml
+safe tags: color, decorations
+```
+
+## Chat-only Formatting
+
+Skript also supports some custom names for certain features that are only available in chat messages. These use the same tag format:
 
 ```applescript
 <name:parameter>
 ```
 
-For example:
+| Tag | Alternative Names | MiniMessage Equivalent | Description |
+|-----|-------------------|------------------------|-------------|
+| `<link:url>` | `<open_url:url>`, `<url:url>` | `<click:open_url:url>` | Opens a URL when the player clicks on the text. Must be an http or https URL. |
+| `<run_command:cmd>` | `<command:cmd>`, `<cmd:cmd>` | `<click:run_command:cmd>` | Makes the player execute a command when they click on the text. |
+| `<suggest_command:cmd>` | `<sgt:cmd>` | `<click:suggest_command:cmd>` | Adds a command to the player's chat input when clicked. |
+| `<tooltip:text>` | `<show_text:text>`, `<ttp:text>` | `<hover:show_text:'text'>` | Shows a tooltip when the player hovers over the text. |
+| `<font:key>` | `<f:key>` | `<font:key>` | Changes the font of the text. |
+| `<insertion:text>` | `<insert:text>`, `<ins:text>` | `<insert:text>` | Appends text to the player's chat input when SHIFT-clicked. |
+
+These tags are not in the safe tags list, so they must be used with the `formatted` expression:
 
 ```applescript
-<link:https://skriptlang.org>
-<run command:/gamemode creative>
+send formatted "<click:run_command:/gamemode creative><green>Click to enter creative mode!</click>" to player
+send formatted "<tooltip:'<yellow>This is a tooltip'>Hover over me!</hover>" to player
+send formatted "<link:https://skriptlang.org>Visit the Skript website</click>" to player
 ```
 
-For a link, parameter must be either http or https url 
-if you want clients to recognize it. 
-For others, it can be any text, including invalid commands.
+Minimessage also supports more click and hover events, like opening dialogs, showing item tooltips, and more. These can all be viewed at [MiniMessage's docs](https://docs.papermc.io/adventure/minimessage/format/#click).
 
 ## Unicode
 
 Skript supports Unicode characters in any text. To add them to your scripts, 
-paste the character inside the text, or use the provided Unicode tag. 
+paste the character inside the text, or use the provided Unicode tag. The unicode tag is not safe by default, so you will need to use `formatted`. Pasted characters do not need `formatted`.
 
 The tag uses the character's codepoint to replace it with the actual 
 character when the text is loaded.
