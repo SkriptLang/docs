@@ -10,7 +10,7 @@ Let's look at the different ways you can set up cooldowns in Skript.
 
 ## Command Cooldowns
 
-If you want to add a cooldown to a custom command, Skript has you covered with built-in support. You can add a `cooldown:` field directly to your command, just like you would add a `permission:` or `description:`. Here's a basic example:
+If you want to add a cooldown to a custom command, you can add a `cooldown:` field directly to your command, just like you would add a `permission:` or `description:`. Here's a basic example:
 
 ```applescript
 command /kit:
