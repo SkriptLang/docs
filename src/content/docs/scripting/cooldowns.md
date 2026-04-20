@@ -84,7 +84,7 @@ command /reset-daily <player>:
 
 ## Item Cooldowns
 
-Minecraft has a built-in item cooldown system, the gray overlay you see on ender pearls after throwing one. Skript lets you use this for any item. This is great for things like custom weapons, tools, or abilities tied to specific items:
+Minecraft has a built-in item cooldown system: the gray overlay you see on ender pearls after throwing one. Skript lets you use this for any item. This is great for things like custom weapons, tools, or abilities tied to specific items:
 
 ```applescript
 on right click holding blaze rod:
