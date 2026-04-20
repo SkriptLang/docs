@@ -31,23 +31,23 @@ Minecraft has 16 legacy colors that can have named tag equivalents:
 | Tag | Legacy Code | Alternative Names |
 |-----|-------------|-------------------|
 | `<black>` | §0 | |
-| `<dark blue>` | §1 |  |
-| `<dark green>` | §2 |  |
-| `<cyan>` | §3 | `<dark aqua>`, `<dark cyan>`, `<dark turquoise>` |
-| `<dark red>` | §4 | |
-| `<purple>` | §5 | `<dark purple>` |
-| `<gold>` | §6 | `<orange>`, `<dark yellow>` |
+| `<dark_blue>` | §1 |  |
+| `<dark_green>` | §2 |  |
+| `<cyan>` | §3 | `<dark_aqua>`, `<dark_cyan>`, `<dark_turquoise>` |
+| `<dark_red>` | §4 | |
+| `<purple>` | §5 | `<dark_purple>` |
+| `<gold>` | §6 | `<orange>`, `<dark_yellow>` |
 | `<gray>` | §7 | `<grey>`, `<light_gray>`, `<silver>` |
-| `<dark gray>` | §8 | `<dark grey>` |
-| `<blue>` | §9 | `<light blue>`, `<indigo>` |
-| `<green>` | §a | `<light green>`, `<lime>` |
-| `<aqua>` | §b | `<light aqua>`, `<turquoise>` |
-| `<red>` | §c | `<light red>` |
-| `<magenta>` | §d | `<light purple>`, `<pink>` |
-| `<yellow>` | §e | `<light yellow>` |
+| `<dark_gray>` | §8 | `<dark_grey>` |
+| `<blue>` | §9 | `<light_blue>`, `<indigo>` |
+| `<green>` | §a | `<light_green>`, `<lime>` |
+| `<aqua>` | §b | `<light_aqua>`, `<turquoise>` |
+| `<red>` | §c | `<light_red>` |
+| `<magenta>` | §d | `<light_purple>`, `<pink>` |
+| `<yellow>` | §e | `<light_yellow>` |
 | `<white>` | §f | |
 
-Each colour can also be written with `_` instead of spaces: `<dark_blue>`.
+Each colour can also be written with spaces instead of `_`: `<dark blue>`, though this is not recommended and may be deprecated in the future.
 
 For a full spectrum of colors, you can use 6-digit hexadecimal color tags:
 
@@ -171,7 +171,6 @@ These use the same tag format:
 | `<run_command:cmd>` | `<command:cmd>`, `<cmd:cmd>` | `<click:run_command:cmd>` | Makes the player execute a command when they click on the text. |
 | `<suggest_command:cmd>` | `<sgt:cmd>` | `<click:suggest_command:cmd>` | Adds a command to the player's chat input when clicked. |
 | `<tooltip:text>` | `<show_text:text>`, `<ttp:text>` | `<hover:show_text:'text'>` | Shows a tooltip when the player hovers over the text. |
-| `<font:key>` | `<f:key>` | `<font:key>` | Changes the font of the text. |
 | `<insertion:text>` | `<insert:text>`, `<ins:text>` | `<insert:text>` | Appends text to the player's chat input when SHIFT-clicked. |
 
 These tags are not in the safe tags list, so they must be used with the `formatted` expression:
