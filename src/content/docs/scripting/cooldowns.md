@@ -166,7 +166,7 @@ Both approaches work fine. Pick whichever one makes more sense to you and stick 
 
 ## Cooldowns with Delays
 
-Sometimes a "cooldown" isn't about preventing repeat usage, it's about making the player wait _before_ something happens. Warmups, cast times, countdowns. These use `wait` and are a different pattern entirely:
+Sometimes a "cooldown" isn't about preventing repeat usage, it's about making the player wait _before_ something happens, such as in warmups, cast times, or countdowns. These use `wait` and are a different pattern entirely:
 
 ```applescript
 command /spawn:
