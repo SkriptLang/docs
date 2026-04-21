@@ -8,80 +8,6 @@ Cooldowns are a way to prevent something from happening too frequently. Whether 
 
 Let's look at the different ways you can set up cooldowns in Skript.
 
-## Command Cooldowns
-
-If you want to add a cooldown to a custom command, you can add a `cooldown:` field directly to your command, just like you would add a `permission:` or `description:`. Here's a basic example:
-
-```applescript
-command /kit:
-    cooldown: 1 hour
-    trigger:
-        give diamond sword to player
-        give 16 golden apples to player
-        send "Enjoy your kit!"
-```
-
-The player now has to wait an hour before using `/kit` again. Skript handles all the timing for you.
-
-### Cooldown Messages
-
-By default, Skript will send a generic message when a player tries to use a command that's still on cooldown. You can customize this with `cooldown message:`, and even include how much time is left:
-
-```applescript
-command /kit:
-    cooldown: 1 hour
-    cooldown message: You need to wait %remaining time% before grabbing another kit.
-    trigger:
-        give diamond sword to player
-        give 16 golden apples to player
-```
-
-You can also use `elapsed time` if you'd rather tell the player how long it's been since they last used it.
-
-### Bypassing and Canceling
-
-Sometimes staff or VIP players should be exempt from a cooldown. The `cooldown bypass:` field lets you specify a permission that skips the wait:
-
-```applescript
-command /kit:
-    cooldown: 1 hour
-    cooldown message: You need to wait %remaining time% before grabbing another kit.
-    cooldown bypass: kit.bypass
-    trigger:
-        if player has space for diamond sword:
-            give diamond sword to player
-            give 16 golden apples to player
-        else:
-            send "Your inventory is full!"
-            cancel the cooldown
-```
-
-Notice the `cancel the cooldown` at the end. If the player's inventory is full and they didn't actually get anything, it'd be unfair to put them on cooldown, so we cancel it.
-
-### Persistent Cooldowns
-
-By default, command cooldowns reset when the server restarts. If you want cooldowns to survive restarts, use `cooldown storage:` to store the cooldown in a variable:
-
-```applescript
-command /daily:
-    cooldown: 1 day
-    cooldown storage: {cooldown::%player's uuid%::daily}
-    cooldown message: You can claim your daily reward again in %remaining time%.
-    trigger:
-        give 5 diamonds to player
-        send "Here are your daily diamonds!"
-```
-
-This also lets you access and manipulate the cooldown from other places in your scripts. For instance, an admin command could reset a player's daily cooldown:
-
-```applescript
-command /reset-daily <player>:
-    permission: admin.reset
-    trigger:
-        delete {cooldown::%arg-1's uuid%::daily}
-        send "Reset %arg-1%'s daily cooldown."
-```
-
 ## Item Cooldowns
 
 Minecraft has a built-in item cooldown system: the gray overlay you see on ender pearls after throwing one. Skript lets you use this for any item. This is great for things like custom weapons, tools, or abilities tied to specific items:
@@ -110,7 +36,7 @@ Item cooldowns apply to the **item type**, not a specific item. If you put a bla
 
 ## Variable-Based Cooldowns
 
-Command cooldowns only work for commands, and item cooldowns only apply to item types. What about everything else? Events, abilities, custom mechanics? For those, you'll build your own cooldown using variables and timestamps.
+Item cooldowns only apply to item types. What about everything else? Events, abilities, custom mechanics? For those, you'll build your own cooldown using variables and timestamps.
 
 The idea is straightforward: save the current time when the player does something, and the next time they try to do it, check if enough time has passed.
 
@@ -189,6 +115,6 @@ Be careful with `wait` in commands. After the wait, the player might have logged
 
 ## A Note on Variables
 
-If you're using variable-based cooldowns (the `{cooldown::...}` pattern), keep in mind that these are global variables. They get saved to disk and persist through restarts, which is great for long cooldowns like daily rewards but unnecessary for short ones like a 5-second ability cooldown.
+If you're using variable-based cooldowns (the `{cooldown::...}` pattern), keep in mind that these are global variables. They get saved to disk and persist through restarts, which is great for long cooldowns like daily rewards but unnecessary for short ones like a 5-second ability cooldown. For short cooldowns that don't need to survive restarts, consider using temporary global variables: `{-cooldown::...}`.
 
 For short cooldowns that don't need to survive restarts, consider using a storage solution that keeps data in memory only, so you're not writing to disk every few seconds for cooldowns that will expire before anyone notices.
