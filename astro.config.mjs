@@ -5,6 +5,7 @@ import starlightAutoSidebar from 'starlight-auto-sidebar'
 
 // https://astro.build/config
 export default defineConfig({
+    site: 'https://beta-docs.skriptlang.org',
     integrations: [
         starlight({
             plugins: [starlightAutoSidebar()],
