@@ -10,9 +10,10 @@
     "astro": "astro"
   },
   "dependencies": {
-    "@astrojs/starlight": "^0.37.1",
+    "@astrojs/starlight": "^0.39.1",
     "@fontsource/poppins": "^5.2.7",
-    "astro": "^5.6.1",
-    "sharp": "^0.34.2"
+    "astro": "^6.3.1",
+    "sharp": "^0.34.2",
+    "starlight-auto-sidebar": "^0.4.0"
   }
 }

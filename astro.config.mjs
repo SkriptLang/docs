@@ -1,11 +1,13 @@
 // @ts-check
 import { defineConfig } from 'astro/config';
 import starlight from '@astrojs/starlight';
+import starlightAutoSidebar from 'starlight-auto-sidebar'
 
 // https://astro.build/config
 export default defineConfig({
     integrations: [
         starlight({
+            plugins: [starlightAutoSidebar()],
             title: 'Skript',
             favicon: '/favicon.svg',
             /*logo: {
@@ -29,50 +31,6 @@ export default defineConfig({
             editLink: {
                 baseUrl: 'https://github.com/SkriptLang/docs/edit/master/',
             },
-            sidebar: [
-                {
-                    label: 'Scripting',
-                    collapsed: true,
-                    autogenerate: {
-                        directory: 'scripting',
-                    },
-                },
-                {
-                    label: 'API',
-                    collapsed: true,
-                    items: [
-                        'api',
-                        {
-                            label: 'Skript',
-                            collapsed: true,
-                            autogenerate: {
-                                directory: 'api/skript',
-                            },
-                        },
-                        {
-                            label: 'Localization',
-                            collapsed: true,
-                            autogenerate: {
-                                directory: 'api/localization',
-                            },
-                        },
-                        {
-                            label: 'Syntax',
-                            collapsed: true,
-                            autogenerate: {
-                                directory: 'api/syntax',
-                            },
-                        },
-                        {
-                            label: 'Registries',
-                            collapsed: true,
-                            autogenerate: {
-                                directory: 'api/registries',
-                            },
-                        },
-                    ],
-                },
-            ],
             expressiveCode: {
                 tabWidth: 4,
             },
