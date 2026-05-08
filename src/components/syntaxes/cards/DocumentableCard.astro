@@ -1,0 +1,37 @@
+---
+import { DocumentableType, type Documentation } from "../documentation";
+import DocumentationCard from "./DocumentationCard.astro";
+import ExperimentCard from "./ExperimentCard.astro";
+import ExpressionCard from "./ExpressionCard.astro";
+import FunctionCard from "./FunctionCard.astro";
+import TypeCard from "./TypeCard.astro";
+import SyntaxCard from "./SyntaxCard.astro";
+
+interface Props {
+    documentation: Documentation,
+    currentVersion: string,
+}
+
+const { documentation, currentVersion }: Props = Astro.props;
+---
+
+{(() => {
+    switch (documentation.type) {
+        case DocumentableType.STRUCTURE:
+        case DocumentableType.SECTION:
+        case DocumentableType.EFFECT:
+        case DocumentableType.CONDITION:
+        case DocumentableType.EVENT:
+            return (<SyntaxCard syntax={documentation as any} currentVersion={currentVersion} />);
+        case DocumentableType.EXPRESSION:
+            return (<ExpressionCard expression={documentation as any} currentVersion={currentVersion} />);
+        case DocumentableType.TYPE:
+            return (<TypeCard type={documentation as any} currentVersion={currentVersion} />);
+        case DocumentableType.FUNCTION:
+            return (<FunctionCard func={documentation as any} currentVersion={currentVersion} />);
+        case DocumentableType.EXPERIMENT:
+            return (<ExperimentCard experiment={documentation as any} currentVersion={currentVersion} />);
+        default:
+            return (<DocumentationCard documentation={documentation} currentVersion={currentVersion} />);
+    }
+})()}

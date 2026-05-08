@@ -26,14 +26,15 @@ export default defineConfig({
                 TableOfContents: './src/components/TableOfContents.astro',
             },
             customCss: [
-                // Relative path to your custom CSS file
                 './src/styles/custom.css',
+                '@fontsource/poppins/400.css',
             ],
             editLink: {
                 baseUrl: 'https://github.com/SkriptLang/docs/edit/master/',
             },
             expressiveCode: {
                 tabWidth: 4,
+                styleOverrides: { borderRadius: '0.25rem' },
             },
         }),
     ],

@@ -1,0 +1,54 @@
+---
+import { type Syntax } from '../documentation'
+import CodeCard from "../../CodeCard.astro";
+import DocumentationCard from "./DocumentationCard.astro";
+import SyntaxBadge from "../SyntaxBadge.astro";
+
+interface Props {
+    syntax: Syntax,
+    currentVersion: string,
+    [key: string]: any,
+}
+
+const { syntax, currentVersion, ...rest }: Props = Astro.props;
+---
+
+<DocumentationCard documentation={syntax} currentVersion={currentVersion} {...rest}>
+    <Fragment slot="badges">
+        {syntax.events && (
+                <SyntaxBadge
+                        badgeProps={{text: "Applicable Events", size: 'medium'}}
+                        entries={syntax.events.map(event => ({text: event.name, cardRef: event.id}))}
+                />
+        )}
+        <slot name="badges" />
+    </Fragment>
+    <Fragment slot="right-column">
+        {syntax.patterns.length > 0 && (
+                <CodeCard title="Syntax Patterns" wrap={true} code={syntax.patterns.filter(pattern => pattern.trim().length !== 0)}/>
+        )}
+    </Fragment>
+</DocumentationCard>
+
+<style is:global>
+    [data-syntax-type="Structure"] {
+        --custom-badge-light: #ea9f29;
+        --custom-badge-dark: #653f03;
+    }
+    [data-syntax-type="Section"] {
+        --custom-badge-light: #7eef3c;
+        --custom-badge-dark: #2f7a04;
+    }
+    [data-syntax-type="Effect"] {
+        --custom-badge-light: #a6d333;
+        --custom-badge-dark: #435c03;
+    }
+    [data-syntax-type="Condition"] {
+        --custom-badge-light: #a424dd;
+        --custom-badge-dark: #4a036a;
+    }
+    [data-syntax-type="Event"] {
+        --custom-badge-light: #1cc3df;
+        --custom-badge-dark: #034b57;
+    }
+</style>

@@ -1,0 +1,25 @@
+---
+import {type Experiment} from '../documentation'
+import CodeCard from "../../CodeCard.astro";
+import DocumentationCard from "./DocumentationCard.astro";
+
+interface Props {
+    experiment: Experiment,
+    currentVersion: string,
+}
+
+const { experiment, currentVersion }: Props = Astro.props;
+---
+
+<DocumentationCard documentation={experiment} currentVersion={currentVersion}>
+    <Fragment slot="right-column">
+        <CodeCard title="Experiment Pattern" wrap={true} code={[experiment.pattern]}/>
+    </Fragment>
+</DocumentationCard>
+
+<style is:global>
+    [data-syntax-type="Experiment"] {
+        --custom-badge-light: #e7ef32;
+        --custom-badge-dark: #91980b;
+    }
+</style>

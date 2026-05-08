@@ -11,7 +11,7 @@ const suffix = isMobile ? '-mobile' : '';
 // Define the options for the return type filter
 const syntaxes: any[] = (await getCollection("syntaxes"))
     .filter(syntax => syntax.id === Astro.params.id || (syntax.id === 'syntaxes' && !Astro.params.id))
-const returnTypeOptions = syntaxes[0].data.types.map((type: any) => type.name);
+const returnTypeOptions = Object.values(syntaxes[0].data.types).map((type: any) => type.name);
 ---
 <script>
     import { getParam, setParam } from "../../../utils/utils";
@@ -86,15 +86,6 @@ const returnTypeOptions = syntaxes[0].data.types.map((type: any) => type.name);
 </fieldset>
 
 <style>
-    fieldset {
-        border-color: var(--sl-color-hairline);
-        border-style: solid;
-    }
-    
-    fieldset > legend {
-        font-size: 1.5rem;
-    }
-    
     label {
         user-select: none;
         cursor: pointer;

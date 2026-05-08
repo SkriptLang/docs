@@ -1,5 +1,5 @@
 ---
-import { SyntaxType } from '../../../pages/syntaxes/[...id].astro'
+import { DocumentableType } from '../documentation'
 
 interface Props {
     isMobile?: boolean;
@@ -84,8 +84,8 @@ const suffix = isMobile ? '-mobile' : '';
 </script>
 
 <fieldset id={`type-filter-fieldset${suffix}`} class="checkboxes">
-    <legend>Syntax Type</legend>
-    {Object.values(SyntaxType).map(type => (
+    <legend>Type</legend>
+    {Object.values(DocumentableType).map(type => (
         <span>
            <label for={`type-filter-${type}${suffix}`}>
                <input 
@@ -104,15 +104,6 @@ const suffix = isMobile ? '-mobile' : '';
     .checkboxes {
         display: grid;
         grid-template-columns: 1fr 1fr;
-    }
-
-    fieldset {
-        border-color: var(--sl-color-hairline);
-        border-style: solid;
-    }
-    
-    fieldset > legend {
-        font-size: 1.5rem;
     }
     
     label {

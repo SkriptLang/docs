@@ -1,0 +1,27 @@
+---
+import { type Type } from '../documentation'
+import CodeCard from "../../CodeCard.astro";
+import DocumentationCard from "./DocumentationCard.astro";
+
+interface Props {
+    type: Type,
+    currentVersion: string,
+}
+
+const { type, currentVersion }: Props = Astro.props;
+---
+
+<DocumentationCard documentation={type} currentVersion={currentVersion}>
+    <Fragment slot="right-column">
+        {type.usage && (
+                <CodeCard title="Type Usage" wrap={true} code={type.usage.filter(usage => usage.trim().length !== 0)}/>
+        )}
+    </Fragment>
+</DocumentationCard>
+
+<style is:global>
+    [data-syntax-type="Type"] {
+        --custom-badge-light: #1952cd;
+        --custom-badge-dark: #042e88;
+    }
+</style>

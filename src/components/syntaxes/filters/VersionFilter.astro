@@ -332,7 +332,7 @@ const INITIAL_VISIBLE_COUNT = 3;
 
 
 <fieldset id={`version-filter-fieldset${suffix}`} class="version-tree">
-    <legend>Syntax Version</legend>
+    <legend>Version</legend>
     
     <div class="version-list">
         {versionGroups.slice(0, INITIAL_VISIBLE_COUNT).map(group => (
@@ -450,15 +450,6 @@ const INITIAL_VISIBLE_COUNT = 3;
 </fieldset>
 
 <style>
-    fieldset {
-        border-color: var(--sl-color-hairline);
-        border-style: solid;
-    }
-    
-    fieldset > legend {
-        font-size: 1.5rem;
-    }
-    
     label {
         user-select: none;
         cursor: pointer;

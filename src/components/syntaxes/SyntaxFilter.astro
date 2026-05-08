@@ -19,8 +19,14 @@ const { isMobile } = Astro.props;
     <AddonFilter isMobile={isMobile} />
 </div>
 
-<style>
+<style is:global>
     .filter-container {
         padding: 0.5rem;
+    }
+    .filter-container fieldset {
+        border: 1px solid var(--sl-color-hairline);
+    }
+    .filter-container fieldset > legend {
+        font-size: 1.5rem;
     }
 </style>
