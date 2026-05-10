@@ -21,6 +21,12 @@ const { syntax, currentVersion, ...rest }: Props = Astro.props;
                         entries={syntax.events.map(event => ({text: event.name, cardRef: event.id}))}
                 />
         )}
+        {syntax.relatedProperty && (
+                <SyntaxBadge
+                        badgeProps={{text: "Related Property", size: 'medium'}}
+                        entries={[{text: syntax.relatedProperty.name, cardRef: syntax.relatedProperty.id}]}
+                />
+        )}
         <slot name="badges" />
     </Fragment>
     <Fragment slot="right-column">

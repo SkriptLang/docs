@@ -25,10 +25,12 @@ export interface DocumentableReference {
     name: string,
 }
 
+export interface Origin {
+    name: string,
+}
+
 export interface Documentation extends Documentable {
-    origin: {
-        name: string,
-    },
+    origin: Origin,
     id: string,
     name: string,
     description: string,
@@ -42,6 +44,7 @@ export interface Documentation extends Documentable {
 export interface Syntax extends Documentation {
     patterns: string[],
     events?: DocumentableReference[],
+    relatedProperty?: DocumentableReference,
 }
 
 export interface Expression extends Syntax {
@@ -50,10 +53,16 @@ export interface Expression extends Syntax {
 
 export interface Type extends Documentation {
     usage?: string[],
+    properties: {
+        property: DocumentableReference,
+        origin: Origin,
+        description: string,
+    }[],
 }
 
 export interface Property extends Documentation {
-
+    types: DocumentableReference[],
+    syntaxes: DocumentableReference[],
 }
 
 export interface Function extends Documentation {

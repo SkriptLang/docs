@@ -2,6 +2,7 @@
 import { type Type } from '../documentation'
 import CodeCard from "../../CodeCard.astro";
 import DocumentationCard from "./DocumentationCard.astro";
+import SyntaxBadge from "../SyntaxBadge.astro";
 
 interface Props {
     type: Type,
@@ -12,6 +13,20 @@ const { type, currentVersion }: Props = Astro.props;
 ---
 
 <DocumentationCard documentation={type} currentVersion={currentVersion}>
+    <Fragment slot="badges">
+        {type.properties.length > 0 && (
+                <SyntaxBadge
+                        badgeProps={{text: "Applicable Properties", size: 'medium'}}
+                        entries={type.properties
+                            .sort(((a, b) => a.property.name.localeCompare(b.property.name)))
+                            .map(property =>
+                                ({text: `${property.property.name} (${property.description})`, cardRef: property.property.id})
+                            )
+                        }
+                        wrap={true}
+                />
+        )}
+    </Fragment>
     <Fragment slot="right-column">
         {type.usage && (
                 <CodeCard title="Type Usage" wrap={true} code={type.usage.filter(usage => usage.trim().length !== 0)}/>

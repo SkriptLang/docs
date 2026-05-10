@@ -8,21 +8,25 @@ interface Props {
         text: string,
         cardRef?: string,
     }[],
+    wrap?: boolean,
 }
 
-const { badgeProps, entries }: Props = Astro.props;
+const { badgeProps, entries, wrap }: Props = Astro.props;
 ---
 
 <span class="prefix-badge">
     <Badge {...badgeProps} class="cb"/>
-    {entries.map(({ text, cardRef }) => (
-        cardRef ? (
-            <p data-card-dialog={cardRef}>
-                {text}
-                <Icon name="right-arrow"/>
-            </p>
-        ) : text
-    ))}
+    {entries.map(({ text, cardRef }) =>
+            <>
+                {wrap && <br>}
+                {cardRef ? (
+                    <p data-card-dialog={cardRef}>
+                        {text}
+                        <Icon name="right-arrow"/>
+                    </p>
+                ) : text}
+            </>
+    )}
 </span>
 
 <style>
