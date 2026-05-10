@@ -1,0 +1,24 @@
+---
+import { type Property } from '../documentation'
+import CodeCard from "../../CodeCard.astro";
+import DocumentationCard from "./DocumentationCard.astro";
+
+interface Props {
+    property: Property,
+    currentVersion: string,
+}
+
+const { property, currentVersion }: Props = Astro.props;
+---
+
+<DocumentationCard documentation={property} currentVersion={currentVersion}>
+
+</DocumentationCard>
+
+<style is:global>
+    [data-syntax-type="Property"] {
+        /* Pink */
+        --custom-badge-light: hotpink;
+        --custom-badge-dark: #8B0A50;
+    }
+</style>

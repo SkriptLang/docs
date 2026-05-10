@@ -32,23 +32,28 @@ const { syntax, currentVersion, ...rest }: Props = Astro.props;
 
 <style is:global>
     [data-syntax-type="Structure"] {
-        --custom-badge-light: #ea9f29;
-        --custom-badge-dark: #653f03;
+        /* Sky Blue */
+        --custom-badge-light: lightskyblue;
+        --custom-badge-dark: #00688B;
     }
     [data-syntax-type="Section"] {
-        --custom-badge-light: #7eef3c;
-        --custom-badge-dark: #2f7a04;
+        /* Salmon */
+        --custom-badge-light: lightsalmon;
+        --custom-badge-dark: #8B4513;
     }
     [data-syntax-type="Effect"] {
-        --custom-badge-light: #a6d333;
-        --custom-badge-dark: #435c03;
+        /* Emerald */
+        --custom-badge-light: #50C878;
+        --custom-badge-dark: #004B23;
     }
     [data-syntax-type="Condition"] {
-        --custom-badge-light: #a424dd;
-        --custom-badge-dark: #4a036a;
+        /* Cyan */
+        --custom-badge-light: #008B8B;
+        --custom-badge-dark: #003131;
     }
     [data-syntax-type="Event"] {
-        --custom-badge-light: #1cc3df;
-        --custom-badge-dark: #034b57;
+        /* Ecru */
+        --custom-badge-light: #C8A228;
+        --custom-badge-dark: #634E0A;
     }
 </style>

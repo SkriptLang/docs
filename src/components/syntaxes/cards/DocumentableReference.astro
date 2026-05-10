@@ -2,6 +2,7 @@
 import { getCollection } from "astro:content";
 import DocumentableCard from "./DocumentableCard.astro";
 import { DocumentableType } from "../documentation";
+import { getPlural } from "../../../utils/utils";
 
 interface Props {
     type: DocumentableType,
@@ -12,7 +13,7 @@ const { type, id }: Props = Astro.props;
 
 const syntaxesCollection = await getCollection("syntaxes");
 const rawSyntaxes = syntaxesCollection.find(syntax => syntax.id === 'syntaxes')!.data;
-const syntax = rawSyntaxes[type.toLowerCase() + "s"][id];
+const syntax = rawSyntaxes[getPlural(type.toLowerCase())][id];
 (syntax as any).type = type;
 
 let currentVersion = rawSyntaxes.source.version.split("-")[0];

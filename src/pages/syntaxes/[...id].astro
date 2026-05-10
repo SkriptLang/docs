@@ -38,6 +38,8 @@ function processSyntaxJson(rawSyntaxes: any): Documentation[] {
         ...processRawEntries(rawSyntaxes.events, DocumentableType.EVENT),
         // types
         ...processRawEntries(rawSyntaxes.types, DocumentableType.TYPE),
+        // properties
+        ...processRawEntries(rawSyntaxes.properties, DocumentableType.PROPERTY),
         // functions
         ...processRawEntries(rawSyntaxes.functions, DocumentableType.FUNCTION),
         // experiments

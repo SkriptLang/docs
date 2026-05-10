@@ -2,6 +2,7 @@
 import { type Function } from '../documentation'
 import DocumentationCard from "./DocumentationCard.astro";
 import SyntaxBadge from "../SyntaxBadge.astro";
+import { getPlural } from "../../../utils/utils";
 
 interface Props {
     func: Function,
@@ -27,7 +28,7 @@ const { func, currentVersion }: Props = Astro.props;
                     {Object.values(func.parameters).map(parameter => {
                         let description = parameter.type.name;
                         if (parameter.plural) {
-                            description += "s";
+                            description = getPlural(description);
                         }
                         if (parameter.modifiers) {
                             if (parameter.modifiers.ranged) {
@@ -69,7 +70,8 @@ const { func, currentVersion }: Props = Astro.props;
 
 <style is:global>
     [data-syntax-type="Function"] {
-        --custom-badge-light: #e6882e;
-        --custom-badge-dark: #8c4703;
+        /* Frost Blue */
+        --custom-badge-light: steelblue;
+        --custom-badge-dark: #102A44;
     }
 </style>

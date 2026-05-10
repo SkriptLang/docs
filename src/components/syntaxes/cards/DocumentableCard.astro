@@ -4,6 +4,7 @@ import DocumentationCard from "./DocumentationCard.astro";
 import ExperimentCard from "./ExperimentCard.astro";
 import ExpressionCard from "./ExpressionCard.astro";
 import FunctionCard from "./FunctionCard.astro";
+import PropertyCard from "./PropertyCard.astro";
 import TypeCard from "./TypeCard.astro";
 import SyntaxCard from "./SyntaxCard.astro";
 
@@ -27,6 +28,8 @@ const { documentation, currentVersion }: Props = Astro.props;
             return (<ExpressionCard expression={documentation as any} currentVersion={currentVersion} />);
         case DocumentableType.TYPE:
             return (<TypeCard type={documentation as any} currentVersion={currentVersion} />);
+        case DocumentableType.PROPERTY:
+            return (<PropertyCard property={documentation as any} currentVersion={currentVersion} />);
         case DocumentableType.FUNCTION:
             return (<FunctionCard func={documentation as any} currentVersion={currentVersion} />);
         case DocumentableType.EXPERIMENT:

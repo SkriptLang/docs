@@ -8,6 +8,8 @@ export enum DocumentableType {
     EVENT = "Event",
     // types
     TYPE = "Type",
+    // properties
+    PROPERTY = "Property",
     // functions
     FUNCTION = "Function",
     // experiments
@@ -48,6 +50,10 @@ export interface Expression extends Syntax {
 
 export interface Type extends Documentation {
     usage?: string[],
+}
+
+export interface Property extends Documentation {
+
 }
 
 export interface Function extends Documentation {
