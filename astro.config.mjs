@@ -20,10 +20,10 @@ export default defineConfig({
                 { icon: 'discord', label: 'Discord', href: 'https://discord.gg/ZPsZAg6ygu' },
             ],
             components: {
-                MobileTableOfContents: './src/components/MobileTableOfContents.astro',
-                Search: './src/components/Search.astro',
-                Sidebar: './src/components/Sidebar.astro',
-                TableOfContents: './src/components/TableOfContents.astro',
+                MobileTableOfContents: './src/components/overrides/MobileTableOfContents.astro',
+                Search: './src/components/overrides/Search.astro',
+                Sidebar: './src/components/overrides/Sidebar.astro',
+                TableOfContents: './src/components/overrides/TableOfContents.astro',
             },
             customCss: [
                 './src/styles/custom.css',
