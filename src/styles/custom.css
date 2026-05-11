@@ -66,6 +66,12 @@
 #starlight__sidebar {
     overflow-x: hidden;
 }
+[data-theme='dark'] #starlight__sidebar {
+    scrollbar-color: var(--sl-color-gray-4) var(--sl-color-gray-6);
+}
+[data-theme='light'] #starlight__sidebar {
+    scrollbar-color: var(--sl-color-gray-5) var(--sl-color-black);
+}
 
 starlight-toc span {
     font-size: var(--sl-text-sm);
