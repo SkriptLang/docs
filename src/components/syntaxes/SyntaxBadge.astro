@@ -7,6 +7,7 @@ interface Props {
     entries: {
         text: string,
         cardRef?: string,
+        cardRefText?: string,
     }[],
     wrap?: boolean,
     description?: string,
@@ -17,15 +18,13 @@ const { badgeProps, entries, wrap, description }: Props = Astro.props;
 
 <span class="prefix-badge" title={description}>
     <Badge {...badgeProps} class="cb"/>
-    {entries.map(({ text, cardRef }, index) =>
+    {entries.map(({ text, cardRef, cardRefText }, index) =>
             <>
-                {wrap && <br>}
                 {cardRef ? (
-                    <p>
-                        <a href=`#${cardRef}`>
-                            {text}
-                        </a>
-                        {index != entries.length - 1 && ', '}
+                    <p data-wrap={wrap}>
+                        <a href=`#${cardRef}`>{text}</a>
+                        {cardRefText}
+                        {!wrap && index != entries.length - 1 && ', '}
                     </p>
                 ) : text}
             </>
@@ -36,9 +35,11 @@ const { badgeProps, entries, wrap, description }: Props = Astro.props;
     .prefix-badge:not(:last-of-type) {
         margin-bottom: 0.75em;
     }
-    p {
+    p:not([data-wrap="true"]) {
         display: inline-flex;
         align-items: center;
+    }
+    p {
         padding: 0;
         margin: 0;
 

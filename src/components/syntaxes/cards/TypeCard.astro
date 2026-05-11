@@ -20,7 +20,7 @@ const { type, currentVersion }: Props = Astro.props;
                         entries={type.properties
                             .sort(((a, b) => a.property.name.localeCompare(b.property.name)))
                             .map(property =>
-                                ({text: `${property.property.name} (${property.description})`, cardRef: property.property.id})
+                                ({text: property.property.name, cardRef: property.property.id, cardRefText: property.description})
                             )
                         }
                         wrap={true}
