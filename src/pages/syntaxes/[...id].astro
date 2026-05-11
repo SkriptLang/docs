@@ -18,7 +18,7 @@ function processRawEntries(entries: any, type: DocumentableType) : any {
     return [...Object.values(entries)].map((entry) => {
         (entry as any).type = type;
         return entry;
-    })
+    });
 }
 
 interface Props {
@@ -57,6 +57,48 @@ if (Astro.params.id) {
 const syntaxes: Documentation[] = processSyntaxJson(rawSyntaxes)
     .concat(...addonSyntaxes)
     .toSorted((x, y) => x.name.localeCompare(y.name))
+
+// This attempts to remap invalid links to other syntax elements in element descriptions
+// It pulls out the link and tries to associate it with an existing element
+// If it can, the link is replaced
+for (const syntax of syntaxes) {
+    let index = 0;
+    while (index != -1) {
+        // first, isolate next href tag in description
+        const desc = syntax.description;
+        index = desc.indexOf("href=", index + 1);
+        const opening = desc.at(index + 5)!; // opening quote character of href
+        const closing = desc.indexOf(opening, index + 6)!; // closing quote index of href
+        let id = desc.substring(index + 6, closing);
+
+        // next, validate that it likely references another element
+        const firstChar = id.charAt(0);
+        if (firstChar !== "#" && firstChar !== "/" && firstChar !== ".") { // // probably not a link to another element
+            continue;
+        }
+        const fragmentStart = id.indexOf("#");
+        if (fragmentStart == -1) { // probably not a link to another element
+            continue;
+        }
+        id = id.substring(fragmentStart + 1);
+
+        // finally, attempt to map the ID to an existing element
+        if (syntaxes.some(s => s.id === id)) { // already a valid mapping
+            continue;
+        }
+        id = id.toLowerCase().replace(/[^a-z]/g, ''); // convert to only letters
+        // sort to prioritize Types for matches
+        const sortedSyntaxes = [...syntaxes].sort(a =>
+            a.type === DocumentableType.TYPE ? -1 : 1);
+        // map IDs to only letters (e.g., "EvtAtTime" -> "attime")
+        const match = sortedSyntaxes.find(s =>
+            s.id.substring(s.id.substring(1).search(/[A-Z]/) + 1).toLowerCase().replace(/[^a-z]/g, '') === id);
+        if (!match) {
+            continue;
+        }
+        syntax.description = desc.substring(0, index + 6) + '#' + match.id + desc.substring(closing);
+    }
+}
 
 let currentVersion = rawSyntaxes.source.version.split("-")[0];
 if (currentVersion.endsWith(".0")) {
