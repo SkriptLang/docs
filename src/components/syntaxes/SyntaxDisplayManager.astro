@@ -553,10 +553,31 @@ export interface VersionFilterData {
         }
     });
 
-    document.querySelectorAll("[data-card-dialog]").forEach(element => {
-        element.addEventListener("click", () => {
-            showSyntaxDialog((element as HTMLElement).dataset.cardDialog!);
-        });
+    document.addEventListener('click', event => {
+       if (!(event.target instanceof HTMLElement)) { // not a link
+           return;
+       }
+       const a = event.target.closest('a');
+       if (!a) { // not a link
+           return;
+       }
+       const url = new URL(a.href);
+       const hash = url.hash.substring(1);
+       url.hash = ''; // remove hash from URL for comparison
+       if (window.location.href !== url.href) { // link to other resource, process as normal
+           return;
+       }
+       event.preventDefault();
+       if ((event.target.closest('.documentation-card') as HTMLElement)?.dataset.syntaxId === hash) { // copying link to card
+           url.search = ''; // remove search from URL for linking
+           url.hash = hash;
+           navigator.clipboard.writeText(url.href).then(() => {
+               // TODO some sort of popup notifying link copied
+           });
+           return;
+       }
+       // show card dialog
+       showSyntaxDialog(hash);
     });
 
     function showSyntaxDialog(syntaxId: string) {
