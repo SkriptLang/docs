@@ -12,7 +12,7 @@ interface Props {
 }
 
 const { documentation, currentVersion, ...rest }: Props = Astro.props;
-const isNew = documentation.since !== null && (Array.isArray(documentation.since) ? documentation.since.join() : documentation.since).includes(currentVersion);
+const isNew = documentation.since && documentation.since.join().includes(currentVersion);
 ---
 
 <section id=`card-${documentation.id}` class="documentation-card"
@@ -39,6 +39,7 @@ const isNew = documentation.since !== null && (Array.isArray(documentation.since
             {documentation.deprecated && (
                     <Badge variant="danger" size='medium' text="Deprecated"/>
             )}
+            <slot name="header badges" />
             {documentation.requirements.length > 0 && (
                     <Badge class="sb" size='medium' text={"Requires " + documentation.requirements.join(", ")}/>
             )}

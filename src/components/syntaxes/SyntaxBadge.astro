@@ -9,12 +9,13 @@ interface Props {
         cardRef?: string,
     }[],
     wrap?: boolean,
+    description?: string,
 }
 
-const { badgeProps, entries, wrap }: Props = Astro.props;
+const { badgeProps, entries, wrap, description }: Props = Astro.props;
 ---
 
-<span class="prefix-badge">
+<span class="prefix-badge" title={description}>
     <Badge {...badgeProps} class="cb"/>
     {entries.map(({ text, cardRef }, index) =>
             <>

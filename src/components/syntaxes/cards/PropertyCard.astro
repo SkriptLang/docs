@@ -20,6 +20,7 @@ const { property, currentVersion }: Props = Astro.props;
                     .sort(((a, b) => a.name.localeCompare(b.name)))
                     .map(type => ({text: type.name, cardRef: type.id}))
                 }
+                description="These are types that support this property."
         />
         <SyntaxBadge
                 badgeProps={{text: "Applicable Syntaxes", size: 'medium'}}
@@ -27,6 +28,7 @@ const { property, currentVersion }: Props = Astro.props;
                     .sort(((a, b) => a.name.localeCompare(b.name)))
                     .map(syntax => ({text: syntax.name, cardRef: syntax.id}))
                 }
+                description="These are syntaxes that provide functionality for this property."
         />
     </Fragment>
 </DocumentationCard>

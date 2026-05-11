@@ -29,6 +29,11 @@ export interface Origin {
     name: string,
 }
 
+export interface ExperimentData {
+    required: DocumentableReference[],
+    disallowed: DocumentableReference[],
+}
+
 export interface Documentation extends Documentable {
     origin: Origin,
     id: string,
@@ -45,6 +50,7 @@ export interface Syntax extends Documentation {
     patterns: string[],
     events?: DocumentableReference[],
     relatedProperty?: DocumentableReference,
+    experimentData?: ExperimentData,
 }
 
 export interface Expression extends Syntax {
