@@ -3,15 +3,20 @@
 import { Icon } from '@astrojs/starlight/components';
 ---
 
-<div style="display: contents;">
-    <label id="syntax-search" class="syntax-search">
-        <Icon name="magnifier" size='large'/>
-        <input aria-label={Astro.locals.t('search.label')} aria-keyshortcuts="Control+K"
-               id="syntax-search-input" type="text" placeholder={Astro.locals.t('search.label')}/>
-        <kbd class="sl-hidden md:sl-flex" style="display: none;">
-            <kbd>{Astro.locals.t('search.ctrlKey')}</kbd><kbd>K</kbd>
-        </kbd>
-    </label>
+<div id="header-search-group">
+    <div style="display: contents;">
+        <label id="syntax-search" class="syntax-search">
+            <Icon name="magnifier" size='large'/>
+            <input aria-label={Astro.locals.t('search.label')} aria-keyshortcuts="Control+K"
+                   id="syntax-search-input" type="text" placeholder={Astro.locals.t('search.label')}/>
+            <kbd class="sl-hidden md:sl-flex" style="display: none;">
+                <kbd>{Astro.locals.t('search.ctrlKey')}</kbd><kbd>K</kbd>
+            </kbd>
+        </label>
+    </div>
+    <button id="sidebar-collapse">
+        Toggle Sidebar
+    </button>
 </div>
 
 {
@@ -71,9 +76,46 @@ import { Icon } from '@astrojs/starlight/components';
     }
 
     initSearch();
+
+    document.getElementById('sidebar-collapse')?.addEventListener('click', () => {
+        document.getElementById('starlight__sidebar')!.classList.toggle('collapsed');
+        document.getElementsByClassName('main-frame')[0]!.classList.toggle('collapsed');
+    })
 </script>
 
 <style>
+    @media (max-width: 50rem) {
+        #sidebar-collapse {
+            display: none;
+        }
+    }
+    #sidebar-collapse {
+        min-width: fit-content;
+        height: 2.5rem;
+        background-color: var(--sl-color-black);
+        border: 1px solid var(--sl-color-gray-5);
+        border-radius: 0.5rem;
+        cursor: pointer;
+        color: var(--sl-color-white);
+        transition: background-color 0.2s;
+    }
+    #sidebar-collapse:hover {
+        background-color: var(--sl-color-gray-5);
+    }
+    :global(#starlight__sidebar.collapsed) {
+        display: none;
+    }
+    :global(.main-frame.collapsed) {
+        padding-inline-start: 0;
+    }
+
+    #header-search-group {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        min-width: 50%;
+    }
+
     .syntax-search {
         display: flex;
         align-items: center;
