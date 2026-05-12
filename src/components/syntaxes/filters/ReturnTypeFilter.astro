@@ -2,12 +2,6 @@
 import { getCollection } from "astro:content";
 import SearchableDropdown from '../../SearchableDropdown.astro';
 
-interface Props {
-    isMobile?: boolean;
-}
-const { isMobile } = Astro.props;
-const suffix = isMobile ? '-mobile' : '';
-
 // Define the options for the return type filter
 const syntaxes: any[] = (await getCollection("syntaxes"))
     .filter(syntax => syntax.id === Astro.params.id || (syntax.id === 'syntaxes' && !Astro.params.id))
@@ -27,61 +21,39 @@ const returnTypeOptions = Object.values(syntaxes[0].data.types).map((type: any) 
             updateReturnTypeFilter(expectedType);
         }
     }
-    
-    function syncReturnTypeInput(regular: HTMLInputElement, mobile: HTMLInputElement) {
-        regular.value = mobile.value = expectedType;
-    }
-    
-    function setupMirroredInputs() {
-        const regular = document.getElementById('return-type-filter-input');
-        const mobile = document.getElementById('return-type-filter-input-mobile');
-        
-        if (!regular || !mobile) return;
-        
-        const regularInput = regular as HTMLInputElement;
-        const mobileInput = mobile as HTMLInputElement;
-        
-        syncReturnTypeInput(regularInput, mobileInput);
-        
-        regularInput.addEventListener('input', () => {
-            mobileInput.value = regularInput.value;
-            handleReturnTypeFilterChange(regularInput);
-        });
-        
-        mobileInput.addEventListener('input', () => {
-            regularInput.value = mobileInput.value;
-            handleReturnTypeFilterChange(mobileInput);
-        });
-    }
-    
+
     function initReturnTypeFilter() {
         const syntaxDisplayManager = (window as any).__syntaxDisplayManager;
         if (!syntaxDisplayManager) {
             setTimeout(initReturnTypeFilter, 100);
             return;
         }
-        
+
         updateReturnTypeFilter = syntaxDisplayManager.updateReturnTypeFilter;
-        
+
+        // setup input change functionality
+        const input = document.getElementById('return-type-filter-input') as HTMLInputElement;
+        input.addEventListener('input', () => {
+            handleReturnTypeFilterChange(input);
+        });
+
+        // parse and initialize based on current URL param
         const typeParam = getParam('return_type');
         if (typeParam) {
             expectedType = typeParam;
         }
-        
-        setupMirroredInputs();
-        
         if (typeParam && updateReturnTypeFilter) {
             updateReturnTypeFilter(expectedType);
         }
     }
-    
+
     initReturnTypeFilter();
 </script>
 
-<fieldset id={`return-type-filter-fieldset${suffix}`} class="text-input">
+<fieldset id={`return-type-filter-fieldset`} class="text-input">
     <legend>Return Type</legend>
-    <label for={`return-type-filter-input${suffix}`}>
-        <SearchableDropdown isMobile={isMobile} options={returnTypeOptions} />
+    <label for={`return-type-filter-input`}>
+        <SearchableDropdown options={returnTypeOptions} />
     </label>
 </fieldset>
 

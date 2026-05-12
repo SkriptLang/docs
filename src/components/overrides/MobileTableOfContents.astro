@@ -1,10 +1,11 @@
 ---
 import Default from '@astrojs/starlight/components/MobileTableOfContents.astro';
-import SyntaxFilter from "../syntaxes/SyntaxFilter.astro";
+import SyntaxSidebar from "../syntaxes/SyntaxSidebar.astro";
 
 const isSyntaxesPage = Astro.locals.starlightRoute.id.startsWith('syntaxes');
+const { sidebar } = Astro.locals.starlightRoute;
 ---
 
 {
-    isSyntaxesPage ?(<SyntaxFilter isMobile={true}/>) : (<Default><slot /></Default>)
+    isSyntaxesPage ? (<SyntaxSidebar entries={sidebar as any} isMobile={true}/>) : (<Default><slot /></Default>)
 }

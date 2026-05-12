@@ -1,13 +1,6 @@
 ---
 import {getCollection} from "astro:content";
 
-interface Props {
-    isMobile?: boolean;
-}
-
-const { isMobile } = Astro.props;
-const suffix = isMobile ? '-mobile' : '';
-
 const addons = [
     "Skript",
     ...(await getCollection("addonSyntaxes"))
@@ -37,33 +30,6 @@ const addons = [
         }
     }
 
-    function syncAddonOptions(regular: HTMLInputElement, mobile: HTMLInputElement) {
-        regular.checked = mobile.checked = expectedAddons.has(regular.dataset.filterKey!);
-    }
-
-    function setupMirroredInputs() {
-        const regular = document.getElementById('addon-filter-fieldset')!;
-
-        regular.querySelectorAll<HTMLInputElement>('input').forEach((regularElement) => {
-            const mobileElement = document.getElementById(regularElement.id + '-mobile') as HTMLInputElement;
-            if (!mobileElement) {
-                return;
-            }
-
-            syncAddonOptions(regularElement, mobileElement);
-
-            regularElement.addEventListener('change', () => {
-                mobileElement.checked = (regularElement).checked;
-                handleAddonFilterChange(regularElement);
-            });
-
-            mobileElement.addEventListener('change', () => {
-                (regularElement).checked = mobileElement.checked;
-                handleAddonFilterChange(regularElement);
-            });
-        });
-    }
-
     function initAddonFilter() {
         const syntaxDisplayManager = (window as any).__syntaxDisplayManager;
         if (!syntaxDisplayManager) {
@@ -73,28 +39,34 @@ const addons = [
 
         updateAddonFilter = syntaxDisplayManager.updateAddonFilter!;
 
+        // setup button functionality
+        const fieldset = document.getElementById('addon-filter-fieldset')!;
+        fieldset.querySelectorAll<HTMLInputElement>('input').forEach((element) => {
+            element.addEventListener('change', () => {
+                handleAddonFilterChange(element);
+            });
+        });
+
+        // parse and initialize based on current URL params
         const addonsParam = getParam('addons');
         if (addonsParam) {
             addonsParam.split(",").forEach(addon => expectedAddons.add(addon));
         }
-
-        setupMirroredInputs();
-
         updateAddonFilter!(expectedAddons)
     }
 
     initAddonFilter();
 </script>
 
-<fieldset id={`addon-filter-fieldset${suffix}`} class="checkboxes">
+<fieldset id={`addon-filter-fieldset`} class="checkboxes">
     <legend>Addons</legend>
     {addons.map(addon => (
         <span>
-            <label for={`addon-filter-${addon}${suffix}`}>
+            <label for={`addon-filter-${addon}`}>
                 <input
                        type="checkbox"
                        name={addon}
-                       id={`addon-filter-${addon}${suffix}`}
+                       id={`addon-filter-${addon}`}
                        data-filter-key={addon}
                 />
                 {addon}

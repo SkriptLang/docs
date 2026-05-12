@@ -1,4 +1,6 @@
 ---
+import { Icon } from '@astrojs/starlight/components';
+
 // SyntaxSidebar.astro - Replacement sidebar for syntaxes page
 
 interface SidebarEntry {
@@ -12,9 +14,10 @@ interface SidebarEntry {
 
 interface Props {
     entries: SidebarEntry[],
+    isMobile: boolean,
 }
 
-const { entries }: Props = Astro.props;
+const { entries, isMobile }: Props = Astro.props;
 const duplicatesMap = new Set([...entries.map(entry => entry.label)
     .reduce((accumulator, value) => {
         value = value.toLowerCase();
@@ -26,13 +29,34 @@ const duplicatesMap = new Set([...entries.map(entry => entry.label)
 ---
 
 <div class="sidebar-pane">
-    <ul id="syntax-sidebar-list">
+    {!isMobile && (<ul id="syntax-sidebar-list">
         {entries.map(entry => (
             <li id={entry.attrs.id} class="syntax-sidebar-item">
                 {entry.label} {duplicatesMap.has(entry.label.toLowerCase()) ? `(${entry.attrs.type})` : ""}
             </li>
         ))}
-    </ul>
+    </ul>)}
+    {isMobile && (
+            <nav aria-labelledby="starlight__on-this-page--mobile">
+                <details id="starlight__mobile-toc">
+                    <summary id="starlight__on-this-page--mobile" class="sl-flex">
+						<span class="toggle sl-flex">
+							Jump to Syntax
+                            <Icon name={'right-caret'} class="caret" size="1rem" />
+						</span>
+                    </summary>
+                    <div class="dropdown">
+                        <ul id="syntax-sidebar-list-mobile">
+                            {entries.map(entry => (
+                                    <li id=`${entry.attrs.id}-mobile` class="syntax-sidebar-item">
+                                        {entry.label} {duplicatesMap.has(entry.label.toLowerCase()) ? `(${entry.attrs.type})` : ""}
+                                    </li>
+                            ))}
+                        </ul>
+                    </div>
+                </details>
+            </nav>
+    )}
 </div>
 
 <script>
@@ -44,8 +68,12 @@ const duplicatesMap = new Set([...entries.map(entry => entry.label)
     }
 
     const sidebarList = document.getElementById('syntax-sidebar-list')!;
-    for (const child of sidebarList.children) {
-        const syntaxId = child.id.substring("sidebar-".length);
+    const mobileSidebarList = document.getElementById('syntax-sidebar-list-mobile')!;
+    for (const child of [...sidebarList.children, ...mobileSidebarList.children]) {
+        let syntaxId = child.id.substring("sidebar-".length);
+        if (syntaxId.endsWith('-mobile')) {
+            syntaxId = syntaxId.substring(0, syntaxId.length - 7);
+        }
         child.addEventListener('click', (event) => {
             event.preventDefault();
 
@@ -53,31 +81,36 @@ const duplicatesMap = new Set([...entries.map(entry => entry.label)
             window.dispatchEvent(new CustomEvent('sidebar-item-click', {
                 detail: { syntaxId: syntaxId, element: event.currentTarget }
             }));
+            (document.getElementById("starlight__mobile-toc") as HTMLDetailsElement).open = false;
         })
     }
 
     function rebuild(filteredItems: VirtualItem[]) {
         // hide all elements
-        for (const child of sidebarList.children) {
+        for (const child of [...sidebarList.children, ...mobileSidebarList.children]) {
             (child as HTMLElement).style.display = 'none';
             (child as HTMLElement).style.order = '0';
         }
 
         filteredItems.forEach((item, index) => {
             const entry = item.sidebarElement!;
+            const mobileEntry = document.getElementById(`sidebar-${item.syntaxId}-mobile`)!;
             entry.style.display = '';
             entry.style.order = `${index}`;
+            mobileEntry.style.display = '';
+            mobileEntry.style.order = `${index}`;
         });
     }
 
     function highlight(syntaxId: string) {
         // Remove all highlights
-        for (const child of sidebarList.children) {
+        for (const child of [...sidebarList.children, ...mobileSidebarList.children]) {
             child.classList.remove('active-syntax');
         }
 
         // Add highlight to target
         document.getElementById(`sidebar-${syntaxId}`)?.classList.add('active-syntax');
+        document.getElementById(`sidebar-${syntaxId}-mobile`)?.classList.add('active-syntax');
     }
 
     function scrollTo(syntaxId: string) {
@@ -102,7 +135,7 @@ const duplicatesMap = new Set([...entries.map(entry => entry.label)
         width: 100%;
     }
 
-    :global(#syntax-sidebar-list) {
+    :global(#syntax-sidebar-list, #syntax-sidebar-list-mobile) {
         display: flex;
         flex-direction: column;
         list-style: none;
@@ -127,5 +160,80 @@ const duplicatesMap = new Set([...entries.map(entry => entry.label)
     }
     :global([data-theme='light'] .syntax-sidebar-item:hover, [data-theme='light'] .syntax-sidebar-item.active-syntax) {
         background-color: var(--sl-color-gray-6);
+    }
+</style>
+
+<!--
+Taken from:
+https://github.com/withastro/starlight/blob/187a2f705e8e79ca7de160dc29e16283851bcf65/packages/starlight/components/PageSidebar.astro
+-->
+<style>
+    @layer starlight.core {
+        nav {
+            position: fixed;
+            z-index: var(--sl-z-index-toc);
+            top: calc(var(--sl-nav-height) - 1px);
+            inset-inline: 0;
+            border-top: 1px solid var(--sl-color-gray-5);
+            background-color: var(--sl-color-bg-nav);
+        }
+        @media (min-width: 50rem) {
+            nav {
+                inset-inline-start: var(--sl-content-inline-start, 0);
+            }
+        }
+
+        summary {
+            gap: 0.5rem;
+            align-items: center;
+            height: var(--sl-mobile-toc-height);
+            border-bottom: 1px solid var(--sl-color-hairline-shade);
+            padding: 0.5rem 1rem;
+            font-size: var(--sl-text-xs);
+            outline-offset: var(--sl-outline-offset-inside);
+        }
+        summary::marker,
+        summary::-webkit-details-marker {
+            display: none;
+        }
+
+        .toggle {
+            flex-shrink: 0;
+            gap: 1rem;
+            align-items: center;
+            justify-content: space-between;
+            border: 1px solid var(--sl-color-gray-5);
+            border-radius: 0.5rem;
+            padding-block: 0.5rem;
+            padding-inline-start: 0.75rem;
+            padding-inline-end: 0.5rem;
+            line-height: 1;
+            background-color: var(--sl-color-black);
+            user-select: none;
+            cursor: pointer;
+        }
+        details[open] .toggle {
+            color: var(--sl-color-white);
+            border-color: var(--sl-color-accent);
+        }
+        details .toggle:hover {
+            color: var(--sl-color-white);
+            border-color: var(--sl-color-gray-2);
+        }
+        details[open] .caret {
+            transform: rotateZ(90deg);
+        }
+
+        .dropdown {
+            --border-top: 1px;
+            margin-top: calc(-1 * var(--border-top));
+            border: var(--border-top) solid var(--sl-color-gray-6);
+            border-top-color: var(--sl-color-hairline-shade);
+            max-height: calc(85vh - var(--sl-nav-height) - var(--sl-mobile-toc-height));
+            overflow-y: auto;
+            background-color: var(--sl-color-black);
+            box-shadow: var(--sl-shadow-md);
+            overscroll-behavior: contain;
+        }
     }
 </style>

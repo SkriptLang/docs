@@ -1,15 +1,11 @@
 ---
 interface Props {
-    isMobile?: boolean;
     options?: string[];
 }
 
-const { 
-    isMobile, 
+const {
     options
 } = Astro.props;
-
-const suffix = isMobile ? '-mobile' : '';
 ---
 
 <script>
@@ -87,10 +83,10 @@ const suffix = isMobile ? '-mobile' : '';
     customElements.define('searchable-dropdown', SearchableDropdown);
 </script>
 
-<searchable-dropdown data-suffix={suffix}>
+<searchable-dropdown>
     <input
         type="text"
-        id={`return-type-filter-input${suffix}`}
+        id={`return-type-filter-input`}
         placeholder="e.g., number, text, player"
         class="dropdown-input"
         autocomplete="off"
@@ -107,7 +103,7 @@ const suffix = isMobile ? '-mobile' : '';
     <div class="no-results" style="display: none;">
         No matches found
     </div>
-</div>
+</searchable-dropdown>
 
 <style>
     searchable-dropdown {
@@ -133,7 +129,6 @@ const suffix = isMobile ? '-mobile' : '';
         position: absolute;
         z-index: 10;
         width: 100%;
-        margin-top: 0.25rem;
         background-color: white;
         border: 1px solid #d1d5db;
         border-radius: 0.375rem;
