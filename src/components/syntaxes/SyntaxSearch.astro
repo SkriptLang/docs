@@ -14,8 +14,11 @@ import { Icon } from '@astrojs/starlight/components';
             </kbd>
         </label>
     </div>
-    <button id="sidebar-collapse">
+    <button id="toggle-filters" class="toggle-button">
         Toggle Filters
+    </button>
+    <button id="toggle-syntax-list" class="toggle-button">
+        Toggle Syntax List
     </button>
 </div>
 
@@ -77,20 +80,25 @@ import { Icon } from '@astrojs/starlight/components';
 
     initSearch();
 
-    document.getElementById('sidebar-collapse')?.addEventListener('click', () => {
+    document.getElementById('toggle-filters')?.addEventListener('click', () => {
         // TODO probably need to do a rerender for virtual scrolling height recalculation
         document.getElementById('starlight__sidebar')!.classList.toggle('collapsed');
-        document.getElementsByClassName('main-frame')[0]!.classList.toggle('collapsed');
-    })
+        document.documentElement.toggleAttribute('data-has-sidebar');
+    });
+    document.getElementById('toggle-syntax-list')?.addEventListener('click', () => {
+        // TODO probably need to do a rerender for virtual scrolling height recalculation
+        document.getElementsByClassName('right-sidebar-container')[0]!.classList.toggle('collapsed');
+        document.documentElement.toggleAttribute('data-has-toc');
+    });
 </script>
 
 <style>
     @media (max-width: 50rem) {
-        #sidebar-collapse {
+        .toggle-button {
             display: none;
         }
     }
-    #sidebar-collapse {
+    .toggle-button {
         min-width: fit-content;
         height: 2.5rem;
         background-color: var(--sl-color-black);
@@ -100,14 +108,23 @@ import { Icon } from '@astrojs/starlight/components';
         color: var(--sl-color-text);
         transition: background-color 0.2s;
     }
-    #sidebar-collapse:hover {
+    .toggle-button:hover {
         background-color: var(--sl-color-gray-5);
     }
     :global(#starlight__sidebar.collapsed) {
         display: none;
     }
-    :global(.main-frame.collapsed) {
-        padding-inline-start: 0;
+    :global(.right-sidebar-container.collapsed) {
+        display: none;
+    }
+    :global(html:not([data-has-sidebar]) .main-pane) {
+        --sl-content-width: calc(67.5rem + var(--sl-sidebar-width));
+    }
+    :global(html:not([data-has-toc]) .main-pane) {
+        --sl-content-width: calc(100vw - var(--sl-sidebar-width));
+    }
+    :global(html:not([data-has-sidebar]):not([data-has-toc]) .main-pane) {
+        --sl-content-width: 100vw;
     }
 
     #header-search-group {
