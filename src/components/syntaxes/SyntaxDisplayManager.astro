@@ -46,10 +46,9 @@ export interface VersionFilterData {
         const syntaxId = element.dataset.syntaxId!;
         const syntaxName = element.dataset.syntaxName!;
         const sidebarElement = document.getElementById(`sidebar-${syntaxId}`);
-        // of course it doesn't include margin...
-        const height = (element.getBoundingClientRect().height + parseFloat(window.getComputedStyle(element).marginBottom)) || ESTIMATED_ITEM_HEIGHT;
+        // +40 to include margin, hardcoded from 2.5rem
+        const height = (element.getBoundingClientRect().height + 40) || ESTIMATED_ITEM_HEIGHT;
 
-        element.style.display = 'none';
         return { 
             element: element,
             syntaxName,
@@ -66,7 +65,7 @@ export interface VersionFilterData {
     // -----------------
 
     let positions: number[] = [];
-    let visibleRange = { start: -1, end: -1 };
+    let visibleRange = { start: 0, end: allItems.length };
 
     // function for determining the virtual positions of cards based on the item heights
     // creates a long list of start positions as offsets from the top (dynamic programming!)
@@ -111,7 +110,7 @@ export interface VersionFilterData {
     // ---------------
 
     // init filters
-    let filteredItems: VirtualItem[] = [];
+    let filteredItems: VirtualItem[] = allItems;
 
     let typeFilter = new Set<string>();
     let versionFilter: VersionFilterData = {
@@ -607,6 +606,19 @@ export interface VersionFilterData {
     // Initialize everything
     // ---------------------
 
+    function debounce(func: any, delay: number) {
+        let timer: NodeJS.Timeout;
+        return function(...args: any) {
+            clearTimeout(timer);
+            timer = setTimeout(() => func(...args), delay);
+        }
+    }
+
+    const queueSearchUpdate = debounce((searchQuery: string) => {
+        recomputeSearchCache(searchQuery);
+        fullRender();
+    }, 200);
+
     fullRender();
     scrollTo(window.location.hash.substring(1));
 
@@ -634,8 +646,7 @@ export interface VersionFilterData {
             fullRender();
         },
         updateSearchQuery: (searchQuery: string = '') => {
-            recomputeSearchCache(searchQuery);
-            fullRender();
+            queueSearchUpdate(searchQuery);
         }
     };
 </script>

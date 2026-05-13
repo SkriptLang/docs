@@ -39,20 +39,26 @@ const addons = [
 
         updateAddonFilter = syntaxDisplayManager.updateAddonFilter!;
 
-        // setup button functionality
-        const fieldset = document.getElementById('addon-filter-fieldset')!;
-        fieldset.querySelectorAll<HTMLInputElement>('input').forEach((element) => {
-            element.addEventListener('change', () => {
-                handleAddonFilterChange(element);
-            });
-        });
-
         // parse and initialize based on current URL params
         const addonsParam = getParam('addons');
         if (addonsParam) {
             addonsParam.split(",").forEach(addon => expectedAddons.add(addon));
         }
-        updateAddonFilter!(expectedAddons)
+
+        // setup button functionality, initialize states
+        const fieldset = document.getElementById('addon-filter-fieldset')!;
+        fieldset.querySelectorAll<HTMLInputElement>('input').forEach((element) => {
+            if (expectedAddons.has(element.dataset.filterKey!)) {
+                element.checked = true;
+            }
+            element.addEventListener('change', () => {
+                handleAddonFilterChange(element);
+            });
+        });
+
+        if (expectedAddons.size > 0) {
+            updateAddonFilter!(expectedAddons);
+        }
     }
 
     initAddonFilter();

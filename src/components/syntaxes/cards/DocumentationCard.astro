@@ -84,6 +84,11 @@ const isNew = documentation.since && documentation.since.join().includes(current
         display: flex;
         flex-direction: row;
         gap: 0 2%;
+        /*
+         * If changing the vertical margins of a documentation card,
+         * you !!!MUST!!! update the margin inclusion in SyntaxDisplayManager
+         *
+         */
         margin: 0 0 2.5rem 0;
         padding: 1rem;
         line-height: 1.5rem;

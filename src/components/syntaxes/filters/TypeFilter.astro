@@ -33,20 +33,24 @@ import { DocumentableType } from '../documentation'
 
         updateTypeFilter = syntaxDisplayManager.updateTypeFilter;
 
-        // setup input change functionality
-        document.getElementById('type-filter-fieldset')!.querySelectorAll<HTMLInputElement>('input').forEach((element) => {
-            element.addEventListener('change', () => {
-                handleTypeFilterChange(element);
-            });
-        });
-
         // parse and initialize based on current URL param
         const typesParam = getParam('types');
         if (typesParam) {
             typesParam.split(",").forEach(type => expectedTypes.add(type));
         }
-        if (typesParam && updateTypeFilter) {
-            updateTypeFilter(expectedTypes);
+
+        // setup input change functionality
+        document.getElementById('type-filter-fieldset')!.querySelectorAll<HTMLInputElement>('input').forEach((element) => {
+            if (expectedTypes.has(element.dataset.filterKey!)) { // set default state
+                element.checked = true;
+            }
+            element.addEventListener('change', () => {
+                handleTypeFilterChange(element);
+            });
+        });
+
+        if (expectedTypes.size > 0) {
+            updateTypeFilter!(expectedTypes);
         }
     }
 

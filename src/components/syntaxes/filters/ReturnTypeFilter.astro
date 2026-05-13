@@ -42,8 +42,10 @@ const returnTypeOptions = Object.values(syntaxes[0].data.types).map((type: any) 
         if (typeParam) {
             expectedType = typeParam;
         }
-        if (typeParam && updateReturnTypeFilter) {
-            updateReturnTypeFilter(expectedType);
+
+        if (expectedType.length > 0) {
+            input.value = expectedType;
+            updateReturnTypeFilter!(expectedType);
         }
     }
 

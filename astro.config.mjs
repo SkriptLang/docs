@@ -20,6 +20,7 @@ export default defineConfig({
                 { icon: 'discord', label: 'Discord', href: 'https://discord.gg/ZPsZAg6ygu' },
             ],
             components: {
+                Footer: './src/components/overrides/Footer.astro',
                 MobileTableOfContents: './src/components/overrides/MobileTableOfContents.astro',
                 Search: './src/components/overrides/Search.astro',
                 Sidebar: './src/components/overrides/Sidebar.astro',
