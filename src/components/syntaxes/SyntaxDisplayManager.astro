@@ -49,6 +49,7 @@ export interface VersionFilterData {
         // of course it doesn't include margin...
         const height = (element.getBoundingClientRect().height + parseFloat(window.getComputedStyle(element).marginBottom)) || ESTIMATED_ITEM_HEIGHT;
 
+        element.style.display = 'none';
         return { 
             element: element,
             syntaxName,
@@ -65,7 +66,7 @@ export interface VersionFilterData {
     // -----------------
 
     let positions: number[] = [];
-    let visibleRange = { start: 0, end: 0 };
+    let visibleRange = { start: -1, end: -1 };
 
     // function for determining the virtual positions of cards based on the item heights
     // creates a long list of start positions as offsets from the top (dynamic programming!)
@@ -448,18 +449,14 @@ export interface VersionFilterData {
 
     // Updates which items are visible and sets display attr accordingly
     function renderVisible() {
-        if (!wrapper || !viewport) return;
-        if (filteredItems.length === 0) {
-            allItems.forEach(item => {
-                item.element.style.display = 'none';
-            });
+        if (!wrapper || !viewport || filteredItems.length === 0) {
             return;
         }
 
+        // calculate range of visible elements
         const rect = wrapper.getBoundingClientRect();
         const scrollTop = Math.max(0, -rect.top);
         const viewportHeight = window.innerHeight;
-
         const newRange = findVisibleRange(scrollTop, viewportHeight);
 
         // only update if range has changed
@@ -469,18 +466,17 @@ export interface VersionFilterData {
             return;
         }
 
+        // Hide any old items now outside the view
+        for (let i = visibleRange.start; i < visibleRange.end; i++) {
+            if (i <= newRange.start || i >= newRange.end) {
+                filteredItems[i].element.style.display = 'none';
+            }
+        }
         visibleRange = newRange;
 
-        // Hide all items first
-        allItems.forEach(item => {
-            item.element.style.display = 'none';
-        });
-
-        // Show visible items and set their order
+        // Show visible items
         for (let i = visibleRange.start; i < visibleRange.end; i++) {
-            const item = filteredItems[i];
-            item.element.style.display = '';
-            item.element.style.order = i.toString(); // CSS flexbox order
+            filteredItems[i].element.style.display = '';
         }
 
         // Update viewport position
@@ -498,30 +494,47 @@ export interface VersionFilterData {
         if (!wrapper || !viewport) {
             return;
         }
-        // Get new filtered items
-        filteredItems = getFilteredItems();
-        positions = calculatePositions(filteredItems);
 
+        // get new filtered items
+        const newFilteredItems = getFilteredItems();
+
+        // update wrapper size
+        positions = calculatePositions(newFilteredItems);
         const totalHeight = positions[positions.length - 1] || 0;
         wrapper.style.height = `${totalHeight}px`;
 
-        // Reset visible range when filtering changes
+        // hide all currently visible elements
+        for (let i = visibleRange.start; i < visibleRange.end; i++) {
+            filteredItems[i].element.style.display = 'none';
+        }
+        filteredItems = newFilteredItems;
+        // set ordering for new elements
+        newFilteredItems.forEach((item, index) => {
+            item.element.style.order = index.toString();
+        });
         visibleRange = { start: -1, end: -1 };
 
+        // prepare sidebar
         updateSidebar();
+
+        // now render
         renderVisible();
+
+        // show message when no results found
         if (filteredItems.length === 0) {
             noResultsElement.style.display = '';
         } else {
             noResultsElement.style.display = 'none';
         }
+
+        // jump to top or current hash on element list change
         if (window.location.hash) {
-            scrollTo(window.location.hash.substring(1))
+            scrollTo(window.location.hash.substring(1));
         } else { 
             window.scrollTo({
                 top: 0,
                 behavior: 'smooth',
-            })
+            });
         }
     }
 
