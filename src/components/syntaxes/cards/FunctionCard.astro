@@ -3,16 +3,17 @@ import { type Function } from '../documentation'
 import DocumentationCard from "./DocumentationCard.astro";
 import SyntaxBadge from "../SyntaxBadge.astro";
 import { getPlural } from "../../../utils/utils";
+import type {DocumentableCardProps} from "./DocumentableCard.astro";
 
 interface Props {
+    defaultProps: DocumentableCardProps,
     func: Function,
-    currentVersion: string,
 }
 
-const { func, currentVersion }: Props = Astro.props;
+const { defaultProps, func }: Props = Astro.props;
 ---
 
-<DocumentationCard documentation={func} currentVersion={currentVersion}>
+<DocumentationCard defaultProps={defaultProps} documentation={func}>
     <Fragment slot="badges">
         {func.returnType && (
                 <SyntaxBadge

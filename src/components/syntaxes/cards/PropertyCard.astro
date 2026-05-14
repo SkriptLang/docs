@@ -3,16 +3,17 @@ import { type Property } from '../documentation'
 import CodeCard from "../../CodeCard.astro";
 import DocumentationCard from "./DocumentationCard.astro";
 import SyntaxBadge from "../SyntaxBadge.astro";
+import type {DocumentableCardProps} from "./DocumentableCard.astro";
 
 interface Props {
+    defaultProps: DocumentableCardProps,
     property: Property,
-    currentVersion: string,
 }
 
-const { property, currentVersion }: Props = Astro.props;
+const { defaultProps, property }: Props = Astro.props;
 ---
 
-<DocumentationCard documentation={property} currentVersion={currentVersion}>
+<DocumentationCard defaultProps={defaultProps} documentation={property}>
     <Fragment slot="badges">
         <SyntaxBadge
                 badgeProps={{text: "Applicable Types", size: 'medium'}}

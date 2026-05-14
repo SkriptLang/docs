@@ -123,7 +123,7 @@ const sidebarEntries = syntaxes.map(syntax => ({
     <div id="syntaxes-wrapper">
         <div id="syntaxes-viewport">
             {syntaxes.map(syntax => (
-                <DocumentableCard documentation={syntax} currentVersion={currentVersion} />
+                <DocumentableCard defaultProps={{currentVersion: currentVersion, hide: true}} documentation={syntax}/>
             ))}
         </div>
     </div>

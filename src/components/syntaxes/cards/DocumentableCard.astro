@@ -7,13 +7,20 @@ import FunctionCard from "./FunctionCard.astro";
 import PropertyCard from "./PropertyCard.astro";
 import TypeCard from "./TypeCard.astro";
 import SyntaxCard from "./SyntaxCard.astro";
+import type {ComponentProps} from "astro/types";
+import {Badge} from "@astrojs/starlight/components";
 
-interface Props {
-    documentation: Documentation,
+export interface DocumentableCardProps {
     currentVersion: string,
+    hide?: boolean,
 }
 
-const { documentation, currentVersion }: Props = Astro.props;
+interface Props {
+    defaultProps: DocumentableCardProps,
+    documentation: Documentation,
+}
+
+const { defaultProps, documentation }: Props = Astro.props;
 ---
 
 {(() => {
@@ -23,18 +30,18 @@ const { documentation, currentVersion }: Props = Astro.props;
         case DocumentableType.EFFECT:
         case DocumentableType.CONDITION:
         case DocumentableType.EVENT:
-            return (<SyntaxCard syntax={documentation as any} currentVersion={currentVersion} />);
+            return (<SyntaxCard defaultProps={defaultProps} syntax={documentation as any}/>);
         case DocumentableType.EXPRESSION:
-            return (<ExpressionCard expression={documentation as any} currentVersion={currentVersion} />);
+            return (<ExpressionCard defaultProps={defaultProps} expression={documentation as any}/>);
         case DocumentableType.TYPE:
-            return (<TypeCard type={documentation as any} currentVersion={currentVersion} />);
+            return (<TypeCard defaultProps={defaultProps} type={documentation as any}/>);
         case DocumentableType.PROPERTY:
-            return (<PropertyCard property={documentation as any} currentVersion={currentVersion} />);
+            return (<PropertyCard defaultProps={defaultProps} property={documentation as any}/>);
         case DocumentableType.FUNCTION:
-            return (<FunctionCard func={documentation as any} currentVersion={currentVersion} />);
+            return (<FunctionCard defaultProps={defaultProps} func={documentation as any}/>);
         case DocumentableType.EXPERIMENT:
-            return (<ExperimentCard experiment={documentation as any} currentVersion={currentVersion} />);
+            return (<ExperimentCard defaultProps={defaultProps} experiment={documentation as any}/>);
         default:
-            return (<DocumentationCard documentation={documentation} currentVersion={currentVersion} />);
+            return (<DocumentationCard defaultProps={defaultProps} documentation={documentation}/>);
     }
 })()}

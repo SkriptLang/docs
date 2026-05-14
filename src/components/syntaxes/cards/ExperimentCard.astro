@@ -2,16 +2,17 @@
 import {type Experiment} from '../documentation'
 import CodeCard from "../../CodeCard.astro";
 import DocumentationCard from "./DocumentationCard.astro";
+import type {DocumentableCardProps} from "./DocumentableCard.astro";
 
 interface Props {
+    defaultProps: DocumentableCardProps,
     experiment: Experiment,
-    currentVersion: string,
 }
 
-const { experiment, currentVersion }: Props = Astro.props;
+const { defaultProps, experiment }: Props = Astro.props;
 ---
 
-<DocumentationCard documentation={experiment} currentVersion={currentVersion}>
+<DocumentationCard defaultProps={defaultProps} documentation={experiment}>
     <Fragment slot="right-column">
         <CodeCard title="Experiment Pattern" wrap={true} code={[experiment.pattern]}/>
     </Fragment>

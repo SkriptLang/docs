@@ -2,16 +2,17 @@
 import { type Expression } from '../documentation'
 import SyntaxCard from "./SyntaxCard.astro";
 import SyntaxBadge from "../SyntaxBadge.astro";
+import type {DocumentableCardProps} from "./DocumentableCard.astro";
 
 interface Props {
+    defaultProps: DocumentableCardProps,
     expression: Expression,
-    currentVersion: string,
 }
 
-const { expression, currentVersion }: Props = Astro.props;
+const { defaultProps, expression }: Props = Astro.props;
 ---
 
-<SyntaxCard syntax={expression} currentVersion={currentVersion}
+<SyntaxCard defaultProps={defaultProps} syntax={expression}
             data-syntax-returns={expression.returnType.name}
 >
     <Fragment slot="badges">

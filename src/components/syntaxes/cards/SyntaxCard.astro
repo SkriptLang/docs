@@ -4,17 +4,18 @@ import CodeCard from "../../CodeCard.astro";
 import DocumentationCard from "./DocumentationCard.astro";
 import SyntaxBadge from "../SyntaxBadge.astro";
 import {Badge} from "@astrojs/starlight/components";
+import type {DocumentableCardProps} from "./DocumentableCard.astro";
 
 interface Props {
+    defaultProps: DocumentableCardProps,
     syntax: Syntax,
-    currentVersion: string,
     [key: string]: any,
 }
 
-const { syntax, currentVersion, ...rest }: Props = Astro.props;
+const { defaultProps, syntax, ...rest }: Props = Astro.props;
 ---
 
-<DocumentationCard documentation={syntax} currentVersion={currentVersion} {...rest}>
+<DocumentationCard defaultProps={defaultProps} documentation={syntax} {...rest}>
     <Fragment slot="header badges">
         {syntax.experimentData && syntax.experimentData.required.length > 0  && (
                 <Badge

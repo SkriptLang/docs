@@ -4,14 +4,16 @@ import AnchorHeading from '@astrojs/starlight/components/AnchorHeading.astro';
 import { type Documentation } from '../documentation'
 import CodeCard from "../../CodeCard.astro";
 import SyntaxBadge from "../SyntaxBadge.astro";
+import type {DocumentableCardProps} from "./DocumentableCard.astro";
 
 interface Props {
+    defaultProps: DocumentableCardProps
     documentation: Documentation,
-    currentVersion: string,
     [key: string]: any,
 }
 
-const { documentation, currentVersion, ...rest }: Props = Astro.props;
+const { documentation, defaultProps, ...rest }: Props = Astro.props;
+const { currentVersion, hide }: DocumentableCardProps = defaultProps;
 const isNew = documentation.since && documentation.since.join().includes(currentVersion);
 ---
 
@@ -22,7 +24,7 @@ const isNew = documentation.since && documentation.since.join().includes(current
          data-syntax-since={documentation.since}
          data-syntax-keywords={documentation.keywords.length == 0 ? undefined : documentation.keywords}
          data-syntax-addon={documentation.origin.name}
-         style="display: none;"
+         style={hide ? "display: none;" : ""}
          {...rest}
 >
     <div class="col">
