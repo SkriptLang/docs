@@ -22,6 +22,7 @@ const isNew = documentation.since && documentation.since.join().includes(current
          data-syntax-since={documentation.since}
          data-syntax-keywords={documentation.keywords.length == 0 ? undefined : documentation.keywords}
          data-syntax-addon={documentation.origin.name}
+         style="display: none;"
          {...rest}
 >
     <div class="col">

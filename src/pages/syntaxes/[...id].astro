@@ -159,6 +159,13 @@ const sidebarEntries = syntaxes.map(syntax => ({
         padding: 0;
     }
 
+    :global(html:is([data-is-syntaxes])) {
+        scrollbar-width: none;
+    }
+    :global(html:is([data-is-syntaxes]))::-webkit-scrollbar {
+        display: none;
+    }
+
     dialog {
         margin: 0;
         padding: 1rem;

@@ -6,8 +6,7 @@ export interface VirtualItem {
     syntaxName: string;   // display name of syntax
     syntaxType: string;   // type of syntax (for type filtering)
     syntaxId: string;     // id of syntax (for search filtering)
-    sidebarElement: HTMLElement | null; // corresponding element in the sidebar 
-    height: number;       // actual height of the html element
+    sidebarElement: HTMLElement | null; // corresponding element in the sidebar
     originalIndex: number; // index to sort the items properly
 }
 
@@ -25,9 +24,6 @@ export interface VersionFilterData {
 ---
 
 <script>
-    const ESTIMATED_ITEM_HEIGHT = 450;
-    const OVERSCAN_COUNT = 3;
-
     // -------------------
     // Setup
     // -------------------
@@ -46,8 +42,6 @@ export interface VersionFilterData {
         const syntaxId = element.dataset.syntaxId!;
         const syntaxName = element.dataset.syntaxName!;
         const sidebarElement = document.getElementById(`sidebar-${syntaxId}`);
-        // +40 to include margin, hardcoded from 2.5rem
-        const height = (element.getBoundingClientRect().height + 40) || ESTIMATED_ITEM_HEIGHT;
 
         return { 
             element: element,
@@ -55,55 +49,9 @@ export interface VersionFilterData {
             syntaxType,
             syntaxId,
             sidebarElement,
-            height,
             originalIndex: index
         };
     });
-
-    // -----------------
-    // Positioning Logic
-    // -----------------
-
-    let positions: number[] = [];
-    let visibleRange = { start: 0, end: allItems.length };
-
-    // function for determining the virtual positions of cards based on the item heights
-    // creates a long list of start positions as offsets from the top (dynamic programming!)
-    function calculatePositions(items: VirtualItem[]) {
-        const pos = [0];
-        for (let i = 0; i < items.length; i++) {
-            pos.push(pos[i] + items[i].height);
-        }
-        return pos;
-    }
-
-    // simple binarySearch for findVisibleRange
-    function binarySearch(arr: number[], target: number): number {
-        let left = 0;
-        let right = arr.length;
-
-        while (left < right) {
-            const pivot = Math.floor((left + right) / 2);
-            if (arr[pivot] < target) {
-                left = pivot + 1;
-            } else {
-                right = pivot;
-            }
-        }
-        return left;
-    }
-
-    // determine which items of the currently filtered items should be visible based on the heights/viewport size
-    function findVisibleRange(scrollTop: number, viewportHeight: number) {
-        if (positions.length === 0) {
-            return { start: 0, end: 0 };
-        }
-
-        const start = Math.max(0, binarySearch(positions, scrollTop) - OVERSCAN_COUNT);
-        const end = Math.min(filteredItems.length, binarySearch(positions, scrollTop + viewportHeight) + OVERSCAN_COUNT);
-
-        return { start, end };
-    }
 
     // ---------------
     // Filtering Logic
@@ -370,9 +318,6 @@ export interface VersionFilterData {
     // Sidebar stuff
     // -------------
 
-    let autoSyncEnabled = true;
-
-    // tell the sidebar to rebuild with the current filtered items
     function updateSidebar() {
         const sidebarAPI = (window as any).__syntaxSidebar;
         if (!sidebarAPI) {
@@ -383,53 +328,31 @@ export interface VersionFilterData {
         sidebarAPI.rebuild(filteredItems);
     }
 
-    // keeps the sidebar synchronized to the user's position in the main elements
-    function syncSidebarScroll() {
-        if (!autoSyncEnabled || filteredItems.length === 0 || !wrapper) {
+    let sidebarRafId: number | null = null;
+    function syncSidebarTo(syntaxId: string): void {
+        if (sidebarRafId !== null) {
             return;
         }
-
         const sidebarAPI = (window as any).__syntaxSidebar;
         if (!sidebarAPI) {
             console.warn('Sidebar API not available yet');
             return;
         }
 
-        // determine first element whose name is visible
-        const viewportTop = window.scrollY;
-        for (let i = 0; i < filteredItems.length; i++) {
-            const itemTop = wrapper.offsetTop + positions[i];
-            if (itemTop > viewportTop) {
-                sidebarAPI.highlight(filteredItems[i].syntaxId);
-                sidebarAPI.scrollTo(filteredItems[i].syntaxId);
-                break; 
-            }
-        }
+        sidebarRafId = requestAnimationFrame(() => {
+            sidebarAPI.highlight(syntaxId);
+            sidebarAPI.scrollTo(syntaxId);
+            sidebarRafId = null;
+        });
     }
 
     function scrollTo(syntaxId: string): void {
-        const targetIndex = filteredItems.findIndex(item => item.syntaxId === syntaxId);
-        if (targetIndex === -1) {
-            // TODO this should be handled a better way...
-            if (!syntaxId.startsWith("Func")) {
-                return scrollTo(`Func${syntaxId}`);
-            }
+        const index = filteredItems.findIndex(item => item.syntaxId === syntaxId);
+        if (index === -1) {
             return;
         }
-        autoSyncEnabled = false;
-        const targetY = wrapper.offsetTop + positions[targetIndex];
-        window.scrollTo({
-            top: targetY - 100,
-            behavior: 'smooth'
-        });
-        const sidebarAPI = (window as any).__syntaxSidebar;
-        if (sidebarAPI) {
-            sidebarAPI.highlight(syntaxId);
-            sidebarAPI.scrollTo(syntaxId);
-        }
-        setTimeout(() => {
-            autoSyncEnabled = true;
-        }, 1500);
+        processRender(index);
+        filteredItems[index].element.scrollIntoView();
     }
 
     // Listen for sidebar clicks
@@ -446,46 +369,83 @@ export interface VersionFilterData {
     // Main Rendering Logic
     // --------------------
 
-    // Updates which items are visible and sets display attr accordingly
-    function renderVisible() {
-        if (!wrapper || !viewport || filteredItems.length === 0) {
-            return;
-        }
+    const noResultsElement = document.getElementById('syntaxes-no-results')!;
 
-        // calculate range of visible elements
-        const rect = wrapper.getBoundingClientRect();
-        const scrollTop = Math.max(0, -rect.top);
-        const viewportHeight = window.innerHeight;
-        const newRange = findVisibleRange(scrollTop, viewportHeight);
+    const OVERSCAN_COUNT = 5;
+    let visibleRange: { start: number, end: number } = { start: -1, end: -1 };
+    // used to ignore observations that trigger on initial observation call
+    const justObserved: Set<Element> = new Set();
 
-        // only update if range has changed
-        if (newRange.start === visibleRange.start && newRange.end === visibleRange.end) {
-            // Sync sidebar scroll regardless
-            syncSidebarScroll();
-            return;
-        }
-
-        // Hide any old items now outside the view
-        for (let i = visibleRange.start; i < visibleRange.end; i++) {
-            if (i <= newRange.start || i >= newRange.end) {
-                filteredItems[i].element.style.display = 'none';
+    const visibleObserver = new IntersectionObserver((entries) => {
+        for (const entry of entries) {
+            if (justObserved.delete(entry.target) || !entry.isIntersecting) {
+                continue;
             }
+            // calculate new range
+            let index = parseInt((entry.target as HTMLElement).style.order);
+            index = Math.min(Math.max(index + (entry.boundingClientRect.top <= 0 ? 1 : -1), 0), filteredItems.length);
+            processRender(index);
+        }
+    }, { threshold: 0.2 });
+
+    // exists for handling edge case of first/last element
+    // basically, force highlight on these elements when they are fully focused
+    const justObservedScroll: Set<Element> = new Set();
+    const scrollObserver = new IntersectionObserver((entries) => {
+        for (const entry of entries) {
+            if (justObservedScroll.delete(entry.target) || !entry.isIntersecting) { // check because initial observation will fire regardless
+                continue;
+            }
+            const index = parseInt((entry.target as HTMLElement).style.order);
+            syncSidebarTo(filteredItems[index].syntaxId);
+        }
+    }, { threshold: 1 });
+
+    function processRender(index: number): void {
+        const newRange = {
+            start: Math.max(index - OVERSCAN_COUNT, 0),
+            end: Math.min(index + OVERSCAN_COUNT, filteredItems.length),
+        };
+
+        // hide old items
+        for (let i = visibleRange.start; i < visibleRange.end; i++) {
+            if (i >= newRange.start && i < newRange.end) {
+                continue;
+            }
+            visibleObserver.unobserve(filteredItems[i].element);
+            filteredItems[i].element.style.display = 'none';
+        }
+
+        // show new items
+        for (let i = newRange.start; i < newRange.end; i++) {
+            if (i >= visibleRange.start && i < visibleRange.end) {
+                continue;
+            }
+            filteredItems[i].element.style.display = '';
+            justObserved.add(filteredItems[i].element);
+            visibleObserver.observe(filteredItems[i].element);
         }
         visibleRange = newRange;
 
-        // Show visible items
-        for (let i = visibleRange.start; i < visibleRange.end; i++) {
-            filteredItems[i].element.style.display = '';
+        // sync sidebar
+        syncSidebarTo(filteredItems[index].syntaxId);
+
+        // handle edge case for highlighting first/last element
+        if (visibleRange.start === 0) {
+            scrollObserver.unobserve(filteredItems[0].element);
+            justObservedScroll.add(filteredItems[0].element);
+            scrollObserver.observe(filteredItems[0].element);
+        } else {
+            scrollObserver.unobserve(filteredItems[0].element);
         }
-
-        // Update viewport position
-        viewport.style.transform = `translateY(${positions[visibleRange.start]}px)`;
-
-        // Sync sidebar scroll
-        syncSidebarScroll();
+        if (visibleRange.end === filteredItems.length && scrollObserver) {
+            scrollObserver.unobserve(filteredItems[filteredItems.length - 1].element);
+            justObservedScroll.add(filteredItems[filteredItems.length - 1].element);
+            scrollObserver.observe(filteredItems[filteredItems.length - 1].element);
+        } else {
+            scrollObserver.unobserve(filteredItems[filteredItems.length - 1].element);
+        }
     }
-
-    const noResultsElement = document.getElementById('syntaxes-no-results')!;
 
     // runs the full render loop, filtering, calc positions, update sidebar, renderVisible, etc
     // Should only need to be run after filtering updates since that changes what items 'exist'.
@@ -497,27 +457,24 @@ export interface VersionFilterData {
         // get new filtered items
         const newFilteredItems = getFilteredItems();
 
-        // update wrapper size
-        positions = calculatePositions(newFilteredItems);
-        const totalHeight = positions[positions.length - 1] || 0;
-        wrapper.style.height = `${totalHeight}px`;
-
         // hide all currently visible elements
         for (let i = visibleRange.start; i < visibleRange.end; i++) {
+            visibleObserver.unobserve(filteredItems[i].element);
             filteredItems[i].element.style.display = 'none';
         }
         filteredItems = newFilteredItems;
+
         // set ordering for new elements
-        newFilteredItems.forEach((item, index) => {
+        filteredItems.forEach((item, index) => {
             item.element.style.order = index.toString();
         });
-        visibleRange = { start: -1, end: -1 };
 
         // prepare sidebar
         updateSidebar();
 
         // now render
-        renderVisible();
+        visibleRange = { start: -1, end: -1 };
+        processRender(0);
 
         // show message when no results found
         if (filteredItems.length === 0) {
@@ -535,16 +492,6 @@ export interface VersionFilterData {
                 behavior: 'smooth',
             });
         }
-    }
-
-    // Use RAF for smooth scrolling - claude addition
-    let rafId: number | null = null;
-    function scheduleScroll() {
-        if (rafId !== null) return;
-        rafId = requestAnimationFrame(() => {
-            renderVisible();
-            rafId = null;
-        });
     }
 
     // ---------------------
@@ -566,30 +513,32 @@ export interface VersionFilterData {
     });
 
     document.addEventListener('click', event => {
-       if (!(event.target instanceof HTMLElement)) { // not a link
-           return;
-       }
-       const a = event.target.closest('a');
-       if (!a) { // not a link
-           return;
-       }
-       const url = new URL(a.href);
-       const hash = url.hash.substring(1);
-       url.hash = ''; // remove hash from URL for comparison
-       if (window.location.href !== url.href) { // link to other resource, process as normal
-           return;
-       }
-       event.preventDefault();
-       if ((event.target.closest('.documentation-card') as HTMLElement)?.dataset.syntaxId === hash) { // copying link to card
-           url.search = ''; // remove search from URL for linking
-           url.hash = hash;
-           navigator.clipboard.writeText(url.href).then(() => {
-               // TODO some sort of popup notifying link copied
-           });
-           return;
-       }
-       // show card dialog
-       showSyntaxDialog(hash);
+        if (!(event.target instanceof HTMLElement)) { // not a link
+            return;
+        }
+        const a = event.target.closest('a');
+        if (!a) { // not a link
+            return;
+        }
+        const url = new URL(a.href);
+        const hash = url.hash.substring(1);
+        url.hash = ''; // remove hash from URL for comparison
+        const currentUrl = new URL(window.location.href);
+        currentUrl.hash = '';
+        if (currentUrl.href !== url.href) { // link to other resource, process as normal
+            return;
+        }
+        event.preventDefault();
+        if ((event.target.closest('.documentation-card') as HTMLElement)?.dataset.syntaxId === hash) { // copying link to card
+            url.search = ''; // remove search from URL for linking
+            url.hash = hash;
+            navigator.clipboard.writeText(url.href).then(() => {
+                // TODO some sort of popup notifying link copied
+            });
+            return;
+        }
+        // show card dialog
+        showSyntaxDialog(hash);
     });
 
     function showSyntaxDialog(syntaxId: string) {
@@ -620,10 +569,6 @@ export interface VersionFilterData {
     }, 200);
 
     fullRender();
-    scrollTo(window.location.hash.substring(1));
-
-    // scroll/resize listeners
-    window.addEventListener('scroll', scheduleScroll, { passive: true });
 
     // Expose API for other components
     (window as any).__syntaxDisplayManager = {
