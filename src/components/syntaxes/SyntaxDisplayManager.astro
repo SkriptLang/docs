@@ -351,8 +351,13 @@ export interface VersionFilterData {
         if (index === -1) {
             return;
         }
-        processRender(index);
-        filteredItems[index].element.scrollIntoView();
+        loadElements(index - nextIndexToLoad);
+        loadObserver.disconnect();
+        loadElements(10);
+        filteredItems[index].element.scrollIntoView({
+            block: 'center',
+            behavior: 'smooth',
+        });
     }
 
     // Listen for sidebar clicks
@@ -371,79 +376,50 @@ export interface VersionFilterData {
 
     const noResultsElement = document.getElementById('syntaxes-no-results')!;
 
-    const OVERSCAN_COUNT = 5;
-    let visibleRange: { start: number, end: number } = { start: -1, end: -1 };
-    // used to ignore observations that trigger on initial observation call
-    const justObserved: Set<Element> = new Set();
+    const ESTIMATED_CARD_HEIGHT = 300;
+    const INITIAL_LOAD_AMOUNT = 10;
+    let nextIndexToLoad = 0;
 
-    const visibleObserver = new IntersectionObserver((entries) => {
+    const loadObserver = new IntersectionObserver(entries => {
         for (const entry of entries) {
-            if (justObserved.delete(entry.target) || !entry.isIntersecting) {
+            if (!entry.isIntersecting || entry.intersectionRatio < 0.3) {
                 continue;
             }
-            // calculate new range
-            let index = parseInt((entry.target as HTMLElement).style.order);
-            index = Math.min(Math.max(index + (entry.boundingClientRect.top <= 0 ? 1 : -1), 0), filteredItems.length);
-            processRender(index);
+            loadObserver.unobserve(entry.target);
+            loadElements(1);
         }
-    }, { threshold: 0.2 });
+    }, { threshold: 0.3 });
 
-    // exists for handling edge case of first/last element
-    // basically, force highlight on these elements when they are fully focused
-    const justObservedScroll: Set<Element> = new Set();
-    const scrollObserver = new IntersectionObserver((entries) => {
+    // basically, observe whatever is in the middle of the screen
+    const scrollObserver = new IntersectionObserver(entries => {
         for (const entry of entries) {
-            if (justObservedScroll.delete(entry.target) || !entry.isIntersecting) { // check because initial observation will fire regardless
-                continue;
+            if (entry.isIntersecting) {
+                const index = parseInt((entry.target as HTMLElement).style.order);
+                syncSidebarTo(filteredItems[index].syntaxId);
+                break;
             }
-            const index = parseInt((entry.target as HTMLElement).style.order);
-            syncSidebarTo(filteredItems[index].syntaxId);
         }
-    }, { threshold: 1 });
-
-    function processRender(index: number): void {
-        const newRange = {
-            start: Math.max(index - OVERSCAN_COUNT, 0),
-            end: Math.min(index + OVERSCAN_COUNT, filteredItems.length),
-        };
-
-        // hide old items
-        for (let i = visibleRange.start; i < visibleRange.end; i++) {
-            if (i >= newRange.start && i < newRange.end) {
-                continue;
+    }, { rootMargin: '-50% 0px -50% 0px' });
+    const scrollEndObserver = new IntersectionObserver(entries => {
+        for (const entry of entries) {
+            if (entry.isIntersecting) {
+                const index = entry.target === filteredItems[0].element ? 0 : filteredItems.length - 1;
+                syncSidebarTo(filteredItems[index].syntaxId);
+                break;
             }
-            visibleObserver.unobserve(filteredItems[i].element);
-            filteredItems[i].element.style.display = 'none';
         }
+    }, { threshold: 0.95 });
 
-        // show new items
-        for (let i = newRange.start; i < newRange.end; i++) {
-            if (i >= visibleRange.start && i < visibleRange.end) {
-                continue;
+    function loadElements(count: number): void {
+        for (let i = 0; i < count; i++) {
+            if (nextIndexToLoad === filteredItems.length) {
+                break;
             }
-            filteredItems[i].element.style.display = '';
-            justObserved.add(filteredItems[i].element);
-            visibleObserver.observe(filteredItems[i].element);
-        }
-        visibleRange = newRange;
-
-        // sync sidebar
-        syncSidebarTo(filteredItems[index].syntaxId);
-
-        // handle edge case for highlighting first/last element
-        if (visibleRange.start === 0) {
-            scrollObserver.unobserve(filteredItems[0].element);
-            justObservedScroll.add(filteredItems[0].element);
-            scrollObserver.observe(filteredItems[0].element);
-        } else {
-            scrollObserver.unobserve(filteredItems[0].element);
-        }
-        if (visibleRange.end === filteredItems.length && scrollObserver) {
-            scrollObserver.unobserve(filteredItems[filteredItems.length - 1].element);
-            justObservedScroll.add(filteredItems[filteredItems.length - 1].element);
-            scrollObserver.observe(filteredItems[filteredItems.length - 1].element);
-        } else {
-            scrollObserver.unobserve(filteredItems[filteredItems.length - 1].element);
+            const element = filteredItems[nextIndexToLoad].element;
+            element.style.display = '';
+            loadObserver.observe(element);
+            scrollObserver.observe(element);
+            nextIndexToLoad++;
         }
     }
 
@@ -458,8 +434,10 @@ export interface VersionFilterData {
         const newFilteredItems = getFilteredItems();
 
         // hide all currently visible elements
-        for (let i = visibleRange.start; i < visibleRange.end; i++) {
-            visibleObserver.unobserve(filteredItems[i].element);
+        loadObserver.disconnect();
+        scrollObserver.disconnect();
+        scrollEndObserver.disconnect();
+        for (let i = 0; i < nextIndexToLoad; i++) {
             filteredItems[i].element.style.display = 'none';
         }
         filteredItems = newFilteredItems;
@@ -469,12 +447,14 @@ export interface VersionFilterData {
             item.element.style.order = index.toString();
         });
 
+        // now render
+        nextIndexToLoad = 0;
+        loadElements(INITIAL_LOAD_AMOUNT);
+
         // prepare sidebar
         updateSidebar();
-
-        // now render
-        visibleRange = { start: -1, end: -1 };
-        processRender(0);
+        scrollEndObserver.observe(filteredItems[0].element);
+        scrollEndObserver.observe(filteredItems[filteredItems.length - 1].element);
 
         // show message when no results found
         if (filteredItems.length === 0) {
