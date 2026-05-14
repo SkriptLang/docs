@@ -195,4 +195,7 @@ const sidebarEntries = syntaxes.map(syntax => ({
             max-height: calc(100% - 8rem);
         }
     }
+    html:has(#syntaxes-card-dialog:open) {
+        overflow: hidden;
+    }
 </style>
