@@ -2,6 +2,7 @@
     font-family: "Poppins";
     font-style: normal;
     font-display: swap;
+    /* define 500 as 600 because 600 is too bold */
     font-weight: 600;
     src: url(@fontsource/poppins/files/poppins-latin-500-normal.woff) format("woff"),
         url(@fontsource/poppins/files/poppins-latin-500-normal.woff2) format("woff2");
@@ -14,33 +15,33 @@
 
 /* Dark mode colors. */
 :root {
-    --sl-color-accent-low: #884203;
-    --sl-color-accent: #ee8522;
-    --sl-color-accent-high: #f47902;
-    --sl-color-white: #efefef;
-    --sl-color-gray-1: #e6e6e6;
-    --sl-color-gray-2: #dcdcdc;
-    --sl-color-gray-3: #c2c2c2;
-    --sl-color-gray-4: #373737;
-    --sl-color-gray-5: #333333;
-    --sl-color-gray-6: #1a1a1a;
-    --sl-color-black: #0e0e0e;
+    --sl-color-accent-low: #3d1c00;
+    --sl-color-accent: #bf6a15;
+    --sl-color-accent-high: #ff8500;
+    --sl-color-white: #ffffff;
+    --sl-color-gray-1: #eeeeee;
+    --sl-color-gray-2: #c8c8c8;
+    --sl-color-gray-3: #a4a4a4;
+    --sl-color-gray-4: #585858;
+    --sl-color-gray-5: #383838;
+    --sl-color-gray-6: #272727;
+    --sl-color-black: #181818;
 }
 
 /* Light mode colors. */
 :root[data-theme='light'] {
-    --sl-color-accent-low: #f47902;
-    --sl-color-accent: #ee8522;
-    --sl-color-accent-high: #884203;
-    --sl-color-white: #0e0e0e;
-    --sl-color-gray-1: #1a1a1a;
-    --sl-color-gray-2: #333333;
-    --sl-color-gray-3: #373737;
-    --sl-color-gray-4: #8f8f8f;
+    --sl-color-accent-low: #bf6a15;
+    --sl-color-accent: #ff8500;
+    --sl-color-accent-high: #3d1c00;
+    --sl-color-white: #181818;
+    --sl-color-gray-1: #272727;
+    --sl-color-gray-2: #383838;
+    --sl-color-gray-3: #585858;
+    --sl-color-gray-4: #8b8b8b;
     --sl-color-gray-5: #c2c2c2;
-    --sl-color-gray-6: #dcdcdc;
-    --sl-color-gray-7: #e6e6e6;
-    --sl-color-black: #efefef;
+    --sl-color-gray-6: #eeeeee;
+    --sl-color-gray-7: #f6f6f6;
+    --sl-color-black: #ffffff;
 }
 
 @media screen and (prefers-reduced-motion: no-preference) {
@@ -65,6 +66,25 @@
 
 #starlight__sidebar {
     overflow-x: hidden;
+}
+
+[data-theme='dark'] #starlight__sidebar {
+    scrollbar-color: var(--sl-color-gray-5) var(--sl-color-gray-6);
+}
+[data-theme='light'] #starlight__sidebar {
+    scrollbar-color: var(--sl-color-gray-5) var(--sl-color-black);
+}
+
+starlight-toc span {
+    font-size: var(--sl-text-sm);
+}
+
+code[dir="auto"] {
+    border: 1px solid color-mix(in srgb, var(--sl-color-gray-5), transparent 25%);
+    background-color: var(--sl-color-gray-6);
+    border-radius: 0.15rem;
+    margin: 1px;
+    padding: 0.25rem;
 }
 
 @media (min-width: 50rem) {

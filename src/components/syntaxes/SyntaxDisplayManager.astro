@@ -6,8 +6,7 @@ export interface VirtualItem {
     syntaxName: string;   // display name of syntax
     syntaxType: string;   // type of syntax (for type filtering)
     syntaxId: string;     // id of syntax (for search filtering)
-    sidebarElement: HTMLElement | null; // corresponding element in the sidebar 
-    height: number;       // actual height of the html element
+    sidebarElement: HTMLElement | null; // corresponding element in the sidebar
     originalIndex: number; // index to sort the items properly
 }
 
@@ -25,9 +24,6 @@ export interface VersionFilterData {
 ---
 
 <script>
-    const ESTIMATED_ITEM_HEIGHT = 450;
-    const OVERSCAN_COUNT = 3;
-
     // -------------------
     // Setup
     // -------------------
@@ -46,8 +42,6 @@ export interface VersionFilterData {
         const syntaxId = element.dataset.syntaxId!;
         const syntaxName = element.dataset.syntaxName!;
         const sidebarElement = document.getElementById(`sidebar-${syntaxId}`);
-        // of course it doesn't include margin...
-        const height = (element.getBoundingClientRect().height + parseFloat(window.getComputedStyle(element).marginBottom)) || ESTIMATED_ITEM_HEIGHT;
 
         return { 
             element: element,
@@ -55,62 +49,16 @@ export interface VersionFilterData {
             syntaxType,
             syntaxId,
             sidebarElement,
-            height,
             originalIndex: index
         };
     });
-
-    // -----------------
-    // Positioning Logic
-    // -----------------
-
-    let positions: number[] = [];
-    let visibleRange = { start: 0, end: 0 };
-
-    // function for determining the virtual positions of cards based on the item heights
-    // creates a long list of start positions as offsets from the top (dynamic programming!)
-    function calculatePositions(items: VirtualItem[]) {
-        const pos = [0];
-        for (let i = 0; i < items.length; i++) {
-            pos.push(pos[i] + items[i].height);
-        }
-        return pos;
-    }
-
-    // simple binarySearch for findVisibleRange
-    function binarySearch(arr: number[], target: number): number {
-        let left = 0;
-        let right = arr.length;
-
-        while (left < right) {
-            const pivot = Math.floor((left + right) / 2);
-            if (arr[pivot] < target) {
-                left = pivot + 1;
-            } else {
-                right = pivot;
-            }
-        }
-        return left;
-    }
-
-    // determine which items of the currently filtered items should be visible based on the heights/viewport size
-    function findVisibleRange(scrollTop: number, viewportHeight: number) {
-        if (positions.length === 0) {
-            return { start: 0, end: 0 };
-        }
-
-        const start = Math.max(0, binarySearch(positions, scrollTop) - OVERSCAN_COUNT);
-        const end = Math.min(filteredItems.length, binarySearch(positions, scrollTop + viewportHeight) + OVERSCAN_COUNT);
-
-        return { start, end };
-    }
 
     // ---------------
     // Filtering Logic
     // ---------------
 
     // init filters
-    let filteredItems: VirtualItem[] = [];
+    let filteredItems: VirtualItem[] = allItems;
 
     let typeFilter = new Set<string>();
     let versionFilter: VersionFilterData = {
@@ -302,12 +250,19 @@ export interface VersionFilterData {
             return Number.MAX_SAFE_INTEGER;
         }
 
+        const escapedSearch = searchLower.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+        const wordBoundaryRegex = new RegExp(`\\b${escapedSearch}\\b`);
+
         // Weigh Name
         const name = item.syntaxName.toLowerCase();
         if (name === searchLower) { // Exact match in name = highest score
             score += 1000;
         } else if (id.startsWith(searchLower) || name.startsWith(searchLower)) {
             score += 500;
+        } else if (wordBoundaryRegex.test(id) || wordBoundaryRegex.test(name)) {
+            score += 300;
+            // prefer shorter names (more specific matches)
+            score += Math.max(0, 50 - name.length);
         } else if (id.includes(searchLower) || name.includes(searchLower)) {
             score += 200;
             // prefer shorter names (more specific matches)
@@ -325,20 +280,26 @@ export interface VersionFilterData {
         }
 
         // Weigh Patterns
-        const patterns = getCodeFromSection(element, 'Patterns');
-        if (patterns.includes(searchLower)) {
-            score += 100;
+        const patterns = getCodeFromSection(element, 'Syntax Patterns');
+        if (wordBoundaryRegex.test(patterns)) {
+            score += 300;
+        } else if (patterns.includes(searchLower)) {
+            score += 150;
         }
 
         // Weigh Description
         const description = element.querySelector('p')?.textContent?.toLowerCase() || '';
-        if (description.includes(searchLower)) {
+        if (wordBoundaryRegex.test(description)) {
+            score += 100;
+        } else if (description.includes(searchLower)) {
             score += 50;
         }
 
         // Weigh Examples
-        const examples = getCodeFromSection(element, 'Examples');
-        if (examples.includes(searchLower)) {
+        const examples = getCodeFromSection(element, 'Usage Examples');
+        if (wordBoundaryRegex.test(examples)) {
+            score += 50;
+        } else if (examples.includes(searchLower)) {
             score += 25;
         }
 
@@ -357,9 +318,6 @@ export interface VersionFilterData {
     // Sidebar stuff
     // -------------
 
-    let autoSyncEnabled = true;
-
-    // tell the sidebar to rebuild with the current filtered items
     function updateSidebar() {
         const sidebarAPI = (window as any).__syntaxSidebar;
         if (!sidebarAPI) {
@@ -370,53 +328,36 @@ export interface VersionFilterData {
         sidebarAPI.rebuild(filteredItems);
     }
 
-    // keeps the sidebar synchronized to the user's position in the main elements
-    function syncSidebarScroll() {
-        if (!autoSyncEnabled || filteredItems.length === 0 || !wrapper) {
+    let sidebarRafId: number | null = null;
+    function syncSidebarTo(syntaxId: string): void {
+        if (sidebarRafId !== null) {
             return;
         }
-
         const sidebarAPI = (window as any).__syntaxSidebar;
         if (!sidebarAPI) {
             console.warn('Sidebar API not available yet');
             return;
         }
 
-        // determine first element whose name is visible
-        const viewportTop = window.scrollY;
-        for (let i = 0; i < filteredItems.length; i++) {
-            const itemTop = wrapper.offsetTop + positions[i];
-            if (itemTop > viewportTop) {
-                sidebarAPI.highlight(filteredItems[i].syntaxId);
-                sidebarAPI.scrollTo(filteredItems[i].syntaxId);
-                break; 
-            }
-        }
+        sidebarRafId = requestAnimationFrame(() => {
+            sidebarAPI.highlight(syntaxId);
+            sidebarAPI.scrollTo(syntaxId);
+            sidebarRafId = null;
+        });
     }
 
     function scrollTo(syntaxId: string): void {
-        const targetIndex = filteredItems.findIndex(item => item.syntaxId === syntaxId);
-        if (targetIndex === -1) {
-            // TODO this should be handled a better way...
-            if (!syntaxId.startsWith("Func")) {
-                return scrollTo(`Func${syntaxId}`);
-            }
+        const index = filteredItems.findIndex(item => item.syntaxId === syntaxId);
+        if (index === -1) {
             return;
         }
-        autoSyncEnabled = false;
-        const targetY = wrapper.offsetTop + positions[targetIndex];
-        window.scrollTo({
-            top: targetY - 100,
-            behavior: 'smooth'
+        loadElements(index - nextIndexToLoad);
+        loadObserver.disconnect();
+        loadElements(10);
+        filteredItems[index].element.scrollIntoView({
+            block: 'center',
+            behavior: 'smooth',
         });
-        const sidebarAPI = (window as any).__syntaxSidebar;
-        if (sidebarAPI) {
-            sidebarAPI.highlight(syntaxId);
-            sidebarAPI.scrollTo(syntaxId);
-        }
-        setTimeout(() => {
-            autoSyncEnabled = true;
-        }, 1500);
     }
 
     // Listen for sidebar clicks
@@ -433,51 +374,53 @@ export interface VersionFilterData {
     // Main Rendering Logic
     // --------------------
 
-    // Updates which items are visible and sets display attr accordingly
-    function renderVisible() {
-        if (!wrapper || !viewport) return;
-        if (filteredItems.length === 0) {
-            allItems.forEach(item => {
-                item.element.style.display = 'none';
-            });
-            return;
-        }
-
-        const rect = wrapper.getBoundingClientRect();
-        const scrollTop = Math.max(0, -rect.top);
-        const viewportHeight = window.innerHeight;
-
-        const newRange = findVisibleRange(scrollTop, viewportHeight);
-
-        // only update if range has changed
-        if (newRange.start === visibleRange.start && newRange.end === visibleRange.end) {
-            // Sync sidebar scroll regardless
-            syncSidebarScroll();
-            return;
-        }
-
-        visibleRange = newRange;
-
-        // Hide all items first
-        allItems.forEach(item => {
-            item.element.style.display = 'none';
-        });
-
-        // Show visible items and set their order
-        for (let i = visibleRange.start; i < visibleRange.end; i++) {
-            const item = filteredItems[i];
-            item.element.style.display = '';
-            item.element.style.order = i.toString(); // CSS flexbox order
-        }
-
-        // Update viewport position
-        viewport.style.transform = `translateY(${positions[visibleRange.start]}px)`;
-
-        // Sync sidebar scroll
-        syncSidebarScroll();
-    }
-
     const noResultsElement = document.getElementById('syntaxes-no-results')!;
+
+    const INITIAL_LOAD_AMOUNT = 10;
+    let nextIndexToLoad = 0;
+
+    const loadObserver = new IntersectionObserver(entries => {
+        for (const entry of entries) {
+            if (!entry.isIntersecting || entry.intersectionRatio < 0.3) {
+                continue;
+            }
+            loadObserver.unobserve(entry.target);
+            loadElements(1);
+        }
+    }, { threshold: 0.3 });
+
+    // basically, observe whatever is in the middle of the screen
+    const scrollObserver = new IntersectionObserver(entries => {
+        for (const entry of entries) {
+            if (entry.isIntersecting) {
+                const index = parseInt((entry.target as HTMLElement).style.order);
+                syncSidebarTo(filteredItems[index].syntaxId);
+                break;
+            }
+        }
+    }, { rootMargin: '-50% 0px -50% 0px' });
+    const scrollEndObserver = new IntersectionObserver(entries => {
+        for (const entry of entries) {
+            if (entry.isIntersecting) {
+                const index = entry.target === filteredItems[0].element ? 0 : filteredItems.length - 1;
+                syncSidebarTo(filteredItems[index].syntaxId);
+                break;
+            }
+        }
+    }, { threshold: 0.95 });
+
+    function loadElements(count: number): void {
+        for (let i = 0; i < count; i++) {
+            if (nextIndexToLoad === filteredItems.length) {
+                break;
+            }
+            const element = filteredItems[nextIndexToLoad].element;
+            element.style.display = '';
+            loadObserver.observe(element);
+            scrollObserver.observe(element);
+            nextIndexToLoad++;
+        }
+    }
 
     // runs the full render loop, filtering, calc positions, update sidebar, renderVisible, etc
     // Should only need to be run after filtering updates since that changes what items 'exist'.
@@ -485,41 +428,49 @@ export interface VersionFilterData {
         if (!wrapper || !viewport) {
             return;
         }
-        // Get new filtered items
-        filteredItems = getFilteredItems();
-        positions = calculatePositions(filteredItems);
 
-        const totalHeight = positions[positions.length - 1] || 0;
-        wrapper.style.height = `${totalHeight}px`;
+        // get new filtered items
+        const newFilteredItems = getFilteredItems();
 
-        // Reset visible range when filtering changes
-        visibleRange = { start: -1, end: -1 };
+        // hide all currently visible elements
+        loadObserver.disconnect();
+        scrollObserver.disconnect();
+        scrollEndObserver.disconnect();
+        for (let i = 0; i < nextIndexToLoad; i++) {
+            filteredItems[i].element.style.display = 'none';
+        }
+        filteredItems = newFilteredItems;
 
+        // set ordering for new elements
+        filteredItems.forEach((item, index) => {
+            item.element.style.order = index.toString();
+        });
+
+        // now render
+        nextIndexToLoad = 0;
+        loadElements(INITIAL_LOAD_AMOUNT);
+
+        // prepare sidebar
         updateSidebar();
-        renderVisible();
+        scrollEndObserver.observe(filteredItems[0].element);
+        scrollEndObserver.observe(filteredItems[filteredItems.length - 1].element);
+
+        // show message when no results found
         if (filteredItems.length === 0) {
             noResultsElement.style.display = '';
         } else {
             noResultsElement.style.display = 'none';
         }
+
+        // jump to top or current hash on element list change
         if (window.location.hash) {
-            scrollTo(window.location.hash.substring(1))
+            scrollTo(window.location.hash.substring(1));
         } else { 
             window.scrollTo({
                 top: 0,
                 behavior: 'smooth',
-            })
+            });
         }
-    }
-
-    // Use RAF for smooth scrolling - claude addition
-    let rafId: number | null = null;
-    function scheduleScroll() {
-        if (rafId !== null) return;
-        rafId = requestAnimationFrame(() => {
-            renderVisible();
-            rafId = null;
-        });
     }
 
     // ---------------------
@@ -540,10 +491,33 @@ export interface VersionFilterData {
         }
     });
 
-    document.querySelectorAll("[data-card-dialog]").forEach(element => {
-        element.addEventListener("click", () => {
-            showSyntaxDialog((element as HTMLElement).dataset.cardDialog!);
-        });
+    document.addEventListener('click', event => {
+        if (!(event.target instanceof HTMLElement)) { // not a link
+            return;
+        }
+        const a = event.target.closest('a');
+        if (!a) { // not a link
+            return;
+        }
+        const url = new URL(a.href);
+        const hash = url.hash.substring(1);
+        url.hash = ''; // remove hash from URL for comparison
+        const currentUrl = new URL(window.location.href);
+        currentUrl.hash = '';
+        if (currentUrl.href !== url.href) { // link to other resource, process as normal
+            return;
+        }
+        event.preventDefault();
+        if ((event.target.closest('.documentation-card') as HTMLElement)?.dataset.syntaxId === hash) { // copying link to card
+            url.search = ''; // remove search from URL for linking
+            url.hash = hash;
+            navigator.clipboard.writeText(url.href).then(() => {
+                // TODO some sort of popup notifying link copied
+            });
+            return;
+        }
+        // show card dialog
+        showSyntaxDialog(hash);
     });
 
     function showSyntaxDialog(syntaxId: string) {
@@ -560,12 +534,20 @@ export interface VersionFilterData {
     // Initialize everything
     // ---------------------
 
-    fullRender();
-    scrollTo(window.location.hash.substring(1));
+    function debounce(func: any, delay: number) {
+        let timer: NodeJS.Timeout;
+        return function(...args: any) {
+            clearTimeout(timer);
+            timer = setTimeout(() => func(...args), delay);
+        }
+    }
 
-    // scroll/resize listeners
-    window.addEventListener('scroll', scheduleScroll, { passive: true });
-    window.addEventListener('resize', fullRender, { passive: true });
+    const queueSearchUpdate = debounce((searchQuery: string) => {
+        recomputeSearchCache(searchQuery);
+        fullRender();
+    }, 200);
+
+    fullRender();
 
     // Expose API for other components
     (window as any).__syntaxDisplayManager = {
@@ -588,8 +570,7 @@ export interface VersionFilterData {
             fullRender();
         },
         updateSearchQuery: (searchQuery: string = '') => {
-            recomputeSearchCache(searchQuery);
-            fullRender();
+            queueSearchUpdate(searchQuery);
         }
     };
 </script>

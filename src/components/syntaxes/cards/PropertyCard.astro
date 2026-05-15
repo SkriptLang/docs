@@ -1,0 +1,43 @@
+---
+import { type Property } from '../documentation'
+import CodeCard from "../../CodeCard.astro";
+import DocumentationCard from "./DocumentationCard.astro";
+import SyntaxBadge from "../SyntaxBadge.astro";
+import type {DocumentableCardProps} from "./DocumentableCard.astro";
+
+interface Props {
+    defaultProps: DocumentableCardProps,
+    property: Property,
+}
+
+const { defaultProps, property }: Props = Astro.props;
+---
+
+<DocumentationCard defaultProps={defaultProps} documentation={property}>
+    <Fragment slot="badges">
+        <SyntaxBadge
+                badgeProps={{text: "Applicable Types", size: 'medium'}}
+                entries={property.types
+                    .sort(((a, b) => a.name.localeCompare(b.name)))
+                    .map(type => ({text: type.name, cardRef: type.id}))
+                }
+                description="These are types that support this property."
+        />
+        <SyntaxBadge
+                badgeProps={{text: "Applicable Syntaxes", size: 'medium'}}
+                entries={property.syntaxes
+                    .sort(((a, b) => a.name.localeCompare(b.name)))
+                    .map(syntax => ({text: syntax.name, cardRef: syntax.id}))
+                }
+                description="These are syntaxes that provide functionality for this property."
+        />
+    </Fragment>
+</DocumentationCard>
+
+<style is:global>
+    [data-syntax-type="Property"] {
+        /* Pink */
+        --custom-badge-light: hotpink;
+        --custom-badge-dark: #8B0A50;
+    }
+</style>

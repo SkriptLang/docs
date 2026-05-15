@@ -1,0 +1,27 @@
+---
+import {type Experiment} from '../documentation'
+import CodeCard from "../../CodeCard.astro";
+import DocumentationCard from "./DocumentationCard.astro";
+import type {DocumentableCardProps} from "./DocumentableCard.astro";
+
+interface Props {
+    defaultProps: DocumentableCardProps,
+    experiment: Experiment,
+}
+
+const { defaultProps, experiment }: Props = Astro.props;
+---
+
+<DocumentationCard defaultProps={defaultProps} documentation={experiment}>
+    <Fragment slot="right-column">
+        <CodeCard title="Experiment Pattern" wrap={true} code={[experiment.pattern]}/>
+    </Fragment>
+</DocumentationCard>
+
+<style is:global>
+    [data-syntax-type="Experiment"] {
+        /* Ember */
+        --custom-badge-light: #FF8C42;
+        --custom-badge-dark: #8B3103;
+    }
+</style>

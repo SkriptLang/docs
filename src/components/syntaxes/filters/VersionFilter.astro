@@ -1,10 +1,5 @@
 ---
 import {getCollection} from "astro:content";
-interface Props {
-    isMobile?: boolean;
-}
-
-const { isMobile } = Astro.props;
 
 interface VersionGroup {
     major: string;
@@ -12,7 +7,6 @@ interface VersionGroup {
 }
 
 // Fetch and organize versions
-
 let response: Response;
 if (Astro.params.id) { // generating nightly docs, skip version fetch
     // fake response
@@ -72,7 +66,6 @@ if (response.ok) {
     }
 }
 
-const suffix = isMobile ? '-mobile' : '';
 const INITIAL_VISIBLE_COUNT = 3;
 ---
 
@@ -86,12 +79,10 @@ const INITIAL_VISIBLE_COUNT = 3;
 
     function handleVersionTypeChange(input: HTMLInputElement) {
         const type = input.value as 'present' | 'changed' | 'added';
-        
-        const isMobile = input.id.includes('-mobile');
-        const suffix = isMobile ? '-mobile' : '';
-        const presentCheckbox = document.getElementById(`version-type-present${suffix}`) as HTMLInputElement;
-        const changedCheckbox = document.getElementById(`version-type-changed${suffix}`) as HTMLInputElement;
-        const addedCheckbox = document.getElementById(`version-type-added${suffix}`) as HTMLInputElement;
+
+        const presentCheckbox = document.getElementById(`version-type-present`) as HTMLInputElement;
+        const changedCheckbox = document.getElementById(`version-type-changed`) as HTMLInputElement;
+        const addedCheckbox = document.getElementById(`version-type-added`) as HTMLInputElement;
         
         if (type === 'present') {
             if (input.checked) {
@@ -253,14 +244,6 @@ const INITIAL_VISIBLE_COUNT = 3;
         document.querySelectorAll<HTMLInputElement>('[name="version-type"]').forEach(checkbox => {
             checkbox.addEventListener('change', () => {
                 handleVersionTypeChange(checkbox);
-                
-                const otherId = checkbox.id.includes('-mobile') 
-                    ? checkbox.id.slice(0, -7) 
-                    : checkbox.id + '-mobile';
-                const other = document.getElementById(otherId) as HTMLInputElement;
-                if (other) {
-                    other.checked = checkbox.checked;
-                }
             });
         });
 
@@ -289,18 +272,10 @@ const INITIAL_VISIBLE_COUNT = 3;
             
             checkbox.addEventListener('change', () => {
                 handleVersionCheckboxChange(checkbox);
-                
-                const otherId = checkbox.id.includes('-mobile') 
-                    ? checkbox.id.slice(0, -7) 
-                    : checkbox.id + '-mobile';
-                const other = document.getElementById(otherId) as HTMLInputElement;
-                if (other) {
-                    other.checked = checkbox.checked;
-                }
             });
             
             if (checkbox.dataset.isMajor === 'true') {
-                checkbox.addEventListener('click', (e) => {
+                checkbox.addEventListener('click', () => {
                     toggleVersionGroup(checkbox);
                 });
             }
@@ -310,14 +285,6 @@ const INITIAL_VISIBLE_COUNT = 3;
         document.querySelectorAll<HTMLButtonElement>('.show-more-versions').forEach(button => {
             button.addEventListener('click', () => {
                 toggleShowMore(button);
-                
-                const otherId = button.id.includes('-mobile')
-                    ? button.id.slice(0, -7)
-                    : button.id + '-mobile';
-                const other = document.getElementById(otherId) as HTMLButtonElement;
-                if (other) {
-                    toggleShowMore(other);
-                }
             });
         });
 
@@ -331,8 +298,8 @@ const INITIAL_VISIBLE_COUNT = 3;
 </script>
 
 
-<fieldset id={`version-filter-fieldset${suffix}`} class="version-tree">
-    <legend>Syntax Version</legend>
+<fieldset id={`version-filter-fieldset}`} class="version-tree">
+    <legend>Version</legend>
     
     <div class="version-list">
         {versionGroups.slice(0, INITIAL_VISIBLE_COUNT).map(group => (
@@ -340,7 +307,7 @@ const INITIAL_VISIBLE_COUNT = 3;
                 <label class="version-major">
                     <input 
                         type="checkbox" 
-                        id={`version-${group.major}${suffix}`}
+                        id={`version-${group.major}`}
                         data-version={group.major}
                         data-is-major="true"
                     />
@@ -353,7 +320,7 @@ const INITIAL_VISIBLE_COUNT = 3;
                                 <label>
                                     <input 
                                         type="checkbox"
-                                        id={`version-${version}${suffix}`}
+                                        id={`version-${version}`}
                                         data-version={version}
                                         data-is-major="false"
                                     />
@@ -375,7 +342,7 @@ const INITIAL_VISIBLE_COUNT = 3;
                         <label class="version-major">
                             <input 
                                 type="checkbox" 
-                                id={`version-${group.major}${suffix}`}
+                                id={`version-${group.major}`}
                                 data-version={group.major}
                                 data-is-major="true"
                             />
@@ -388,7 +355,7 @@ const INITIAL_VISIBLE_COUNT = 3;
                                         <label>
                                             <input 
                                                 type="checkbox"
-                                                id={`version-${version}${suffix}`}
+                                                id={`version-${version}`}
                                                 data-version={version}
                                                 data-is-major="false"
                                             />
@@ -404,7 +371,7 @@ const INITIAL_VISIBLE_COUNT = 3;
             <button 
                 type="button" 
                 class="show-more-versions"
-                id={`show-more-versions${suffix}`}
+                id={`show-more-versions`}
             >
                 Show more versions
             </button>
@@ -412,36 +379,36 @@ const INITIAL_VISIBLE_COUNT = 3;
     )}
 </fieldset>
 
-<fieldset id={`version-type-fieldset${suffix}`}>
+<fieldset id={`version-type-fieldset`}>
     <legend>Version Filter Type</legend>
     <span>
-        <label for={`version-type-present${suffix}`}>
+        <label for={`version-type-present`}>
             <input 
                 type="checkbox" 
                 name="version-type"
-                id={`version-type-present${suffix}`} 
+                id={`version-type-present`}
                 value="present"
             />
             Present in
         </label>
     </span>
     <span>
-        <label for={`version-type-changed${suffix}`}>
+        <label for={`version-type-changed`}>
             <input 
                 type="checkbox" 
                 name="version-type"
-                id={`version-type-changed${suffix}`} 
+                id={`version-type-changed`}
                 value="changed"
             />
             Changed in
         </label>
     </span>
     <span>
-        <label for={`version-type-added${suffix}`}>
+        <label for={`version-type-added`}>
             <input 
                 type="checkbox" 
                 name="version-type"
-                id={`version-type-added${suffix}`} 
+                id={`version-type-added`}
                 value="added"
             />
             Added in
@@ -450,22 +417,12 @@ const INITIAL_VISIBLE_COUNT = 3;
 </fieldset>
 
 <style>
-    fieldset {
-        border-color: var(--sl-color-hairline);
-        border-style: solid;
-    }
-    
-    fieldset > legend {
-        font-size: 1.5rem;
-    }
-    
     label {
         user-select: none;
         cursor: pointer;
     }
 
-    #version-type-fieldset,
-    #version-type-fieldset-mobile {
+    #version-type-fieldset {
         display: flex;
         flex-direction: column;
     }
@@ -521,11 +478,11 @@ const INITIAL_VISIBLE_COUNT = 3;
     .show-more-versions {
         margin-top: 0.25rem;
         padding: 0.25rem 0.5rem;
-        background-color: var(--sl-color-gray-6);
+        background-color: var(--sl-color-black);
         border: 1px solid var(--sl-color-gray-5);
         border-radius: 0.25rem;
         cursor: pointer;
-        color: var(--sl-color-white);
+        color: var(--sl-color-text);
         transition: background-color 0.2s;
     }
 

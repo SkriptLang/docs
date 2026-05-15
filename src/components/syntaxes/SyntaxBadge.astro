@@ -7,22 +7,28 @@ interface Props {
     entries: {
         text: string,
         cardRef?: string,
+        cardRefText?: string,
     }[],
+    wrap?: boolean,
+    description?: string,
 }
 
-const { badgeProps, entries }: Props = Astro.props;
+const { badgeProps, entries, wrap, description }: Props = Astro.props;
 ---
 
-<span class="prefix-badge">
+<span class="prefix-badge" title={description}>
     <Badge {...badgeProps} class="cb"/>
-    {entries.map(({ text, cardRef }) => (
-        cardRef ? (
-            <p data-card-dialog={cardRef}>
-                {text}
-                <Icon name="right-arrow"/>
-            </p>
-        ) : text
-    ))}
+    {entries.map(({ text, cardRef, cardRefText }, index) =>
+            <>
+                {cardRef ? (
+                    <p data-wrap={wrap}>
+                        <a href=`#${cardRef}`>{text}</a>
+                        {cardRefText}
+                        {!wrap && index != entries.length - 1 && ', '}
+                    </p>
+                ) : text}
+            </>
+    )}
 </span>
 
 <style>
@@ -30,19 +36,18 @@ const { badgeProps, entries }: Props = Astro.props;
         margin-bottom: 0.75em;
     }
     p {
-        display: inline-flex;
-        align-items: center;
         padding: 0;
         margin: 0;
-
-        text-decoration: none;
-        color: inherit;
-        user-select: none;
     }
     p:not(:last-child) {
         margin-right: 0.25rem;
     }
-    p:hover {
-        cursor: pointer;
+    p:not([data-wrap="true"]) {
+        display: inline-flex;
+        align-items: center;
+    }
+    p[data-wrap="true"] {
+        display: grid;
+        grid-template-columns: 1fr 3fr;
     }
 </style>

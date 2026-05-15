@@ -1,12 +1,5 @@
 ---
-import { SyntaxType } from '../../../pages/syntaxes/[...id].astro'
-
-interface Props {
-    isMobile?: boolean;
-}
-
-const { isMobile } = Astro.props;
-const suffix = isMobile ? '-mobile' : '';
+import { DocumentableType } from '../documentation'
 ---
 
 <script>
@@ -31,34 +24,6 @@ const suffix = isMobile ? '-mobile' : '';
         }
     }
 
-    function syncTypeOptions(regular: HTMLInputElement, mobile: HTMLInputElement) {
-        regular.checked = mobile.checked = expectedTypes.has(regular.dataset.filterKey!);
-    }
-
-    function setupMirroredInputs() {
-        const regular = document.getElementById('type-filter-fieldset');
-        const mobile = document.getElementById('type-filter-fieldset-mobile');
-        
-        if (!regular || !mobile) return;
-
-        regular.querySelectorAll<HTMLInputElement>('input').forEach((regularElement) => {
-            const mobileElement = document.getElementById(regularElement.id + '-mobile') as HTMLInputElement;
-            if (!mobileElement) return;
-            
-            syncTypeOptions(regularElement, mobileElement);
-            
-            regularElement.addEventListener('change', () => {
-                mobileElement.checked = (regularElement).checked;
-                handleTypeFilterChange(regularElement);
-            });
-            
-            mobileElement.addEventListener('change', () => {
-                (regularElement).checked = mobileElement.checked;
-                handleTypeFilterChange(regularElement);
-            });
-        });
-    }
-
     function initTypeFilter() {
         const syntaxDisplayManager = (window as any).__syntaxDisplayManager;
         if (!syntaxDisplayManager) {
@@ -68,30 +33,39 @@ const suffix = isMobile ? '-mobile' : '';
 
         updateTypeFilter = syntaxDisplayManager.updateTypeFilter;
 
+        // parse and initialize based on current URL param
         const typesParam = getParam('types');
         if (typesParam) {
             typesParam.split(",").forEach(type => expectedTypes.add(type));
         }
 
-        setupMirroredInputs();
+        // setup input change functionality
+        document.getElementById('type-filter-fieldset')!.querySelectorAll<HTMLInputElement>('input').forEach((element) => {
+            if (expectedTypes.has(element.dataset.filterKey!)) { // set default state
+                element.checked = true;
+            }
+            element.addEventListener('change', () => {
+                handleTypeFilterChange(element);
+            });
+        });
 
-        if (typesParam && updateTypeFilter) {
-            updateTypeFilter(expectedTypes);
+        if (expectedTypes.size > 0) {
+            updateTypeFilter!(expectedTypes);
         }
     }
 
     initTypeFilter();
 </script>
 
-<fieldset id={`type-filter-fieldset${suffix}`} class="checkboxes">
-    <legend>Syntax Type</legend>
-    {Object.values(SyntaxType).map(type => (
+<fieldset id={`type-filter-fieldset`} class="checkboxes">
+    <legend>Type</legend>
+    {Object.values(DocumentableType).map(type => (
         <span>
-           <label for={`type-filter-${type}${suffix}`}>
+           <label for={`type-filter-${type}`}>
                <input 
                    type="checkbox" 
                    name={type} 
-                   id={`type-filter-${type}${suffix}`} 
+                   id={`type-filter-${type}`}
                    data-filter-key={type}
                />
                {type}
@@ -104,15 +78,6 @@ const suffix = isMobile ? '-mobile' : '';
     .checkboxes {
         display: grid;
         grid-template-columns: 1fr 1fr;
-    }
-
-    fieldset {
-        border-color: var(--sl-color-hairline);
-        border-style: solid;
-    }
-    
-    fieldset > legend {
-        font-size: 1.5rem;
     }
     
     label {

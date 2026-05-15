@@ -45,3 +45,10 @@ export function deleteParam(key: string) {
 export function clearParams() {
     window.history.replaceState({}, '', window.location.pathname);
 }
+
+export function getPlural(string: string) : string {
+    if (string.endsWith("y")) {
+        return string.slice(0, -1) + "ies";
+    }
+    return string + "s";
+}

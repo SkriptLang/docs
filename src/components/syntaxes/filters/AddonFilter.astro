@@ -1,13 +1,6 @@
 ---
 import {getCollection} from "astro:content";
 
-interface Props {
-    isMobile?: boolean;
-}
-
-const { isMobile } = Astro.props;
-const suffix = isMobile ? '-mobile' : '';
-
 const addons = [
     "Skript",
     ...(await getCollection("addonSyntaxes"))
@@ -37,33 +30,6 @@ const addons = [
         }
     }
 
-    function syncAddonOptions(regular: HTMLInputElement, mobile: HTMLInputElement) {
-        regular.checked = mobile.checked = expectedAddons.has(regular.dataset.filterKey!);
-    }
-
-    function setupMirroredInputs() {
-        const regular = document.getElementById('addon-filter-fieldset')!;
-
-        regular.querySelectorAll<HTMLInputElement>('input').forEach((regularElement) => {
-            const mobileElement = document.getElementById(regularElement.id + '-mobile') as HTMLInputElement;
-            if (!mobileElement) {
-                return;
-            }
-
-            syncAddonOptions(regularElement, mobileElement);
-
-            regularElement.addEventListener('change', () => {
-                mobileElement.checked = (regularElement).checked;
-                handleAddonFilterChange(regularElement);
-            });
-
-            mobileElement.addEventListener('change', () => {
-                (regularElement).checked = mobileElement.checked;
-                handleAddonFilterChange(regularElement);
-            });
-        });
-    }
-
     function initAddonFilter() {
         const syntaxDisplayManager = (window as any).__syntaxDisplayManager;
         if (!syntaxDisplayManager) {
@@ -73,28 +39,40 @@ const addons = [
 
         updateAddonFilter = syntaxDisplayManager.updateAddonFilter!;
 
+        // parse and initialize based on current URL params
         const addonsParam = getParam('addons');
         if (addonsParam) {
             addonsParam.split(",").forEach(addon => expectedAddons.add(addon));
         }
 
-        setupMirroredInputs();
+        // setup button functionality, initialize states
+        const fieldset = document.getElementById('addon-filter-fieldset')!;
+        fieldset.querySelectorAll<HTMLInputElement>('input').forEach((element) => {
+            if (expectedAddons.has(element.dataset.filterKey!)) {
+                element.checked = true;
+            }
+            element.addEventListener('change', () => {
+                handleAddonFilterChange(element);
+            });
+        });
 
-        updateAddonFilter!(expectedAddons)
+        if (expectedAddons.size > 0) {
+            updateAddonFilter!(expectedAddons);
+        }
     }
 
     initAddonFilter();
 </script>
 
-<fieldset id={`addon-filter-fieldset${suffix}`} class="checkboxes">
+<fieldset id={`addon-filter-fieldset`} class="checkboxes">
     <legend>Addons</legend>
     {addons.map(addon => (
         <span>
-            <label for={`addon-filter-${addon}${suffix}`}>
+            <label for={`addon-filter-${addon}`}>
                 <input
                        type="checkbox"
                        name={addon}
-                       id={`addon-filter-${addon}${suffix}`}
+                       id={`addon-filter-${addon}`}
                        data-filter-key={addon}
                 />
                 {addon}
@@ -107,15 +85,6 @@ const addons = [
     .checkboxes {
         display: grid;
         grid-template-columns: 1fr;
-    }
-
-    fieldset {
-        border-color: var(--sl-color-hairline);
-        border-style: solid;
-    }
-
-    fieldset > legend {
-        font-size: 1.5rem;
     }
 
     label {

@@ -1,0 +1,97 @@
+---
+import { type Syntax } from '../documentation'
+import CodeCard from "../../CodeCard.astro";
+import DocumentationCard from "./DocumentationCard.astro";
+import SyntaxBadge from "../SyntaxBadge.astro";
+import {Badge} from "@astrojs/starlight/components";
+import type {DocumentableCardProps} from "./DocumentableCard.astro";
+
+interface Props {
+    defaultProps: DocumentableCardProps,
+    syntax: Syntax,
+    [key: string]: any,
+}
+
+const { defaultProps, syntax, ...rest }: Props = Astro.props;
+---
+
+<DocumentationCard defaultProps={defaultProps} documentation={syntax} {...rest}>
+    <Fragment slot="header badges">
+        {syntax.experimentData && syntax.experimentData.required.length > 0  && (
+                <Badge
+                        variant="caution" size='medium' text="Experimental"
+                        title="This is an experimental syntax, meaning it may be changed or removed in a future release."
+                />
+        )}
+    </Fragment>
+    <Fragment slot="badges">
+        {syntax.events && (
+                <SyntaxBadge
+                        badgeProps={{text: "Applicable Events", size: 'medium'}}
+                        entries={syntax.events.map(event => ({text: event.name, cardRef: event.id}))}
+                        description="These are events that the syntax can be used in. The syntax cannot be used outside of these events."
+                />
+        )}
+        {syntax.relatedProperty && (
+                <SyntaxBadge
+                        badgeProps={{text: "Related Property", size: 'medium'}}
+                        entries={[{text: syntax.relatedProperty.name, cardRef: syntax.relatedProperty.id}]}
+                        description="This is a property that the syntax provides functionality for."
+                />
+        )}
+        {syntax.experimentData && syntax.experimentData.required.length > 0 && (
+                <SyntaxBadge
+                        badgeProps={{text: "Required Experiments", size: 'medium'}}
+                        entries={syntax.experimentData.required
+                            .sort(((a, b) => a.name.localeCompare(b.name)))
+                            .map(type => ({text: type.name, cardRef: type.id}))
+                        }
+                        description="These are experiments that must be enabled for the syntax to be used."
+                />
+        )}
+        {syntax.experimentData && syntax.experimentData.disallowed.length > 0 && (
+                <SyntaxBadge
+                        badgeProps={{text: "Disallowed Experiments", size: 'medium'}}
+                        entries={syntax.experimentData.disallowed
+                            .sort(((a, b) => a.name.localeCompare(b.name)))
+                            .map(type => ({text: type.name, cardRef: type.id}))
+                        }
+                        description="These are experiments that must not be enabled for the syntax to be used.."
+                />
+        )}
+        <slot name="badges" />
+    </Fragment>
+    <Fragment slot="right-column">
+        {syntax.patterns.length > 0 && (
+                <CodeCard title="Syntax Patterns" wrap={true} code={syntax.patterns.filter(pattern => pattern.trim().length !== 0)}/>
+        )}
+    </Fragment>
+</DocumentationCard>
+
+<style is:global>
+    [data-syntax-type="Structure"] {
+        /* Sky Blue */
+        --custom-badge-light: lightskyblue;
+        --custom-badge-dark: #00688B;
+    }
+    [data-syntax-type="Section"] {
+        /* Salmon */
+        --custom-badge-light: lightsalmon;
+        --custom-badge-dark: #8B4513;
+    }
+    [data-syntax-type="Effect"] {
+        /* Emerald */
+        --custom-badge-light: #50C878;
+        --custom-badge-dark: #004B23;
+    }
+    [data-syntax-type="Condition"] {
+        /* Cyan */
+        --custom-badge-light: #008B8B;
+        --custom-badge-dark: #003131;
+    }
+    [data-syntax-type="Event"] {
+        /* Ecru */
+        --custom-badge-light: #C8A228;
+        --custom-badge-dark: #634E0A;
+    }
+</style>

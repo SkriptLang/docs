@@ -1,0 +1,17 @@
+---
+import Default from '@astrojs/starlight/components/Sidebar.astro';
+//@ts-expect-error - This does exist at runtime
+import MobileMenuFooter from 'virtual:starlight/components/MobileMenuFooter';
+import SyntaxFilter from "../syntaxes/SyntaxFilter.astro";
+
+const isSyntaxesPage = Astro.locals.starlightRoute.id.startsWith('syntaxes');
+---
+
+{
+    isSyntaxesPage ? (
+        <SyntaxFilter/>
+        <div class="md:sl-hidden">
+            <MobileMenuFooter />
+        </div>
+        ) : (<Default><slot /></Default>)
+}

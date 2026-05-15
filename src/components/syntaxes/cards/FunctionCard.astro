@@ -1,0 +1,78 @@
+---
+import { type Function } from '../documentation'
+import DocumentationCard from "./DocumentationCard.astro";
+import SyntaxBadge from "../SyntaxBadge.astro";
+import { getPlural } from "../../../utils/utils";
+import type {DocumentableCardProps} from "./DocumentableCard.astro";
+
+interface Props {
+    defaultProps: DocumentableCardProps,
+    func: Function,
+}
+
+const { defaultProps, func }: Props = Astro.props;
+---
+
+<DocumentationCard defaultProps={defaultProps} documentation={func}>
+    <Fragment slot="badges">
+        {func.returnType && (
+                <SyntaxBadge
+                        badgeProps={{text: "Return Type", size: 'medium'}}
+                        entries={[{text: func.returnType.name, cardRef: func.returnType.id}]}
+                />
+        )}
+    </Fragment>
+    <Fragment slot="right-column">
+        {func.parameters && (
+                <div class="code-card">
+                    <span class="title">Function Parameters</span>
+                    {Object.values(func.parameters).map(parameter => {
+                        let description = parameter.type.name;
+                        if (parameter.plural) {
+                            description = getPlural(description);
+                        }
+                        if (parameter.modifiers) {
+                            if (parameter.modifiers.ranged) {
+                                description += ` (between ${parameter.modifiers.ranged.min} and ${parameter.modifiers.ranged.max})`;
+                            }
+                            if (parameter.modifiers.optional) {
+                                if (!description.endsWith(" ")) {
+                                    description += ", ";
+                                }
+                                description += "optional"
+                            }
+                        }
+                        return (<SyntaxBadge
+                                badgeProps={{text: parameter.name, size: 'medium'}}
+                                entries={[{text: description}]}
+                        />);
+                    })}
+                </div>
+        )}
+    </Fragment>
+</DocumentationCard>
+
+<style>
+    .code-card {
+        display: flex;
+        flex-direction: column;
+        padding: 1rem;
+
+        background-color: var(--sl-color-black);
+        border: 1px solid var(--sl-color-gray-5);
+        border-radius: 0.5rem;
+    }
+
+    .title {
+        font-size: var(--sl-text-xl);
+        margin-bottom: 0.5rem;
+    }
+</style>
+
+<style is:global>
+    [data-syntax-type="Function"] {
+        /* Frost Blue */
+        --custom-badge-light: steelblue;
+        --custom-badge-dark: #102A44;
+    }
+</style>

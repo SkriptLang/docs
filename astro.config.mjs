@@ -1,11 +1,14 @@
 // @ts-check
 import { defineConfig } from 'astro/config';
 import starlight from '@astrojs/starlight';
+import starlightAutoSidebar from 'starlight-auto-sidebar'
 
 // https://astro.build/config
 export default defineConfig({
+    site: 'https://beta-docs.skriptlang.org',
     integrations: [
         starlight({
+            plugins: [starlightAutoSidebar()],
             title: 'Skript',
             favicon: '/favicon.svg',
             /*logo: {
@@ -14,67 +17,26 @@ export default defineConfig({
             },*/
             social: [
                 { icon: 'github', label: 'GitHub', href: 'https://github.com/SkriptLang' },
-                { icon: 'discord', label: 'Discord', href: 'https://discord.gg/ZPsZAg6ygu' },
+                { icon: 'discord', label: 'Discord', href: 'https://discord.gg/skriptlang-988998880794402856' },
+                { icon: 'openCollective', label: 'OpenCollective', href: 'https://opencollective.com/skriptlang' },
             ],
             components: {
-                MobileTableOfContents: './src/components/MobileTableOfContents.astro',
-                Search: './src/components/Search.astro',
-                Sidebar: './src/components/Sidebar.astro',
-                TableOfContents: './src/components/TableOfContents.astro',
+                Footer: './src/components/overrides/Footer.astro',
+                MobileTableOfContents: './src/components/overrides/MobileTableOfContents.astro',
+                Search: './src/components/overrides/Search.astro',
+                Sidebar: './src/components/overrides/Sidebar.astro',
+                TableOfContents: './src/components/overrides/TableOfContents.astro',
             },
             customCss: [
-                // Relative path to your custom CSS file
                 './src/styles/custom.css',
+                '@fontsource/poppins/400.css',
             ],
             editLink: {
                 baseUrl: 'https://github.com/SkriptLang/docs/edit/master/',
             },
-            sidebar: [
-                {
-                    label: 'Scripting',
-                    collapsed: true,
-                    autogenerate: {
-                        directory: 'scripting',
-                    },
-                },
-                {
-                    label: 'API',
-                    collapsed: true,
-                    items: [
-                        'api',
-                        {
-                            label: 'Skript',
-                            collapsed: true,
-                            autogenerate: {
-                                directory: 'api/skript',
-                            },
-                        },
-                        {
-                            label: 'Localization',
-                            collapsed: true,
-                            autogenerate: {
-                                directory: 'api/localization',
-                            },
-                        },
-                        {
-                            label: 'Syntax',
-                            collapsed: true,
-                            autogenerate: {
-                                directory: 'api/syntax',
-                            },
-                        },
-                        {
-                            label: 'Registries',
-                            collapsed: true,
-                            autogenerate: {
-                                directory: 'api/registries',
-                            },
-                        },
-                    ],
-                },
-            ],
             expressiveCode: {
                 tabWidth: 4,
+                styleOverrides: { borderRadius: '0.25rem' },
             },
         }),
     ],

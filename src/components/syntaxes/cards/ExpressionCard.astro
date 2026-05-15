@@ -1,0 +1,32 @@
+---
+import { type Expression } from '../documentation'
+import SyntaxCard from "./SyntaxCard.astro";
+import SyntaxBadge from "../SyntaxBadge.astro";
+import type {DocumentableCardProps} from "./DocumentableCard.astro";
+
+interface Props {
+    defaultProps: DocumentableCardProps,
+    expression: Expression,
+}
+
+const { defaultProps, expression }: Props = Astro.props;
+---
+
+<SyntaxCard defaultProps={defaultProps} syntax={expression}
+            data-syntax-returns={expression.returnType.name}
+>
+    <Fragment slot="badges">
+        <SyntaxBadge
+                badgeProps={{text: "Return Type", size: 'medium'}}
+                entries={[{text: expression.returnType.name, cardRef: expression.returnType.id}]}
+        />
+    </Fragment>
+</SyntaxCard>
+
+<style is:global>
+    [data-syntax-type="Expression"] {
+        /* Electric Purple */
+        --custom-badge-light: #BF00FF;
+        --custom-badge-dark: #4B0082;
+    }
+</style>

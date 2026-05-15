@@ -2,8 +2,14 @@
 import { getCollection } from "astro:content";
 import StarlightPage from '@astrojs/starlight/components/StarlightPage.astro';
 import { Icon } from '@astrojs/starlight/components'
-import SyntaxCard from "../../components/syntaxes/SyntaxCard.astro";
 import SyntaxDisplayManager from "../../components/syntaxes/SyntaxDisplayManager.astro";
+import { DocumentableType, type Documentation } from "../../components/syntaxes/documentation";
+import DocumentableCard from "../../components/syntaxes/cards/DocumentableCard.astro";
+
+export const repositorySources = new Map([
+    ["Skript", "https://github.com/SkriptLang/Skript/tree/master/src/main/java"],
+    ["skript-worldguard", "https://github.com/SkriptLang/skript-worldguard/tree/main/src/main/java"],
+]);
 
 export async function getStaticPaths() {
     const syntaxes = await getCollection("syntaxes");
@@ -13,109 +19,116 @@ export async function getStaticPaths() {
     }));
 }
 
-export interface Syntax {
-    type: SyntaxType,
-    id: string,
-    name: string,
-    patterns?: string[],
-    description?: string[],
-    examples?: string[],
-    since: string | string[],
-    deprecated: boolean,
-    requirements?: string[],
-    keywords?: string[],
-
-    returns?: {
-        id: string,
-        name: string,
-    },
-
-    events?: {
-        id: string,
-        name: string,
-    }[],
-
-    addon?: string,
-}
-
-export enum SyntaxType {
-    TYPE = "Type",
-    STRUCTURE = "Structure",
-    SECTION = "Section",
-    EFFECT = "Effect",
-    CONDITION = "Condition",
-    EXPRESSION = "Expression",
-
-    FUNCTION = "Function",
-
-    EVENT = "Event",
-}
-
-function processRawEntries(entries: any, type: SyntaxType, addon: string | null, prefix: string | undefined = undefined) : any {
-    return [...entries].map(entry => {
-        entry.type = type;
-        if (addon) {
-            entry.addon = addon;
-        }
-        if (prefix && !(entry.id as String).startsWith(prefix)) {
-            entry.id = prefix + entry.id;
-        }
+function processRawEntries(entries: any, type: DocumentableType) : any {
+    return [...Object.values(entries)].map((entry) => {
+        (entry as any).type = type;
         return entry;
-    })
+    });
 }
 
 interface Props {
     rawSyntaxes: any;
 }
 
-const { rawSyntaxes } = Astro.props;
+const { rawSyntaxes }: Props = Astro.props;
 
-function processSyntaxJson(rawSyntaxes: any): Syntax[] {
-    const addon = rawSyntaxes.source.name === "Skript" ? null : rawSyntaxes.source.name;
+function processSyntaxJson(rawSyntaxes: any): Documentation[] {
     return [
-        ...processRawEntries(rawSyntaxes.types, SyntaxType.TYPE, addon),
-        ...processRawEntries(rawSyntaxes.structures, SyntaxType.STRUCTURE, addon),
-        ...processRawEntries(rawSyntaxes.sections, SyntaxType.SECTION, addon),
-        ...processRawEntries(rawSyntaxes.effects, SyntaxType.EFFECT, addon),
-        ...processRawEntries(rawSyntaxes.conditions, SyntaxType.CONDITION, addon),
-        ...processRawEntries(rawSyntaxes.expressions, SyntaxType.EXPRESSION, addon),
-
-        ...processRawEntries(rawSyntaxes.functions, SyntaxType.FUNCTION, addon, "Func"),
-
-        ...processRawEntries(rawSyntaxes.events, SyntaxType.EVENT, addon),
+        // syntax
+        ...processRawEntries(rawSyntaxes.structures, DocumentableType.STRUCTURE),
+        ...processRawEntries(rawSyntaxes.sections, DocumentableType.SECTION),
+        ...processRawEntries(rawSyntaxes.effects, DocumentableType.EFFECT),
+        ...processRawEntries(rawSyntaxes.conditions, DocumentableType.CONDITION),
+        ...processRawEntries(rawSyntaxes.expressions, DocumentableType.EXPRESSION),
+        ...processRawEntries(rawSyntaxes.events, DocumentableType.EVENT),
+        // types
+        ...processRawEntries(rawSyntaxes.types, DocumentableType.TYPE),
+        // properties
+        ...processRawEntries(rawSyntaxes.properties, DocumentableType.PROPERTY),
+        // functions
+        ...processRawEntries(rawSyntaxes.functions, DocumentableType.FUNCTION),
+        // experiments
+        ...processRawEntries(rawSyntaxes.experiments, DocumentableType.EXPERIMENT),
     ];
 }
 
-let addonSyntaxes: Syntax[][];
+let addonSyntaxes: Documentation[][];
 if (Astro.params.id) {
     addonSyntaxes = [];
 } else {
     addonSyntaxes = (await getCollection("addonSyntaxes"))
         .map(syntax => processSyntaxJson(syntax.data as any));
 }
-const syntaxes: Syntax[] = processSyntaxJson(rawSyntaxes)
+const syntaxes: Documentation[] = processSyntaxJson(rawSyntaxes)
     .concat(...addonSyntaxes)
     .toSorted((x, y) => x.name.localeCompare(y.name))
+
+// This attempts to remap invalid links to other syntax elements in element descriptions
+// It pulls out the link and tries to associate it with an existing element
+// If it can, the link is replaced
+for (const syntax of syntaxes) {
+    let index = 0;
+    while (index != -1) {
+        // first, isolate next href tag in description
+        const desc = syntax.description;
+        index = desc.indexOf("href=", index + 1);
+        const opening = desc.at(index + 5)!; // opening quote character of href
+        const closing = desc.indexOf(opening, index + 6)!; // closing quote index of href
+        let id = desc.substring(index + 6, closing);
+
+        // next, validate that it likely references another element
+        const firstChar = id.charAt(0);
+        if (firstChar !== "#" && firstChar !== "/" && firstChar !== ".") { // // probably not a link to another element
+            continue;
+        }
+        const fragmentStart = id.indexOf("#");
+        if (fragmentStart == -1) { // probably not a link to another element
+            continue;
+        }
+        id = id.substring(fragmentStart + 1);
+
+        // finally, attempt to map the ID to an existing element
+        if (syntaxes.some(s => s.id === id)) { // already a valid mapping
+            continue;
+        }
+        id = id.toLowerCase().replace(/[^a-z]/g, ''); // convert to only letters
+        // sort to prioritize Types for matches
+        const sortedSyntaxes = [...syntaxes].sort(a =>
+            a.type === DocumentableType.TYPE ? -1 : 1);
+        // map IDs to only letters (e.g., "EvtAtTime" -> "attime")
+        const match = sortedSyntaxes.find(s =>
+            s.id.substring(s.id.substring(1).search(/[A-Z]/) + 1).toLowerCase().replace(/[^a-z]/g, '') === id);
+        if (!match) {
+            continue;
+        }
+        syntax.description = desc.substring(0, index + 6) + '#' + match.id + desc.substring(closing);
+    }
+}
 
 let currentVersion = rawSyntaxes.source.version.split("-")[0];
 if (currentVersion.endsWith(".0")) {
     currentVersion = currentVersion.slice(0, -2);
 }
 
+const sidebarEntries = syntaxes.map(syntax => ({
+    label: syntax.name,
+    link: `syntaxes/#${syntax.id}`,
+    attrs: {
+        id: `sidebar-${syntax.id}`,
+        type: syntax.type,
+    },
+}));
 ---
 
 <StarlightPage
         frontmatter={{ title: `Syntaxes for Skript ${rawSyntaxes.source.version}`, tableOfContents: true, pagefind: false, prev: false, next: false}}
-        sidebar={syntaxes.map(syntax => ({ label: `${syntax.name}`, link: `syntaxes/#${syntax.id}`, attrs: { id: `sidebar-${syntax.id}`, type: syntax.type } }))}
+        sidebar={sidebarEntries}
 >
     <h1 id="syntaxes-no-results" style="display: none;">No results were found.</h1>
     <div id="syntaxes-wrapper">
         <div id="syntaxes-viewport">
             {syntaxes.map(syntax => (
-                <SyntaxCard
-                    syntax={syntax}
-                    isNew={syntax.since !== null && (Array.isArray(syntax.since) ? syntax.since.join() : syntax.since).includes(currentVersion)}
-                />
+                <DocumentableCard defaultProps={{currentVersion: currentVersion, hide: true}} documentation={syntax}/>
             ))}
         </div>
     </div>
@@ -186,5 +199,8 @@ if (currentVersion.endsWith(".0")) {
             min-height: 15rem;
             max-height: calc(100% - 8rem);
         }
+    }
+    html:has(#syntaxes-card-dialog:open) {
+        overflow: hidden;
     }
 </style>
