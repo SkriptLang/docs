@@ -58,6 +58,15 @@ const isNew = documentation.since && documentation.since.join().includes(current
                     />
             )}
             <slot name="badges" />
+            <div class="footer-link-fill"/>
+            {documentation.origin.class && (
+                    <a href=`${repositorySources.get(documentation.origin.name)}/${documentation.origin.class.replaceAll('.', '/')}.java`
+                        target="_blank"
+                        class="footer-link"
+                    >
+                        <Icon name="external"/> View on GitHub
+                    </a>
+            )}
         </div>
         <div class="col">
             <slot name="right-column" />
@@ -66,16 +75,6 @@ const isNew = documentation.since && documentation.since.join().includes(current
             )}
         </div>
     </div>
-    <footer class="row">
-        {documentation.origin.class && (
-                <a href=`${repositorySources.get(documentation.origin.name)}/${documentation.origin.class.replaceAll('.', '/')}.java`
-                   target="_blank"
-                   class="footer-link"
-                >
-                    <Icon name="external"/> View on GitHub
-                </a>
-        )}
-    </footer>
 </section>
 
 <style>
@@ -142,6 +141,10 @@ const isNew = documentation.since && documentation.since.join().includes(current
         .col + .col {
             margin-top: 1rem;
         }
+    }
+    .footer-link-fill {
+        flex-grow: 1;
+        min-height: 0.5rem;
     }
     .footer-link {
         display: flex;
