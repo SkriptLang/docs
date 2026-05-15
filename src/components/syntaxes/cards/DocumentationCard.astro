@@ -112,6 +112,9 @@ const isNew = documentation.since && documentation.since.join().includes(current
         padding: 0;
         gap: 0 2%;
     }
+    .row + .row {
+        margin-top: 0.5rem;
+    }
     .col {
         display: flex;
         flex-direction: column;
@@ -130,9 +133,6 @@ const isNew = documentation.since && documentation.since.join().includes(current
     @media (max-width: 50rem) {
         .documentation-card > .row {
             flex-direction: column;
-        }
-        .row + .row {
-            margin-top: 0.5rem;
         }
         .col {
             display: flex;

@@ -35,22 +35,19 @@ const { badgeProps, entries, wrap, description }: Props = Astro.props;
     .prefix-badge:not(:last-of-type) {
         margin-bottom: 0.75em;
     }
-    p:not([data-wrap="true"]) {
-        display: inline-flex;
-        align-items: center;
-    }
     p {
         padding: 0;
         margin: 0;
-
-        text-decoration: none;
-        color: inherit;
-        user-select: none;
     }
     p:not(:last-child) {
         margin-right: 0.25rem;
     }
-    p:hover {
-        cursor: pointer;
+    p:not([data-wrap="true"]) {
+        display: inline-flex;
+        align-items: center;
+    }
+    p[data-wrap="true"] {
+        display: grid;
+        grid-template-columns: 1fr 3fr;
     }
 </style>

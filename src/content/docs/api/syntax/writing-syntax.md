@@ -5,7 +5,7 @@ sidebar:
 ---
 
 ## Syntax infos
-In Skript, every syntax is defined by a syntax info that describes the properties of that syntax.
+In Skript, every syntax is described by a syntax info that details the properties of that syntax.
 A syntax info is described by the [SyntaxInfo](https://github.com/SkriptLang/Skript/blob/master/src/main/java/org/skriptlang/skript/registration/SyntaxInfo.java) interface.
 
 ### Creating syntax infos
@@ -257,7 +257,7 @@ addon.syntaxRegistry().register(key, builder.build());
 There exists a similar method for unregistering syntax: `unregister(Key, SyntaxInfo)`.
 It takes in the same parameters as the `register` method:
 - A Key to register the syntax info under (see above)
-- A SyntaxInfo to register
+- A SyntaxInfo to unregister
 
 If this all still seems confusing, that is understandable.
 The rest of these pages will provide information about registering and implementing syntax for each of Skript's built-in syntax types.

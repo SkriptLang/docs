@@ -17,7 +17,8 @@ export default defineConfig({
             },*/
             social: [
                 { icon: 'github', label: 'GitHub', href: 'https://github.com/SkriptLang' },
-                { icon: 'discord', label: 'Discord', href: 'https://discord.gg/ZPsZAg6ygu' },
+                { icon: 'discord', label: 'Discord', href: 'https://discord.gg/skriptlang-988998880794402856' },
+                { icon: 'openCollective', label: 'OpenCollective', href: 'https://opencollective.com/skriptlang' },
             ],
             components: {
                 Footer: './src/components/overrides/Footer.astro',
