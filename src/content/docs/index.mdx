@@ -7,22 +7,36 @@ hero:
   image:
     file: ../../assets/square.svg
     alt: .sk Skript Logo
-  actions:
-    - text: Getting Started with Skript
-      link: /scripting/
-      icon: right-arrow
-    - text: Available Syntax
-      link: ./syntaxes/
-      icon: right-arrow
-    - text: API Documentation
-      link: /api/
-      icon: right-arrow
 editUrl: false
 lastUpdated: false
 pagefind: false
 sidebar:
   hidden: true
 ---
+
+import IndexCardGrid from "../../../src/components/IndexCardGrid.astro";
+import IndexLinkCard from "../../../src/components/IndexLinkCard.astro";
+
+<IndexCardGrid>
+    <IndexLinkCard
+        title="Getting Started"
+        href="scripting"
+        icon="open-book">
+        Learn about using Skript to customize your server
+    </IndexLinkCard>
+    <IndexLinkCard
+        title="Syntaxes"
+        href="syntaxes"
+        icon="document">
+        Browse a list of all available syntaxes in Skript
+    </IndexLinkCard>
+    <IndexLinkCard
+        title="API"
+        href="api"
+        icon="puzzle">
+        Read tutorials for interacting with Skript's API
+    </IndexLinkCard>
+</IndexCardGrid>
 
 <div style="font-size: 1.15em;">
 Skript is a scripting plugin for Paper.

@@ -4,7 +4,7 @@
     font-display: swap;
     font-weight: 600;
     src: url(@fontsource/poppins/files/poppins-latin-500-normal.woff) format("woff"),
-         url(@fontsource/poppins/files/poppins-latin-500-normal.woff2) format("woff2");
+        url(@fontsource/poppins/files/poppins-latin-500-normal.woff2) format("woff2");
 }
 
 :root {
@@ -26,6 +26,7 @@
     --sl-color-gray-6: #1a1a1a;
     --sl-color-black: #0e0e0e;
 }
+
 /* Light mode colors. */
 :root[data-theme='light'] {
     --sl-color-accent-low: #f47902;
@@ -64,4 +65,11 @@
 
 #starlight__sidebar {
     overflow-x: hidden;
+}
+
+@media (min-width: 50rem) {
+    .card-grid {
+        grid-template-columns: 1fr 1fr;
+        gap: 1.5rem;
+    }
 }
