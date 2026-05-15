@@ -93,3 +93,11 @@ code[dir="auto"] {
         gap: 1.5rem;
     }
 }
+
+.social-icons a {
+    color: var(--sl-color-text);
+}
+
+.social-icons a:hover {
+    color: var(--sl-color-white);
+}
