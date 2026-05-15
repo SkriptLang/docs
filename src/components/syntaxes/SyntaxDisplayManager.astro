@@ -351,9 +351,10 @@ export interface VersionFilterData {
         if (index === -1) {
             return;
         }
-        loadElements(index - nextIndexToLoad);
-        loadObserver.disconnect();
-        loadElements(10);
+        // load up to index
+        loadElements(index - nextIndexToLoad, false);
+        // load more for padding
+        loadElements(INITIAL_LOAD_AMOUNT);
         filteredItems[index].element.scrollIntoView({
             block: 'center',
             behavior: 'smooth',
@@ -409,14 +410,16 @@ export interface VersionFilterData {
         }
     }, { threshold: 0.95 });
 
-    function loadElements(count: number): void {
+    function loadElements(count: number, addToLoadObserver: boolean = true): void {
         for (let i = 0; i < count; i++) {
             if (nextIndexToLoad === filteredItems.length) {
                 break;
             }
             const element = filteredItems[nextIndexToLoad].element;
             element.style.display = '';
-            loadObserver.observe(element);
+            if (addToLoadObserver) {
+                loadObserver.observe(element);
+            }
             scrollObserver.observe(element);
             nextIndexToLoad++;
         }
