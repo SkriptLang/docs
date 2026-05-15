@@ -101,3 +101,8 @@ code[dir="auto"] {
 .social-icons a:hover {
     color: var(--sl-color-white);
 }
+
+.hero img {
+    pointer-events: none;
+    user-select: none;
+}

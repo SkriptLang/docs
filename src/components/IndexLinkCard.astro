@@ -35,7 +35,12 @@ const { icon, title, variant, ...attributes } = Astro.props;
             gap: clamp(0.5rem, calc(0.125rem + 1vw), 1rem);
             color: var(--sl-color-gray-3);
             border-radius: 4px;
-            transition: all 0.2s;
+            transition: transform 0.2s cubic-bezier(0.6, 0.45, 0, 2.5);
+        }
+        .index-card-link:hover {
+            background: var(--sl-color-gray-7, var(--sl-color-gray-6));
+            border-color: var(--sl-color-gray-2);
+            transform: scale(105%);
         }
 
         .index-card-link.primary {
@@ -87,12 +92,6 @@ const { icon, title, variant, ...attributes } = Astro.props;
         .icon {
             color: var(--sl-color-gray-3);
         }
-
-        .index-card-link:hover {
-            background: var(--sl-color-gray-7, var(--sl-color-gray-6));
-            border-color: var(--sl-color-gray-2);
-        }
-
         .index-card-link:hover .icon {
             color: var(--sl-color-white);
         }
