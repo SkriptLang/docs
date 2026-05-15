@@ -27,6 +27,8 @@ export interface DocumentableReference {
 
 export interface Origin {
     name: string,
+    class?: string,
+    modules?: string[],
 }
 
 export interface ExperimentData {

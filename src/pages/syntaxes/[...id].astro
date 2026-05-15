@@ -6,6 +6,11 @@ import SyntaxDisplayManager from "../../components/syntaxes/SyntaxDisplayManager
 import { DocumentableType, type Documentation } from "../../components/syntaxes/documentation";
 import DocumentableCard from "../../components/syntaxes/cards/DocumentableCard.astro";
 
+export const repositorySources = new Map([
+    ["Skript", "https://github.com/SkriptLang/Skript/tree/master/src/main/java"],
+    ["skript-worldguard", "https://github.com/SkriptLang/skript-worldguard/tree/main/src/main/java"],
+]);
+
 export async function getStaticPaths() {
     const syntaxes = await getCollection("syntaxes");
     return syntaxes.map(syntax => ({
