@@ -112,20 +112,16 @@ import { Icon } from '@astrojs/starlight/components';
     .toggle-button:hover {
         background-color: var(--sl-color-gray-5);
     }
+    @media (max-width: 71.99rem) { /* starlight switches to mobile TOC at 72rem */
+        #toggle-syntax-list {
+            display: none;
+        }
+    }
     :global(#starlight__sidebar.collapsed) {
         display: none;
     }
     :global(.right-sidebar-container.collapsed) {
         display: none;
-    }
-    :global(html:is([data-is-syntaxes]):not([data-has-sidebar]) .main-pane) {
-        --sl-content-width: calc(67.5rem + var(--sl-sidebar-width));
-    }
-    :global(html:is([data-is-syntaxes]):not([data-has-toc]) .main-pane) {
-        --sl-content-width: calc(100vw - var(--sl-sidebar-width));
-    }
-    :global(html:is([data-is-syntaxes]):not([data-has-sidebar]):not([data-has-toc]) .main-pane) {
-        --sl-content-width: 100vw;
     }
 
     #header-search-group {

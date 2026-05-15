@@ -146,6 +146,18 @@ const sidebarEntries = syntaxes.map(syntax => ({
 </StarlightPage>
 
 <style>
+    :global(.main-pane) {
+        --sl-content-width: 100%;
+    }
+    :global(.right-sidebar-container, .right-sidebar, .right-sidebar-panel) {
+        min-width: var(--sl-sidebar-width);
+        width: var(--sl-sidebar-width);
+        max-width: var(--sl-sidebar-width);
+    }
+    :global(.right-sidebar-panel > *) { /* force higher max width for child element (another sidebar div) */
+        max-width: 100%;
+    }
+
     #syntaxes-wrapper {
         position: relative;
         width: 100%;
