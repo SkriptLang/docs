@@ -157,6 +157,9 @@ const sidebarEntries = syntaxes.map(syntax => ({
     :global(.right-sidebar-panel > *) { /* force higher max width for child element (another sidebar div) */
         max-width: 100%;
     }
+    :global(div.header) {
+        grid-template-columns: minmax(0, calc(var(--sl-sidebar-width) - var(--sl-nav-pad-x) - var(--sl-nav-gap))) 1fr auto;
+    }
 
     #syntaxes-wrapper {
         position: relative;
