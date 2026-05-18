@@ -399,7 +399,7 @@ export interface VersionFilterData {
                 break;
             }
         }
-    }, { rootMargin: '-50% 0px -50% 0px' });
+    }, { rootMargin: '-45% 0px -55% 0px' });
     const scrollEndObserver = new IntersectionObserver(entries => {
         for (const entry of entries) {
             if (entry.isIntersecting) {
@@ -559,10 +559,6 @@ export interface VersionFilterData {
         allItems,
         updateAddonFilter: (addons: Set<string>) => {
             addonFilter = addons;
-            fullRender();
-        },
-        updateModuleFilter: (modules: Set<string>) => {
-            // TODO set this
             fullRender();
         },
         updateReturnTypeFilter: (type: string) => {
