@@ -159,6 +159,10 @@ const sidebarEntries = syntaxes.map(syntax => ({
     }
     :global(div.header) {
         grid-template-columns: minmax(0, calc(var(--sl-sidebar-width) - var(--sl-nav-pad-x) - var(--sl-nav-gap))) 1fr auto;
+        justify-content: start;
+    }
+    :global(.title-wrapper) { /* ensure title is not covered by search */
+        min-width: fit-content;
     }
 
     #syntaxes-wrapper {

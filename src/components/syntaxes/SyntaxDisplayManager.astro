@@ -455,8 +455,10 @@ export interface VersionFilterData {
 
         // prepare sidebar
         updateSidebar();
-        scrollEndObserver.observe(filteredItems[0].element);
-        scrollEndObserver.observe(filteredItems[filteredItems.length - 1].element);
+        if (filteredItems.length > 1) {
+            scrollEndObserver.observe(filteredItems[0].element);
+            scrollEndObserver.observe(filteredItems[filteredItems.length - 1].element);
+        }
 
         // show message when no results found
         if (filteredItems.length === 0) {
