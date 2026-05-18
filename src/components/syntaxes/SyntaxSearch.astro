@@ -4,16 +4,15 @@ import { Icon } from '@astrojs/starlight/components';
 ---
 
 <div id="header-search-group">
-    <div style="display: contents;">
-        <label id="syntax-search" class="syntax-search">
-            <Icon name="magnifier" size='large'/>
-            <input aria-label={Astro.locals.t('search.label')} aria-keyshortcuts="Control+K"
-                   id="syntax-search-input" type="text" placeholder={Astro.locals.t('search.label')}/>
-            <kbd class="sl-hidden md:sl-flex" style="display: none;">
-                <kbd>{Astro.locals.t('search.ctrlKey')}</kbd><kbd>K</kbd>
-            </kbd>
-        </label>
-    </div>
+    <label id="syntax-search" class="syntax-search">
+        <Icon name="magnifier" size='large'/>
+        <input autocomplete="off" aria-label={Astro.locals.t('search.label')} aria-keyshortcuts="Control+K"
+               id="syntax-search-input" type="search" placeholder={Astro.locals.t('search.label')}/>
+        <kbd class="sl-hidden md:sl-flex" style="display: none;">
+            <kbd>{Astro.locals.t('search.ctrlKey')}</kbd>
+            <kbd>K</kbd>
+        </kbd>
+    </label>
     <button id="toggle-filters" class="toggle-button">
         Toggle Filters
     </button>
@@ -33,7 +32,9 @@ import { Icon } from '@astrojs/starlight/components';
     (() => {
         const searchBar = document.getElementById('syntax-search');
         const shortcut = searchBar?.querySelector('kbd');
-        if (!searchBar || !(shortcut instanceof HTMLElement)) return;
+        if (!searchBar || !(shortcut instanceof HTMLElement)) {
+            return;
+        }
         const platformKey = shortcut.querySelector('kbd');
         if (platformKey && /(Mac|iPhone|iPod|iPad)/i.test(navigator.platform)) {
             platformKey.textContent = '⌘';
@@ -64,7 +65,7 @@ import { Icon } from '@astrojs/starlight/components';
 
         // Listen for `ctrl + k` and `cmd + k` keyboard shortcuts.
         window.addEventListener('keydown', (event) => {
-            if ((event.metaKey === true || event.ctrlKey === true) && event.key === 'k') {
+            if ((event.metaKey || event.ctrlKey) && event.key === 'k') {
                 event.preventDefault();
                 // TODO unfocus if possible?
                 searchInput.focus();
