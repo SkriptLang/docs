@@ -9,42 +9,59 @@ interface Props {
         cardRef?: string,
         cardRefText?: string,
     }[],
-    wrap?: boolean,
     description?: string,
 }
 
-const { badgeProps, entries, wrap, description }: Props = Astro.props;
+const { badgeProps, entries, description }: Props = Astro.props;
 ---
 
 <span class="prefix-badge" title={description}>
     <Badge {...badgeProps} class="cb"/>
     {entries.map(({ text, cardRef, cardRefText }, index) =>
             <>
-                {cardRef ? (
-                    <p data-wrap={wrap}>
-                        <a href=`#${cardRef}`>{text}</a>
-                        {cardRefText}
-                        {!wrap && index != entries.length - 1 && ', '}
-                    </p>
-                ) : text}
+                {!cardRef && text}
+                {cardRef && !cardRefText && (
+                        <p>
+                            <a href=`#${cardRef}`>{text}</a>
+                            {index != entries.length - 1 && ', '}
+                        </p>
+                )}
+                {cardRef && cardRefText && (
+                        <p class="card-ref">
+                            <a href=`#${cardRef}`>{text}</a>
+                        </p>
+                        <p class="card-ref-text">
+                            {cardRefText}
+                        </p>
+                )}
             </>
     )}
 </span>
 
 <style>
     p {
+        display: inline-flex;
+        align-items: center;
         padding: 0;
         margin: 0;
     }
-    p:not(:last-child) {
+    .prefix-badge span, p:not(:last-child) {
         margin-right: 0.25rem;
     }
-    p:not([data-wrap="true"]) {
-        display: inline-flex;
-        align-items: center;
-    }
-    p[data-wrap="true"] {
+    .prefix-badge:has(.card-ref) {
         display: grid;
-        grid-template-columns: 8rem auto;
+        grid-template-columns: fit-content(100%) auto;
+        grid-gap: 0 0.5rem;
+        align-items: start;
+        span {
+            grid-column: span 2;
+            justify-self: start;
+        }
+    }
+    .card-ref {
+        grid-column: 1;
+    }
+    .card-ref-text {
+        grid-column: 2;
     }
 </style>

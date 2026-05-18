@@ -2,8 +2,8 @@
 import { type Function } from '../documentation'
 import DocumentationCard from "./DocumentationCard.astro";
 import SyntaxBadge from "../SyntaxBadge.astro";
-import { getPlural } from "../../../utils/utils";
 import type {DocumentableCardProps} from "./DocumentableCard.astro";
+import {changeSingular} from "../../../utils/utils.ts";
 
 interface Props {
     defaultProps: DocumentableCardProps,
@@ -27,10 +27,7 @@ const { defaultProps, func }: Props = Astro.props;
                 <div class="code-card">
                     <span class="title">Function Parameters</span>
                     {Object.values(func.parameters).map(parameter => {
-                        let description = parameter.type.name;
-                        if (parameter.plural) {
-                            description = getPlural(description);
-                        }
+                        let description = changeSingular(parameter.type.name, parameter.plural);
                         if (parameter.modifiers) {
                             if (parameter.modifiers.ranged) {
                                 description += ` (between ${parameter.modifiers.ranged.min} and ${parameter.modifiers.ranged.max})`;

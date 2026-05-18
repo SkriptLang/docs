@@ -52,3 +52,7 @@ export function getPlural(string: string) : string {
     }
     return string + "s";
 }
+
+export function changeSingular(string: string, plural: boolean) {
+    return plural ? getPlural(string) : string;
+}

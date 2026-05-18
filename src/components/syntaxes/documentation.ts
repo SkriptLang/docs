@@ -25,16 +25,9 @@ export interface DocumentableReference {
     name: string,
 }
 
-export interface Origin {
-    name: string,
-    class?: string,
-    modules?: string[],
-}
-
-export interface ExperimentData {
-    required: DocumentableReference[],
-    disallowed: DocumentableReference[],
-}
+/*
+ * Generic
+ */
 
 export interface Documentation extends Documentable {
     origin: Origin,
@@ -48,6 +41,21 @@ export interface Documentation extends Documentable {
     deprecated: string[],
 }
 
+export interface Origin {
+    name: string,
+    class?: string,
+    modules?: string[],
+}
+
+export interface ExperimentData {
+    required: DocumentableReference[],
+    disallowed: DocumentableReference[],
+}
+
+/*
+ * Syntax
+ */
+
 export interface Syntax extends Documentation {
     patterns: string[],
     events?: DocumentableReference[],
@@ -55,9 +63,39 @@ export interface Syntax extends Documentation {
     experimentData?: ExperimentData,
 }
 
+export enum ChangeMode {
+    ADD = "Add",
+    SET = "Set",
+    REMOVE = "Remove",
+    REMOVE_ALL = "Remove All",
+    DELETE = "Delete",
+    RESET = "Reset",
+}
+
 export interface Expression extends Syntax {
     returnType: DocumentableReference,
 }
+
+export interface Event extends Syntax {
+    cancellable: boolean,
+    eventValues: EventValue[],
+}
+export interface EventValue {
+    type: DocumentableReference,
+    plural: boolean,
+    time: keyof typeof EventValueTime,
+    patterns: string[],
+    supportedChangeModes: (keyof typeof ChangeMode)[],
+}
+export enum EventValueTime {
+    PAST = "Past",
+    NOW = "Present",
+    FUTURE = "Future",
+}
+
+/*
+ * Types
+ */
 
 export interface Type extends Documentation {
     usage?: string[],
@@ -68,10 +106,18 @@ export interface Type extends Documentation {
     }[],
 }
 
+/*
+ * Properties
+ */
+
 export interface Property extends Documentation {
     types: DocumentableReference[],
     syntaxes: DocumentableReference[],
 }
+
+/*
+ * Functions
+ */
 
 export interface Function extends Documentation {
     returnType?: DocumentableReference,
@@ -90,6 +136,10 @@ export interface Function extends Documentation {
         }
     },
 }
+
+/*
+ * Experiments
+ */
 
 export interface Experiment extends Documentation {
     pattern: string,

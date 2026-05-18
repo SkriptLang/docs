@@ -55,6 +55,7 @@ const isNew = documentation.since && documentation.since.join().includes(current
                     <SyntaxBadge
                             badgeProps={{text: "Since", size: 'medium'}}
                             entries={[{text: Array.isArray(documentation.since) ? documentation.since.join(", ") : documentation.since}]}
+                            description="These are versions that this element was added and/or changed in."
                     />
             )}
             <slot name="badges" />

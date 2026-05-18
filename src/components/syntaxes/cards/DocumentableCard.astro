@@ -1,14 +1,13 @@
 ---
 import { DocumentableType, type Documentation } from "../documentation";
 import DocumentationCard from "./DocumentationCard.astro";
+import EventCard from "./EventCard.astro";
 import ExperimentCard from "./ExperimentCard.astro";
 import ExpressionCard from "./ExpressionCard.astro";
 import FunctionCard from "./FunctionCard.astro";
 import PropertyCard from "./PropertyCard.astro";
 import TypeCard from "./TypeCard.astro";
 import SyntaxCard from "./SyntaxCard.astro";
-import type {ComponentProps} from "astro/types";
-import {Badge} from "@astrojs/starlight/components";
 
 export interface DocumentableCardProps {
     currentVersion: string,
@@ -29,10 +28,11 @@ const { defaultProps, documentation }: Props = Astro.props;
         case DocumentableType.SECTION:
         case DocumentableType.EFFECT:
         case DocumentableType.CONDITION:
-        case DocumentableType.EVENT:
             return (<SyntaxCard defaultProps={defaultProps} syntax={documentation as any}/>);
         case DocumentableType.EXPRESSION:
             return (<ExpressionCard defaultProps={defaultProps} expression={documentation as any}/>);
+        case DocumentableType.EVENT:
+            return (<EventCard defaultProps={defaultProps} event={documentation as any}/>);
         case DocumentableType.TYPE:
             return (<TypeCard defaultProps={defaultProps} type={documentation as any}/>);
         case DocumentableType.PROPERTY:

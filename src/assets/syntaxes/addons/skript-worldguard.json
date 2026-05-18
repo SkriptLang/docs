@@ -98,6 +98,35 @@
         "name": "Region"
       }
     },
+    "ExprRegionMembersOwners": {
+      "origin": {
+        "name": "skript-worldguard",
+        "class": "org.skriptlang.skriptworldguard.elements.expressions.ExprRegionMembersOwners"
+      },
+      "id": "ExprRegionMembersOwners",
+      "name": "Region Members/Owners",
+      "description": "An expression to obtain the members/owners of the given regions.\nThe members/owners of a region are made up of players and groups (strings).\nBy default, this expression returns both. However, keyword specifiers for each type (player/group) are available.",
+      "examples": [
+        "on region enter:\n\tmessage \"You have entered %region%. It is owned by %owners of region%.\"\n",
+        "command /promote <text> <player>:\n\ttrigger:\n\t\tset {_region} to the region text-argument in the player's world\n\t\tif player-argument is an owner of {_region}:\n\t\t\tmessage \"<red>%player-argument% is already an owner of %{_region}%\"\n\t\telse if player-argument is a member of {_region}:\n\t\t\tadd player to the owners of {_region}\n\t\t\tmessage \"<green>%player-argument% has been promoted to an owner of %{_region}%\"\n\t\telse:\n\t\t\tadd player to the members of {_region}\n\t\t\tmessage \"<green>%player-argument% has been promoted to a member of %{_region}%\"\n"
+      ],
+      "since": [
+        "1.0"
+      ],
+      "requirements": [],
+      "keywords": [],
+      "deprecated": false,
+      "patterns": [
+        "[the] [player|group] (members|owners) of %worldguardregions%",
+        "%worldguardregions%'[s] [player|group] (members|owners)",
+        "[the] (member|owner) (players|groups) of %worldguardregions%",
+        "%worldguardregions%'[s] (member|owner) (players|groups)"
+      ],
+      "returnType": {
+        "id": "TypeObject",
+        "name": "Object"
+      }
+    },
     "ExprBlocksInRegion": {
       "origin": {
         "name": "skript-worldguard",
@@ -122,34 +151,6 @@
       "returnType": {
         "id": "TypeBlock",
         "name": "Block"
-      }
-    },
-    "ExprRegionParent": {
-      "origin": {
-        "name": "skript-worldguard",
-        "class": "org.skriptlang.skriptworldguard.elements.expressions.ExprRegionParent"
-      },
-      "id": "ExprRegionParent",
-      "name": "Region Parent",
-      "description": "An expression to obtain and change the direct parent of a region.\nIt is also possible to obtain all parents of a region (e.g., including a parent region's parent region).\nWhen a region has a parent, it inherits the parents members, owners, and flags (that aren't defined on the child).",
-      "examples": [
-        "command /setparent <text> <text>:\n\ttrigger:\n\t\tset the parent of the region text-argument-1 to the region text-argument-2\n",
-        "if any of all of the parent regions of {_region} are global"
-      ],
-      "since": [
-        "1.0"
-      ],
-      "requirements": [],
-      "keywords": [],
-      "deprecated": false,
-      "patterns": [
-        "[the] parent region[s] of %worldguardregions%",
-        "%worldguardregions%'[s] parent region[s]",
-        "all [[of] the] parent regions of %worldguardregions%"
-      ],
-      "returnType": {
-        "id": "TypeWorldguardRegion",
-        "name": "Region"
       }
     },
     "ExprRegionPoints": {
@@ -180,35 +181,6 @@
         "name": "Location"
       }
     },
-    "ExprRegionMembersOwners": {
-      "origin": {
-        "name": "skript-worldguard",
-        "class": "org.skriptlang.skriptworldguard.elements.expressions.ExprRegionMembersOwners"
-      },
-      "id": "ExprRegionMembersOwners",
-      "name": "Region Members/Owners",
-      "description": "An expression to obtain the members/owners of the given regions.\nThe members/owners of a region are made up of players and groups (strings).\nBy default, this expression returns both. However, keyword specifiers for each type (player/group) are available.",
-      "examples": [
-        "on region enter:\n\tmessage \"You have entered %region%. It is owned by %owners of region%.\"\n",
-        "command /promote <text> <player>:\n\ttrigger:\n\t\tset {_region} to the region text-argument in the player's world\n\t\tif player-argument is an owner of {_region}:\n\t\t\tmessage \"<red>%player-argument% is already an owner of %{_region}%\"\n\t\telse if player-argument is a member of {_region}:\n\t\t\tadd player to the owners of {_region}\n\t\t\tmessage \"<green>%player-argument% has been promoted to an owner of %{_region}%\"\n\t\telse:\n\t\t\tadd player to the members of {_region}\n\t\t\tmessage \"<green>%player-argument% has been promoted to a member of %{_region}%\"\n"
-      ],
-      "since": [
-        "1.0"
-      ],
-      "requirements": [],
-      "keywords": [],
-      "deprecated": false,
-      "patterns": [
-        "[the] [player|group] (members|owners) of %worldguardregions%",
-        "%worldguardregions%'[s] [player|group] (members|owners)",
-        "[the] (member|owner) (players|groups) of %worldguardregions%",
-        "%worldguardregions%'[s] (member|owner) (players|groups)"
-      ],
-      "returnType": {
-        "id": "TypeObject",
-        "name": "Object"
-      }
-    },
     "ExprRegionPriority": {
       "origin": {
         "name": "skript-worldguard",
@@ -233,6 +205,34 @@
       "returnType": {
         "id": "TypeNumber",
         "name": "Number"
+      }
+    },
+    "ExprRegionParent": {
+      "origin": {
+        "name": "skript-worldguard",
+        "class": "org.skriptlang.skriptworldguard.elements.expressions.ExprRegionParent"
+      },
+      "id": "ExprRegionParent",
+      "name": "Region Parent",
+      "description": "An expression to obtain and change the direct parent of a region.\nIt is also possible to obtain all parents of a region (e.g., including a parent region's parent region).\nWhen a region has a parent, it inherits the parents members, owners, and flags (that aren't defined on the child).",
+      "examples": [
+        "command /setparent <text> <text>:\n\ttrigger:\n\t\tset the parent of the region text-argument-1 to the region text-argument-2\n",
+        "if any of all of the parent regions of {_region} are global"
+      ],
+      "since": [
+        "1.0"
+      ],
+      "requirements": [],
+      "keywords": [],
+      "deprecated": false,
+      "patterns": [
+        "[the] parent region[s] of %worldguardregions%",
+        "%worldguardregions%'[s] parent region[s]",
+        "all [[of] the] parent regions of %worldguardregions%"
+      ],
+      "returnType": {
+        "id": "TypeWorldguardRegion",
+        "name": "Region"
       }
     },
     "ExprRegionFlag": {
@@ -342,31 +342,34 @@
       "cancellable": true,
       "eventValues": [
         {
-          "plural": false,
-          "patterns": [],
-          "time": "present",
           "type": {
             "id": "TypeWorldguardRegion",
             "name": "Region"
-          }
+          },
+          "plural": false,
+          "time": "NOW",
+          "patterns": [],
+          "supportedChangeModes": []
         },
         {
-          "plural": false,
-          "patterns": [],
-          "time": "present",
           "type": {
             "id": "TypeWorld",
             "name": "World"
-          }
+          },
+          "plural": false,
+          "time": "NOW",
+          "patterns": [],
+          "supportedChangeModes": []
         },
         {
-          "plural": false,
-          "patterns": [],
-          "time": "present",
           "type": {
             "id": "TypeWorldguardMovementType",
             "name": "WorldGuard Move Type"
-          }
+          },
+          "plural": false,
+          "time": "NOW",
+          "patterns": [],
+          "supportedChangeModes": []
         }
       ]
     }
@@ -392,6 +395,28 @@
       "patterns": [
         "%offlineplayers/strings% (is|are) ([a] member|[the|an] owner) of %worldguardregions%",
         "%offlineplayers/strings% (isn't|is not|aren't|are not) ([a] member|[the|an] owner) of %worldguardregions%"
+      ]
+    },
+    "CondIsValidRegionId": {
+      "origin": {
+        "name": "skript-worldguard",
+        "class": "org.skriptlang.skriptworldguard.elements.conditions.CondIsValidRegionId"
+      },
+      "id": "CondIsValidRegionId",
+      "name": "Is Valid Region ID",
+      "description": "A condition to test whether a string is a valid region ID.\nValid region IDs only contain letters, numbers, underscores, commas, single quotation marks, dashes, pluses, or forward slashes.",
+      "examples": [
+        "command /createregion <text>:\n\tif the text-argument is not a valid region id:\n\t\tmessage \"<red>'%text-argument%' is not a valid region ID\")\n\t# here is where the rest of the command would go :)\n"
+      ],
+      "since": [
+        "1.0"
+      ],
+      "requirements": [],
+      "keywords": [],
+      "deprecated": false,
+      "patterns": [
+        "%strings% (is|are) [a] valid [worldguard] region id",
+        "%strings% (isn't|is not|aren't|are not) [a] valid [worldguard] region id"
       ]
     },
     "CondIsRegionType": {
@@ -436,28 +461,6 @@
       "patterns": [
         "%worldguardregions% (is|are) (temporary|transient)",
         "%worldguardregions% (isn't|is not|aren't|are not) (temporary|transient)"
-      ]
-    },
-    "CondIsValidRegionId": {
-      "origin": {
-        "name": "skript-worldguard",
-        "class": "org.skriptlang.skriptworldguard.elements.conditions.CondIsValidRegionId"
-      },
-      "id": "CondIsValidRegionId",
-      "name": "Is Valid Region ID",
-      "description": "A condition to test whether a string is a valid region ID.\nValid region IDs only contain letters, numbers, underscores, commas, single quotation marks, dashes, pluses, or forward slashes.",
-      "examples": [
-        "command /createregion <text>:\n\tif the text-argument is not a valid region id:\n\t\tmessage \"<red>'%text-argument%' is not a valid region ID\")\n\t# here is where the rest of the command would go :)\n"
-      ],
-      "since": [
-        "1.0"
-      ],
-      "requirements": [],
-      "keywords": [],
-      "deprecated": false,
-      "patterns": [
-        "%strings% (is|are) [a] valid [worldguard] region id",
-        "%strings% (isn't|is not|aren't|are not) [a] valid [worldguard] region id"
       ]
     },
     "CondIsParentRegion": {

@@ -1,0 +1,47 @@
+---
+import { type Event } from '../documentation'
+import SyntaxCard from "./SyntaxCard.astro";
+import SyntaxBadge from "../SyntaxBadge.astro";
+import type {DocumentableCardProps} from "./DocumentableCard.astro";
+import {changeSingular} from "../../../utils/utils.ts";
+import {ChangeMode, EventValueTime} from "../documentation.ts";
+
+interface Props {
+    defaultProps: DocumentableCardProps,
+    event: Event,
+}
+
+const { defaultProps, event }: Props = Astro.props;
+---
+
+<SyntaxCard defaultProps={defaultProps} syntax={event}>
+    <Fragment slot="badges">
+        <SyntaxBadge
+                badgeProps={{text: "Cancellable", size: 'medium'}}
+                entries={[{text: event.cancellable ? "Yes" : "No"}]}
+                description="Whether this event can be cancelled using the 'Cancel Event' effect."
+        />
+        {event.eventValues.length > 0 && (
+                <SyntaxBadge
+                        badgeProps={{text: "Event Values", size: 'medium'}}
+                        entries={event.eventValues
+                            .sort(((a, b) => a.type.name.localeCompare(b.type.name) || -a.time.localeCompare(b.time)))
+                            .map(eventValue => ({
+                                text: (eventValue.time === 'NOW' ? "" : `(${EventValueTime[eventValue.time]}) `) + changeSingular(eventValue.type.name, eventValue.plural),
+                                cardRef: eventValue.type.id,
+                                cardRefText: eventValue.supportedChangeModes.length > 0 ? 'Supports ' + eventValue.supportedChangeModes.map(key => ChangeMode[key]).join(', ') : undefined,
+                            }))
+                        }
+                        description="These are values providing contextual information about the event."
+                />
+        )}
+    </Fragment>
+</SyntaxCard>
+
+<style is:global>
+    [data-syntax-type="Event"] {
+        /* Ecru */
+        --custom-badge-light: #C8A228;
+        --custom-badge-dark: #634E0A;
+    }
+</style>
