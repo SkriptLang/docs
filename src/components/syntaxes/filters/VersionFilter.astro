@@ -72,6 +72,7 @@ const INITIAL_VISIBLE_COUNT = 3;
 <script>
     import type { VersionFilterData } from "../SyntaxDisplayManager.astro";
     import { getParam, setParam } from "../../../utils/utils";
+    import {deleteParam} from "../../../utils/utils.ts";
 
     const selectedVersions = new Set<string>();
     let versionFilterType: 'present' | 'changed' | 'added' | 'both' = 'both';
@@ -114,8 +115,12 @@ const INITIAL_VISIBLE_COUNT = 3;
                 if (addedCheckbox) addedCheckbox.checked = true;
             }
         }
-        
-        setParam('versionType', versionFilterType);
+
+        if (versionFilterType === 'both') {
+            deleteParam('versionType');
+        } else {
+            setParam('versionType', versionFilterType);
+        }
         applyVersionFilter();
     }
 
