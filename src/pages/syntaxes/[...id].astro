@@ -11,6 +11,10 @@ export const repositorySources = new Map([
     ["skript-worldguard", "https://github.com/SkriptLang/skript-worldguard/tree/main/src/main/java"],
 ]);
 
+/*
+ * Page Setup
+ */
+
 export async function getStaticPaths() {
     const syntaxes = await getCollection("syntaxes");
     return syntaxes.map(syntax => ({
@@ -19,18 +23,22 @@ export async function getStaticPaths() {
     }));
 }
 
+interface Props {
+    rawSyntaxes: any;
+}
+
+const { rawSyntaxes }: Props = Astro.props;
+
+/*
+ * Syntax Processing
+ */
+
 function processRawEntries(entries: any, type: DocumentableType) : any {
     return [...Object.values(entries)].map((entry) => {
         (entry as any).type = type;
         return entry;
     });
 }
-
-interface Props {
-    rawSyntaxes: any;
-}
-
-const { rawSyntaxes }: Props = Astro.props;
 
 function processSyntaxJson(rawSyntaxes: any): Documentation[] {
     return [
@@ -52,12 +60,15 @@ function processSyntaxJson(rawSyntaxes: any): Documentation[] {
     ];
 }
 
+let addons: string[];
 let addonSyntaxes: Documentation[][];
-if (Astro.params.id) {
+if (Astro.params.id) { // only include addons for main page
+    addons = [];
     addonSyntaxes = [];
 } else {
-    addonSyntaxes = (await getCollection("addonSyntaxes"))
-        .map(syntax => processSyntaxJson(syntax.data as any));
+    const addonCollection = await getCollection("addonSyntaxes");
+    addons = addonCollection.map(addon => addon.data.source.name);
+    addonSyntaxes = addonCollection.map(addon => processSyntaxJson(addon.data as any));
 }
 const syntaxes: Documentation[] = processSyntaxJson(rawSyntaxes)
     .concat(...addonSyntaxes)
@@ -108,6 +119,11 @@ for (const syntax of syntaxes) {
 let currentVersion = rawSyntaxes.source.version.split("-")[0];
 if (currentVersion.endsWith(".0")) {
     currentVersion = currentVersion.slice(0, -2);
+}
+
+Astro.locals.syntaxesData = {
+    addons: addons,
+    types: syntaxes.filter(syntax => syntax.type === DocumentableType.TYPE).map(syntax => syntax.name),
 }
 
 const sidebarEntries = syntaxes.map(syntax => ({

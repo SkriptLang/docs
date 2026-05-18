@@ -1,11 +1,7 @@
 ---
-import { getCollection } from "astro:content";
 import SearchableDropdown from '../../SearchableDropdown.astro';
 
-// Define the options for the return type filter
-const syntaxes: any[] = (await getCollection("syntaxes"))
-    .filter(syntax => syntax.id === Astro.params.id || (syntax.id === 'syntaxes' && !Astro.params.id))
-const returnTypeOptions = Object.values(syntaxes[0].data.types).map((type: any) => type.name);
+const returnTypeOptions = Astro.locals.syntaxesData.types;
 ---
 <script>
     import { getParam, setParam } from "../../../utils/utils";

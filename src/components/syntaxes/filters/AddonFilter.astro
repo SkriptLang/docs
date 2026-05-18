@@ -1,10 +1,7 @@
 ---
-import {getCollection} from "astro:content";
-
 const addons = [
     "Skript",
-    ...(await getCollection("addonSyntaxes"))
-        .map(syntax => (syntax.data as any).source.name)
+    ...Astro.locals.syntaxesData.addons,
 ];
 ---
 

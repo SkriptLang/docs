@@ -557,6 +557,18 @@ export interface VersionFilterData {
     // Expose API for other components
     (window as any).__syntaxDisplayManager = {
         allItems,
+        updateAddonFilter: (addons: Set<string>) => {
+            addonFilter = addons;
+            fullRender();
+        },
+        updateModuleFilter: (modules: Set<string>) => {
+            // TODO set this
+            fullRender();
+        },
+        updateReturnTypeFilter: (type: string) => {
+            returnTypeFilter = type.toLowerCase();
+            fullRender();
+        },
         updateTypeFilter: (types: Set<string>) => {
             typeFilter = types;
             fullRender();
@@ -564,14 +576,6 @@ export interface VersionFilterData {
         updateVersionFilter: (data: VersionFilterData, rawVersions: string[]) => {
             data.versions = rawVersions.map(version => parseVersion(version)!);
             versionFilter = data;
-            fullRender();
-        },
-        updateReturnTypeFilter: (type: string) => {
-            returnTypeFilter = type.toLowerCase();
-            fullRender();
-        },
-        updateAddonFilter: (addons: Set<string>) => {
-            addonFilter = addons;
             fullRender();
         },
         updateSearchQuery: (searchQuery: string = '') => {
