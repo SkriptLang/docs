@@ -41,7 +41,6 @@ export default defineConfig({
         }),
     ],
     redirects: {
-        "index.html": "/",
         "tutorials.html": "/scripting",
         "text.html": "/scripting/text",
         "events.html": "/syntaxes?types=Event",
