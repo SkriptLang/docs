@@ -18,6 +18,7 @@ export enum DocumentableType {
 
 export interface Documentable {
     type: DocumentableType,
+    id: string,
 }
 
 export interface DocumentableReference {
@@ -31,7 +32,6 @@ export interface DocumentableReference {
 
 export interface Documentation extends Documentable {
     origin: Origin,
-    id: string,
     name: string,
     description: string,
     examples: string[],
@@ -122,19 +122,23 @@ export interface Property extends Documentation {
 export interface Function extends Documentation {
     returnType?: DocumentableReference,
     parameters?: {
-        [key: string]: {
-            name: string,
-            type: DocumentableReference,
-            plural: boolean,
-            modifiers: {
-                optional?: boolean,
-                ranged?: {
-                    min: number,
-                    max: number,
-                },
-            }
-        }
+        [key: string]: Parameter, // key is same as Parameter.name
     },
+}
+
+export interface Parameter {
+    name: string,
+    type: DocumentableReference,
+    plural: boolean,
+    modifiers: {
+        // OPTIONAL
+        optional?: boolean,
+        // RANGED
+        ranged?: {
+            min: number,
+            max: number,
+        },
+    }
 }
 
 /*

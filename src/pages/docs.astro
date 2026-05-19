@@ -1,0 +1,10 @@
+---
+// We do this manually so that we can preserve: docs.html?isNew
+// Not a real redirect, but it doesn't really matter
+---
+
+<script>
+    const url = new URL('syntaxes', window.location.origin);
+    url.search = window.location.search;
+    window.location.replace(url.toString());
+</script>

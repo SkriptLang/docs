@@ -257,6 +257,14 @@ const INITIAL_VISIBLE_COUNT = 3;
         if (versionsParam) {
             versionsParam.split(',').forEach(v => selectedVersions.add(v));
         }
+        const hasNewParam = getParam('isNew') !== null;
+        if (hasNewParam) {
+            selectedVersions.add((document.getElementById('version-filter-fieldset')!
+                .querySelector('.version-children')!
+                .querySelector('[data-version]') as HTMLElement).dataset.version!);
+            deleteParam('isNew');
+            setParam('versions', [...selectedVersions].join(','));
+        }
 
         // Setup all version checkboxes
         document.querySelectorAll<HTMLInputElement>('[data-version]').forEach(checkbox => {
@@ -294,7 +302,7 @@ const INITIAL_VISIBLE_COUNT = 3;
         });
 
         // Apply initial filter if params existed
-        if (versionsParam || versionTypeParam) {
+        if (versionsParam || versionTypeParam || hasNewParam) {
             applyVersionFilter();
         }
     }
@@ -303,7 +311,7 @@ const INITIAL_VISIBLE_COUNT = 3;
 </script>
 
 
-<fieldset id={`version-filter-fieldset}`} class="version-tree">
+<fieldset id='version-filter-fieldset' class="version-tree">
     <legend>Version</legend>
     
     <div class="version-list">
