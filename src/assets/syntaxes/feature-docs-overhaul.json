@@ -5,7 +5,7 @@
   },
   "source": {
     "name": "Skript",
-    "version": "2.15.2-nightly-14e6039"
+    "version": "2.15.2-nightly-464e590"
   },
   "expressions": {
     "ExprNow": {
@@ -145,42 +145,6 @@
         "name": "Number"
       }
     },
-    "ExprQuitMessage": {
-      "origin": {
-        "name": "Skript",
-        "class": "org.skriptlang.skript.bukkit.entity.player.elements.expressions.ExprQuitMessage",
-        "modules": [
-          "player",
-          "entity",
-          "bukkit"
-        ]
-      },
-      "id": "ExprQuitMessage",
-      "name": "Quit Message",
-      "description": "The message sent to all online players when a player quits the server.",
-      "examples": [
-        "on quit:\n\tif {vanish::%player's uuid%} is set:\n\t\tclear the quit message\n\telse:\n\t\tset the quit message to \"%player% left this server... they will be missed!\""
-      ],
-      "since": [
-        "1.4.9"
-      ],
-      "requirements": [],
-      "keywords": [],
-      "deprecated": false,
-      "events": [
-        {
-          "id": "EvtQuit",
-          "name": "On Quit"
-        }
-      ],
-      "patterns": [
-        "[the] (quit|leave|log[ ]out)( |-)message"
-      ],
-      "returnType": {
-        "id": "TypeTextComponent",
-        "name": "Text Component"
-      }
-    },
     "ExprOps": {
       "origin": {
         "name": "Skript",
@@ -288,6 +252,42 @@
         "name": "Number"
       }
     },
+    "ExprChatFormat": {
+      "origin": {
+        "name": "Skript",
+        "class": "org.skriptlang.skript.bukkit.entity.player.elements.expressions.ExprChatFormat",
+        "modules": [
+          "player",
+          "entity",
+          "bukkit"
+        ]
+      },
+      "id": "ExprChatFormat",
+      "name": "Chat Format",
+      "description": "Can be used to modify the chat format.\nThe sender of a message is represented by [player] or [sender].\nThe message is represented by [message] or [msg].",
+      "examples": [
+        "set the chat format to \"<yellow>[player]<light gray>: <green>[message]\""
+      ],
+      "since": [
+        "2.2-dev31"
+      ],
+      "requirements": [],
+      "keywords": [],
+      "deprecated": false,
+      "events": [
+        {
+          "id": "EvtChat",
+          "name": "On Chat"
+        }
+      ],
+      "patterns": [
+        "[the] (message|chat) format[ting]"
+      ],
+      "returnType": {
+        "id": "TypeTextComponent",
+        "name": "Text Component"
+      }
+    },
     "ExprSecCreateWorldBorder": {
       "origin": {
         "name": "Skript",
@@ -312,6 +312,42 @@
       "returnType": {
         "id": "TypeWorldBorder",
         "name": "World Border"
+      }
+    },
+    "ExprOnScreenKickMessage": {
+      "origin": {
+        "name": "Skript",
+        "class": "org.skriptlang.skript.bukkit.entity.player.elements.expressions.ExprOnScreenKickMessage",
+        "modules": [
+          "player",
+          "entity",
+          "bukkit"
+        ]
+      },
+      "id": "ExprOnScreenKickMessage",
+      "name": "On-Screen Kick Message",
+      "description": "The kick message that is displayed on a player's screen when they are kicked.",
+      "examples": [
+        "on kick:\n\tset the on-screen kick message to \"You've been booted!\""
+      ],
+      "since": [
+        "2.12"
+      ],
+      "requirements": [],
+      "keywords": [],
+      "deprecated": false,
+      "events": [
+        {
+          "id": "EvtKick",
+          "name": "On Kick"
+        }
+      ],
+      "patterns": [
+        "[the] on-screen kick message"
+      ],
+      "returnType": {
+        "id": "TypeTextComponent",
+        "name": "Text Component"
       }
     },
     "ExprHanging": {
@@ -527,6 +563,68 @@
         }
       ]
     },
+    "ExprRandomUUID": {
+      "origin": {
+        "name": "Skript",
+        "class": "ch.njol.skript.expressions.ExprRandomUUID"
+      },
+      "id": "ExprRandomUUID",
+      "name": "Random UUID",
+      "description": "Returns a random UUID.",
+      "examples": [
+        "set {_uuid} to random uuid"
+      ],
+      "since": [
+        "2.5.1, 2.11 (return UUIDs)"
+      ],
+      "requirements": [],
+      "keywords": [],
+      "deprecated": false,
+      "patterns": [
+        "[a] random uuid"
+      ],
+      "returnType": {
+        "id": "TypeUuid",
+        "name": "UUID"
+      }
+    },
+    "ExprMOTD": {
+      "origin": {
+        "name": "Skript",
+        "class": "org.skriptlang.skript.bukkit.misc.elements.expressions.ExprMOTD",
+        "modules": [
+          "misc",
+          "bukkit"
+        ]
+      },
+      "id": "ExprMOTD",
+      "name": "Message of the Day",
+      "description": "The message of the day in the server list.\nThis can be changed in a <a href='#server_list_ping'>server list ping</a> event only.\nUse 'default MOTD' to obtain the default MOTD set through the server configuration. This cannot be changed.",
+      "examples": [
+        "on server ling ping:\n\tset the motd to \"<red>Join our server today!\""
+      ],
+      "since": [
+        "2.3"
+      ],
+      "requirements": [],
+      "keywords": [
+        "MOTD"
+      ],
+      "deprecated": false,
+      "events": [
+        {
+          "id": "EvtServerListPing",
+          "name": "On Server List Ping"
+        }
+      ],
+      "patterns": [
+        "[the] [default|shown|displayed] (motd|message of [the] day)"
+      ],
+      "returnType": {
+        "id": "TypeTextComponent",
+        "name": "Text Component"
+      }
+    },
     "ExprEnchantingExpCost": {
       "origin": {
         "name": "Skript",
@@ -581,78 +679,6 @@
       "returnType": {
         "id": "TypeNumber",
         "name": "Number"
-      }
-    },
-    "ExprChatFormat": {
-      "origin": {
-        "name": "Skript",
-        "class": "org.skriptlang.skript.bukkit.entity.player.elements.expressions.ExprChatFormat",
-        "modules": [
-          "player",
-          "entity",
-          "bukkit"
-        ]
-      },
-      "id": "ExprChatFormat",
-      "name": "Chat Format",
-      "description": "Can be used to modify the chat format.\nThe sender of a message is represented by [player] or [sender].\nThe message is represented by [message] or [msg].",
-      "examples": [
-        "set the chat format to \"<yellow>[player]<light gray>: <green>[message]\""
-      ],
-      "since": [
-        "2.2-dev31"
-      ],
-      "requirements": [],
-      "keywords": [],
-      "deprecated": false,
-      "events": [
-        {
-          "id": "EvtChat",
-          "name": "On Chat"
-        }
-      ],
-      "patterns": [
-        "[the] (message|chat) format[ting]"
-      ],
-      "returnType": {
-        "id": "TypeTextComponent",
-        "name": "Text Component"
-      }
-    },
-    "ExprOnScreenKickMessage": {
-      "origin": {
-        "name": "Skript",
-        "class": "org.skriptlang.skript.bukkit.entity.player.elements.expressions.ExprOnScreenKickMessage",
-        "modules": [
-          "player",
-          "entity",
-          "bukkit"
-        ]
-      },
-      "id": "ExprOnScreenKickMessage",
-      "name": "On-Screen Kick Message",
-      "description": "The kick message that is displayed on a player's screen when they are kicked.",
-      "examples": [
-        "on kick:\n\tset the on-screen kick message to \"You've been booted!\""
-      ],
-      "since": [
-        "2.12"
-      ],
-      "requirements": [],
-      "keywords": [],
-      "deprecated": false,
-      "events": [
-        {
-          "id": "EvtKick",
-          "name": "On Kick"
-        }
-      ],
-      "patterns": [
-        "[the] on-screen kick message"
-      ],
-      "returnType": {
-        "id": "TypeTextComponent",
-        "name": "Text Component"
       }
     },
     "LitNewLine": {
@@ -780,43 +806,6 @@
         "name": "Item"
       }
     },
-    "ExprMOTD": {
-      "origin": {
-        "name": "Skript",
-        "class": "org.skriptlang.skript.bukkit.misc.elements.expressions.ExprMOTD",
-        "modules": [
-          "misc",
-          "bukkit"
-        ]
-      },
-      "id": "ExprMOTD",
-      "name": "Message of the Day",
-      "description": "The message of the day in the server list.\nThis can be changed in a <a href='#server_list_ping'>server list ping</a> event only.\nUse 'default MOTD' to obtain the default MOTD set through the server configuration. This cannot be changed.",
-      "examples": [
-        "on server ling ping:\n\tset the motd to \"<red>Join our server today!\""
-      ],
-      "since": [
-        "2.3"
-      ],
-      "requirements": [],
-      "keywords": [
-        "MOTD"
-      ],
-      "deprecated": false,
-      "events": [
-        {
-          "id": "EvtServerListPing",
-          "name": "On Server List Ping"
-        }
-      ],
-      "patterns": [
-        "[the] [default|shown|displayed] (motd|message of [the] day)"
-      ],
-      "returnType": {
-        "id": "TypeTextComponent",
-        "name": "Text Component"
-      }
-    },
     "ExprOfflinePlayers": {
       "origin": {
         "name": "Skript",
@@ -906,37 +895,6 @@
         "name": "Block"
       }
     },
-    "ExprAppliedEffect": {
-      "origin": {
-        "name": "Skript",
-        "class": "ch.njol.skript.expressions.ExprAppliedEffect"
-      },
-      "id": "ExprAppliedEffect",
-      "name": "Applied Beacon Effect",
-      "description": "The type of effect applied by a beacon.",
-      "examples": [
-        "on beacon effect:\n\tif the applied effect is primary beacon effect:\n\t\tbroadcast \"Is Primary\"\n\telse if applied effect = secondary effect:\n\t\tbroadcast \"Is Secondary\""
-      ],
-      "since": [
-        "2.10"
-      ],
-      "requirements": [],
-      "keywords": [],
-      "deprecated": false,
-      "events": [
-        {
-          "id": "EvtBeaconEffect",
-          "name": "On Beacon Effect"
-        }
-      ],
-      "patterns": [
-        "[the] applied [beacon] effect"
-      ],
-      "returnType": {
-        "id": "TypePotionEffectType",
-        "name": "Potion Effect Type"
-      }
-    },
     "ExprHealAmount": {
       "origin": {
         "name": "Skript",
@@ -994,6 +952,42 @@
         "name": "Text"
       }
     },
+    "ExprChatMessage": {
+      "origin": {
+        "name": "Skript",
+        "class": "org.skriptlang.skript.bukkit.entity.player.elements.expressions.ExprChatMessage",
+        "modules": [
+          "player",
+          "entity",
+          "bukkit"
+        ]
+      },
+      "id": "ExprChatMessage",
+      "name": "Chat Message",
+      "description": "The chat message in a chat event.",
+      "examples": [
+        "on chat:\n\tplayer has permission \"admin\"\n\tset the message to \"<light red>%message%\""
+      ],
+      "since": [
+        "1.4.6, 2.15 (support for reset)"
+      ],
+      "requirements": [],
+      "keywords": [],
+      "deprecated": false,
+      "events": [
+        {
+          "id": "EvtChat",
+          "name": "On Chat"
+        }
+      ],
+      "patterns": [
+        "[the] [chat( |-)]message"
+      ],
+      "returnType": {
+        "id": "TypeTextComponent",
+        "name": "Text Component"
+      }
+    },
     "LitNegativeInfinity": {
       "origin": {
         "name": "Skript",
@@ -1043,6 +1037,37 @@
       "returnType": {
         "id": "TypeObject",
         "name": "Object"
+      }
+    },
+    "ExprAppliedEffect": {
+      "origin": {
+        "name": "Skript",
+        "class": "ch.njol.skript.expressions.ExprAppliedEffect"
+      },
+      "id": "ExprAppliedEffect",
+      "name": "Applied Beacon Effect",
+      "description": "The type of effect applied by a beacon.",
+      "examples": [
+        "on beacon effect:\n\tif the applied effect is primary beacon effect:\n\t\tbroadcast \"Is Primary\"\n\telse if applied effect = secondary effect:\n\t\tbroadcast \"Is Secondary\""
+      ],
+      "since": [
+        "2.10"
+      ],
+      "requirements": [],
+      "keywords": [],
+      "deprecated": false,
+      "events": [
+        {
+          "id": "EvtBeaconEffect",
+          "name": "On Beacon Effect"
+        }
+      ],
+      "patterns": [
+        "[the] applied [beacon] effect"
+      ],
+      "returnType": {
+        "id": "TypePotionEffectType",
+        "name": "Potion Effect Type"
       }
     },
     "ExprConsumedItem": {
@@ -1252,6 +1277,47 @@
         }
       ]
     },
+    "ExprJoinMessage": {
+      "origin": {
+        "name": "Skript",
+        "class": "org.skriptlang.skript.bukkit.entity.player.elements.expressions.ExprJoinMessage",
+        "modules": [
+          "player",
+          "entity",
+          "bukkit"
+        ]
+      },
+      "id": "ExprJoinMessage",
+      "name": "Join Message",
+      "description": "The message sent to all online players when a player joins the server.",
+      "examples": [
+        "on first join:\n\tset the join message to \"Welcome %player% to our awesome server!\"",
+        "on join:\n\tplayer has played before\n\tset the join message to \"Welcome back, %player%!\""
+      ],
+      "since": [
+        "1.4.9"
+      ],
+      "requirements": [],
+      "keywords": [],
+      "deprecated": false,
+      "events": [
+        {
+          "id": "EvtJoin",
+          "name": "On Join"
+        },
+        {
+          "id": "EvtFirstJoin",
+          "name": "On First Join"
+        }
+      ],
+      "patterns": [
+        "[the] (join|log[ ]in)( |-)message"
+      ],
+      "returnType": {
+        "id": "TypeTextComponent",
+        "name": "Text Component"
+      }
+    },
     "ExprAttacked": {
       "origin": {
         "name": "Skript",
@@ -1301,42 +1367,6 @@
       "returnType": {
         "id": "TypeEntity",
         "name": "Entity"
-      }
-    },
-    "ExprChatMessage": {
-      "origin": {
-        "name": "Skript",
-        "class": "org.skriptlang.skript.bukkit.entity.player.elements.expressions.ExprChatMessage",
-        "modules": [
-          "player",
-          "entity",
-          "bukkit"
-        ]
-      },
-      "id": "ExprChatMessage",
-      "name": "Chat Message",
-      "description": "The chat message in a chat event.",
-      "examples": [
-        "on chat:\n\tplayer has permission \"admin\"\n\tset the message to \"<light red>%message%\""
-      ],
-      "since": [
-        "1.4.6, 2.15 (support for reset)"
-      ],
-      "requirements": [],
-      "keywords": [],
-      "deprecated": false,
-      "events": [
-        {
-          "id": "EvtChat",
-          "name": "On Chat"
-        }
-      ],
-      "patterns": [
-        "[the] [chat( |-)]message"
-      ],
-      "returnType": {
-        "id": "TypeTextComponent",
-        "name": "Text Component"
       }
     },
     "LitEternity": {
@@ -1634,6 +1664,41 @@
         "name": "Item"
       }
     },
+    "ExprBroadcastMessage": {
+      "origin": {
+        "name": "Skript",
+        "class": "org.skriptlang.skript.bukkit.misc.elements.expressions.ExprBroadcastMessage",
+        "modules": [
+          "misc",
+          "bukkit"
+        ]
+      },
+      "id": "ExprBroadcastMessage",
+      "name": "Broadcast Message",
+      "description": "The message broadcasted in a broadcast event.",
+      "examples": [
+        "on broadcast:\n\tset broadcast message to \"<light green>[BROADCAST] %broadcast message%\""
+      ],
+      "since": [
+        "2.10"
+      ],
+      "requirements": [],
+      "keywords": [],
+      "deprecated": false,
+      "events": [
+        {
+          "id": "EvtBroadcast",
+          "name": "On Broadcast"
+        }
+      ],
+      "patterns": [
+        "[the] broadcast(-|[ed] )message"
+      ],
+      "returnType": {
+        "id": "TypeTextComponent",
+        "name": "Text Component"
+      }
+    },
     "ExprPortal": {
       "origin": {
         "name": "Skript",
@@ -1697,6 +1762,42 @@
         "name": "Entity Type"
       }
     },
+    "ExprKickMessage": {
+      "origin": {
+        "name": "Skript",
+        "class": "org.skriptlang.skript.bukkit.entity.player.elements.expressions.ExprKickMessage",
+        "modules": [
+          "player",
+          "entity",
+          "bukkit"
+        ]
+      },
+      "id": "ExprKickMessage",
+      "name": "Kick Message",
+      "description": "The message sent to all online players when a player is kicked from server.",
+      "examples": [
+        "on kick:\n\tset the kick message to \"%player% was booted from the server! They won't be missed...\""
+      ],
+      "since": [
+        "2.0 beta 9"
+      ],
+      "requirements": [],
+      "keywords": [],
+      "deprecated": false,
+      "events": [
+        {
+          "id": "EvtKick",
+          "name": "On Kick"
+        }
+      ],
+      "patterns": [
+        "[the] kick( |-)message"
+      ],
+      "returnType": {
+        "id": "TypeTextComponent",
+        "name": "Text Component"
+      }
+    },
     "LitDoubleMinValue": {
       "origin": {
         "name": "Skript",
@@ -1720,47 +1821,6 @@
       "returnType": {
         "id": "TypeNumber",
         "name": "Number"
-      }
-    },
-    "ExprJoinMessage": {
-      "origin": {
-        "name": "Skript",
-        "class": "org.skriptlang.skript.bukkit.entity.player.elements.expressions.ExprJoinMessage",
-        "modules": [
-          "player",
-          "entity",
-          "bukkit"
-        ]
-      },
-      "id": "ExprJoinMessage",
-      "name": "Join Message",
-      "description": "The message sent to all online players when a player joins the server.",
-      "examples": [
-        "on first join:\n\tset the join message to \"Welcome %player% to our awesome server!\"",
-        "on join:\n\tplayer has played before\n\tset the join message to \"Welcome back, %player%!\""
-      ],
-      "since": [
-        "1.4.9"
-      ],
-      "requirements": [],
-      "keywords": [],
-      "deprecated": false,
-      "events": [
-        {
-          "id": "EvtJoin",
-          "name": "On Join"
-        },
-        {
-          "id": "EvtFirstJoin",
-          "name": "On First Join"
-        }
-      ],
-      "patterns": [
-        "[the] (join|log[ ]in)( |-)message"
-      ],
-      "returnType": {
-        "id": "TypeTextComponent",
-        "name": "Text Component"
       }
     },
     "ExprSecBlankEquipComp": {
@@ -2021,35 +2081,35 @@
         "disallowed": []
       }
     },
-    "ExprBroadcastMessage": {
+    "ExprDeathMessage": {
       "origin": {
         "name": "Skript",
-        "class": "org.skriptlang.skript.bukkit.misc.elements.expressions.ExprBroadcastMessage",
+        "class": "org.skriptlang.skript.bukkit.entity.elements.expressions.ExprDeathMessage",
         "modules": [
-          "misc",
+          "entity",
           "bukkit"
         ]
       },
-      "id": "ExprBroadcastMessage",
-      "name": "Broadcast Message",
-      "description": "The message broadcasted in a broadcast event.",
+      "id": "ExprDeathMessage",
+      "name": "Death Message",
+      "description": "The message sent to all online players when a player dies.",
       "examples": [
-        "on broadcast:\n\tset broadcast message to \"<light green>[BROADCAST] %broadcast message%\""
+        "on death of player:\n\tset the death message to \"%player% died!\""
       ],
       "since": [
-        "2.10"
+        "2.0"
       ],
       "requirements": [],
       "keywords": [],
       "deprecated": false,
       "events": [
         {
-          "id": "EvtBroadcast",
-          "name": "On Broadcast"
+          "id": "EvtDeath",
+          "name": "On Death"
         }
       ],
       "patterns": [
-        "[the] broadcast(-|[ed] )message"
+        "[the] death( |-)message"
       ],
       "returnType": {
         "id": "TypeTextComponent",
@@ -2145,42 +2205,6 @@
       "returnType": {
         "id": "TypeVector",
         "name": "Vector"
-      }
-    },
-    "ExprKickMessage": {
-      "origin": {
-        "name": "Skript",
-        "class": "org.skriptlang.skript.bukkit.entity.player.elements.expressions.ExprKickMessage",
-        "modules": [
-          "player",
-          "entity",
-          "bukkit"
-        ]
-      },
-      "id": "ExprKickMessage",
-      "name": "Kick Message",
-      "description": "The message sent to all online players when a player is kicked from server.",
-      "examples": [
-        "on kick:\n\tset the kick message to \"%player% was booted from the server! They won't be missed...\""
-      ],
-      "since": [
-        "2.0 beta 9"
-      ],
-      "requirements": [],
-      "keywords": [],
-      "deprecated": false,
-      "events": [
-        {
-          "id": "EvtKick",
-          "name": "On Kick"
-        }
-      ],
-      "patterns": [
-        "[the] kick( |-)message"
-      ],
-      "returnType": {
-        "id": "TypeTextComponent",
-        "name": "Text Component"
       }
     },
     "ExprCmdCooldownInfo": {
@@ -2457,66 +2481,6 @@
         "name": "Entity"
       }
     },
-    "ExprRandomUUID": {
-      "origin": {
-        "name": "Skript",
-        "class": "ch.njol.skript.expressions.ExprRandomUUID"
-      },
-      "id": "ExprRandomUUID",
-      "name": "Random UUID",
-      "description": "Returns a random UUID.",
-      "examples": [
-        "set {_uuid} to random uuid"
-      ],
-      "since": [
-        "2.5.1, 2.11 (return UUIDs)"
-      ],
-      "requirements": [],
-      "keywords": [],
-      "deprecated": false,
-      "patterns": [
-        "[a] random uuid"
-      ],
-      "returnType": {
-        "id": "TypeUuid",
-        "name": "UUID"
-      }
-    },
-    "ExprDeathMessage": {
-      "origin": {
-        "name": "Skript",
-        "class": "org.skriptlang.skript.bukkit.entity.elements.expressions.ExprDeathMessage",
-        "modules": [
-          "entity",
-          "bukkit"
-        ]
-      },
-      "id": "ExprDeathMessage",
-      "name": "Death Message",
-      "description": "The message sent to all online players when a player dies.",
-      "examples": [
-        "on death of player:\n\tset the death message to \"%player% died!\""
-      ],
-      "since": [
-        "2.0"
-      ],
-      "requirements": [],
-      "keywords": [],
-      "deprecated": false,
-      "events": [
-        {
-          "id": "EvtDeath",
-          "name": "On Death"
-        }
-      ],
-      "patterns": [
-        "[the] death( |-)message"
-      ],
-      "returnType": {
-        "id": "TypeTextComponent",
-        "name": "Text Component"
-      }
-    },
     "ExprScriptsOld": {
       "origin": {
         "name": "Skript",
@@ -2705,6 +2669,42 @@
       "returnType": {
         "id": "TypeNumber",
         "name": "Number"
+      }
+    },
+    "ExprQuitMessage": {
+      "origin": {
+        "name": "Skript",
+        "class": "org.skriptlang.skript.bukkit.entity.player.elements.expressions.ExprQuitMessage",
+        "modules": [
+          "player",
+          "entity",
+          "bukkit"
+        ]
+      },
+      "id": "ExprQuitMessage",
+      "name": "Quit Message",
+      "description": "The message sent to all online players when a player quits the server.",
+      "examples": [
+        "on quit:\n\tif {vanish::%player's uuid%} is set:\n\t\tclear the quit message\n\telse:\n\t\tset the quit message to \"%player% left this server... they will be missed!\""
+      ],
+      "since": [
+        "1.4.9"
+      ],
+      "requirements": [],
+      "keywords": [],
+      "deprecated": false,
+      "events": [
+        {
+          "id": "EvtQuit",
+          "name": "On Quit"
+        }
+      ],
+      "patterns": [
+        "[the] (quit|leave|log[ ]out)( |-)message"
+      ],
+      "returnType": {
+        "id": "TypeTextComponent",
+        "name": "Text Component"
       }
     },
     "ExprRespawnLocation": {
@@ -4249,6 +4249,35 @@
         "name": "Minecraft Tag"
       }
     },
+    "ExprLootTableFromString": {
+      "origin": {
+        "name": "Skript",
+        "class": "org.skriptlang.skript.bukkit.loottables.elements.expressions.ExprLootTableFromString",
+        "modules": [
+          "loot tables",
+          "bukkit"
+        ]
+      },
+      "id": "ExprLootTableFromString",
+      "name": "Loot Table from Key",
+      "description": "Returns the loot table from a namespaced key.",
+      "examples": [
+        "set {_table} to loot table \"minecraft:chests/simple_dungeon\""
+      ],
+      "since": [
+        "2.10"
+      ],
+      "requirements": [],
+      "keywords": [],
+      "deprecated": false,
+      "patterns": [
+        "[the] loot[ ]table[s] %strings%"
+      ],
+      "returnType": {
+        "id": "TypeLootTable",
+        "name": "Loot Table"
+      }
+    },
     "ExprRecursive": {
       "origin": {
         "name": "Skript",
@@ -5008,35 +5037,6 @@
       "returnType": {
         "id": "TypeObject",
         "name": "Object"
-      }
-    },
-    "ExprLootTableFromString": {
-      "origin": {
-        "name": "Skript",
-        "class": "org.skriptlang.skript.bukkit.loottables.elements.expressions.ExprLootTableFromString",
-        "modules": [
-          "loot tables",
-          "bukkit"
-        ]
-      },
-      "id": "ExprLootTableFromString",
-      "name": "Loot Table from Key",
-      "description": "Returns the loot table from a namespaced key.",
-      "examples": [
-        "set {_table} to loot table \"minecraft:chests/simple_dungeon\""
-      ],
-      "since": [
-        "2.10"
-      ],
-      "requirements": [],
-      "keywords": [],
-      "deprecated": false,
-      "patterns": [
-        "[the] loot[ ]table[s] %strings%"
-      ],
-      "returnType": {
-        "id": "TypeLootTable",
-        "name": "Loot Table"
       }
     },
     "ExprVectorNormalize": {
@@ -6230,31 +6230,6 @@
         "name": "Item Type"
       }
     },
-    "ExprVectorFromXYZ": {
-      "origin": {
-        "name": "Skript",
-        "class": "ch.njol.skript.expressions.ExprVectorFromXYZ"
-      },
-      "id": "ExprVectorFromXYZ",
-      "name": "Vectors - Create from XYZ",
-      "description": "Creates a vector from x, y and z values.",
-      "examples": [
-        "set {_v} to vector 0, 1, 0"
-      ],
-      "since": [
-        "2.2-dev28"
-      ],
-      "requirements": [],
-      "keywords": [],
-      "deprecated": false,
-      "patterns": [
-        "[a] [new] vector [from|at|to] %number%,[ ]%number%(,[ ]| and )%number%"
-      ],
-      "returnType": {
-        "id": "TypeVector",
-        "name": "Vector"
-      }
-    },
     "ExprFireworkEffect": {
       "origin": {
         "name": "Skript",
@@ -6281,6 +6256,31 @@
       "returnType": {
         "id": "TypeFireworkEffect",
         "name": "Firework Effect"
+      }
+    },
+    "ExprVectorFromXYZ": {
+      "origin": {
+        "name": "Skript",
+        "class": "ch.njol.skript.expressions.ExprVectorFromXYZ"
+      },
+      "id": "ExprVectorFromXYZ",
+      "name": "Vectors - Create from XYZ",
+      "description": "Creates a vector from x, y and z values.",
+      "examples": [
+        "set {_v} to vector 0, 1, 0"
+      ],
+      "since": [
+        "2.2-dev28"
+      ],
+      "requirements": [],
+      "keywords": [],
+      "deprecated": false,
+      "patterns": [
+        "[a] [new] vector [from|at|to] %number%,[ ]%number%(,[ ]| and )%number%"
+      ],
+      "returnType": {
+        "id": "TypeVector",
+        "name": "Vector"
       }
     },
     "ExprSecPotionEffect": {
@@ -6830,6 +6830,37 @@
         "name": "Server Icon"
       }
     },
+    "ExprDisplayTransformationRotation": {
+      "origin": {
+        "name": "Skript",
+        "class": "org.skriptlang.skript.bukkit.entity.displays.elements.expressions.ExprDisplayTransformationRotation",
+        "modules": [
+          "displays",
+          "entity",
+          "bukkit"
+        ]
+      },
+      "id": "ExprDisplayTransformationRotation",
+      "name": "Display Transformation Rotation",
+      "description": "Returns or changes the transformation rotation of <a href='#display'>displays</a>.\nThe left rotation is applied first, with the right rotation then being applied based on the rotated axis.",
+      "examples": [
+        "set left transformation rotation of last spawned block display to quaternion(1, 0, 0, 0) # reset block display"
+      ],
+      "since": [
+        "2.10"
+      ],
+      "requirements": [],
+      "keywords": [],
+      "deprecated": false,
+      "patterns": [
+        "[the] (left|right) [transformation] rotation [of %displays%]",
+        "%displays%'[s] (left|right) [transformation] rotation"
+      ],
+      "returnType": {
+        "id": "TypeQuaternion",
+        "name": "Quaternion"
+      }
+    },
     "ExprItemDisplayTransform": {
       "origin": {
         "name": "Skript",
@@ -6903,37 +6934,6 @@
       "returnType": {
         "id": "TypeObject",
         "name": "Object"
-      }
-    },
-    "ExprBookTitle": {
-      "origin": {
-        "name": "Skript",
-        "class": "org.skriptlang.skript.bukkit.item.book.elements.expressions.ExprBookTitle",
-        "modules": [
-          "book",
-          "item",
-          "bukkit"
-        ]
-      },
-      "id": "ExprBookTitle",
-      "name": "Book Title",
-      "description": "The title of a book.",
-      "examples": [
-        "on book sign:\n\tmessage \"You finished your book titled %title of event-item%\""
-      ],
-      "since": [
-        "2.2-dev31"
-      ],
-      "requirements": [],
-      "keywords": [],
-      "deprecated": false,
-      "patterns": [
-        "[the] book (name|title) of %itemtypes%",
-        "%itemtypes%'[s] book (name|title)"
-      ],
-      "returnType": {
-        "id": "TypeTextComponent",
-        "name": "Text Component"
       }
     },
     "ExprFallDistance": {
@@ -7849,6 +7849,33 @@
         "name": "Slot"
       }
     },
+    "ExprItemThrower": {
+      "origin": {
+        "name": "Skript",
+        "class": "ch.njol.skript.expressions.ExprItemThrower"
+      },
+      "id": "ExprItemThrower",
+      "name": "Dropped Item Thrower",
+      "description": "The uuid of the entity or player that threw/dropped the dropped item.",
+      "examples": [
+        "set the uuid of the dropped item thrower of {_dropped item} to player\nif the uuid of the dropped item thrower of {_dropped item} is uuid of player:",
+        "clear the item thrower of {_dropped item}"
+      ],
+      "since": [
+        "2.11"
+      ],
+      "requirements": [],
+      "keywords": [],
+      "deprecated": false,
+      "patterns": [
+        "[the] uuid of [the] [dropped] item thrower [of %itementities%]",
+        "[the] [dropped] item thrower's uuid [of %itementities%]"
+      ],
+      "returnType": {
+        "id": "TypeUuid",
+        "name": "UUID"
+      }
+    },
     "ExprAge": {
       "origin": {
         "name": "Skript",
@@ -8016,6 +8043,42 @@
       "returnType": {
         "id": "TypeNumber",
         "name": "Number"
+      }
+    },
+    "ExprPlayerListHeaderFooter": {
+      "origin": {
+        "name": "Skript",
+        "class": "org.skriptlang.skript.bukkit.entity.player.elements.expressions.ExprPlayerListHeaderFooter",
+        "modules": [
+          "player",
+          "entity",
+          "bukkit"
+        ]
+      },
+      "id": "ExprPlayerListHeaderFooter",
+      "name": "Player List Header and Footer",
+      "description": "The message above and below the player list in the tab menu.",
+      "examples": [
+        "set all players' tab list header to \"Welcome to the Server!\"",
+        "send \"%the player's tab list header%\" to player",
+        "reset all players' tab list header"
+      ],
+      "since": [
+        "2.4"
+      ],
+      "requirements": [],
+      "keywords": [
+        "tablist",
+        "tab list"
+      ],
+      "deprecated": false,
+      "patterns": [
+        "[the] (player|tab)[ ]list (header|footer) [text|message] of %players%",
+        "%players%'[s] (player|tab)[ ]list (header|footer) [text|message]"
+      ],
+      "returnType": {
+        "id": "TypeTextComponent",
+        "name": "Text Component"
       }
     },
     "ExprSpawn": {
@@ -8287,6 +8350,32 @@
         "name": "Item Type"
       }
     },
+    "ExprItemOwner": {
+      "origin": {
+        "name": "Skript",
+        "class": "ch.njol.skript.expressions.ExprItemOwner"
+      },
+      "id": "ExprItemOwner",
+      "name": "Dropped Item Owner",
+      "description": "The uuid of the owner of the dropped item.\nSetting the owner of a dropped item means only that entity or player can pick it up.\nDropping an item does not automatically make the entity or player the owner.",
+      "examples": [
+        "\tset the uuid of the dropped item owner of last dropped item to player\n\tif the uuid of the dropped item owner of last dropped item is uuid of player:"
+      ],
+      "since": [
+        "2.11"
+      ],
+      "requirements": [],
+      "keywords": [],
+      "deprecated": false,
+      "patterns": [
+        "[the] uuid of [the] [dropped] item owner [of %itementities%]",
+        "[the] [dropped] item owner's uuid [of %itementities%]"
+      ],
+      "returnType": {
+        "id": "TypeUuid",
+        "name": "UUID"
+      }
+    },
     "ExprInventory": {
       "origin": {
         "name": "Skript",
@@ -8455,65 +8544,6 @@
       "returnType": {
         "id": "TypeTimespan",
         "name": "Timespan"
-      }
-    },
-    "ExprLootTable": {
-      "origin": {
-        "name": "Skript",
-        "class": "org.skriptlang.skript.bukkit.loottables.elements.expressions.ExprLootTable",
-        "modules": [
-          "loot tables",
-          "bukkit"
-        ]
-      },
-      "id": "ExprLootTable",
-      "name": "Loot Table",
-      "description": "Returns the loot table of an entity or block.\nSetting the loot table of a block will update the block state, and once opened will generate loot of the specified loot table. Please note that doing so may cause warnings in the console due to over-filling the chest.\nPlease note that resetting/deleting the loot table of an ENTITY will reset the entity's loot table to its default.",
-      "examples": [
-        "set loot table of event-entity to \"minecraft:entities/ghast\"\n# this will set the loot table of the entity to a ghast's loot table, thus dropping ghast tears and gunpowder",
-        "set loot table of event-block to \"minecraft:chests/simple_dungeon\""
-      ],
-      "since": [
-        "2.10"
-      ],
-      "requirements": [],
-      "keywords": [],
-      "deprecated": false,
-      "patterns": [
-        "[the] loot[ ]table[s] of %entities/blocks%",
-        "%entities/blocks%'[s] loot[ ]table[s]"
-      ],
-      "returnType": {
-        "id": "TypeLootTable",
-        "name": "Loot Table"
-      }
-    },
-    "ExprVillagerType": {
-      "origin": {
-        "name": "Skript",
-        "class": "ch.njol.skript.expressions.ExprVillagerType"
-      },
-      "id": "ExprVillagerType",
-      "name": "Villager Type",
-      "description": "Represents the type of a villager/zombie villager. This usually represents the biome the villager is from.",
-      "examples": [
-        "set {_type} to villager type of {_villager}",
-        "villager type of {_villager} = plains",
-        "set villager type of event-entity to plains"
-      ],
-      "since": [
-        "2.10"
-      ],
-      "requirements": [],
-      "keywords": [],
-      "deprecated": false,
-      "patterns": [
-        "[the] villager type of %livingentities%",
-        "%livingentities%'[s] villager type"
-      ],
-      "returnType": {
-        "id": "TypeVillagerType",
-        "name": "Villager Type"
       }
     },
     "ExprTimePlayed": {
@@ -8844,42 +8874,6 @@
         "name": "Number"
       }
     },
-    "ExprPlayerListHeaderFooter": {
-      "origin": {
-        "name": "Skript",
-        "class": "org.skriptlang.skript.bukkit.entity.player.elements.expressions.ExprPlayerListHeaderFooter",
-        "modules": [
-          "player",
-          "entity",
-          "bukkit"
-        ]
-      },
-      "id": "ExprPlayerListHeaderFooter",
-      "name": "Player List Header and Footer",
-      "description": "The message above and below the player list in the tab menu.",
-      "examples": [
-        "set all players' tab list header to \"Welcome to the Server!\"",
-        "send \"%the player's tab list header%\" to player",
-        "reset all players' tab list header"
-      ],
-      "since": [
-        "2.4"
-      ],
-      "requirements": [],
-      "keywords": [
-        "tablist",
-        "tab list"
-      ],
-      "deprecated": false,
-      "patterns": [
-        "[the] (player|tab)[ ]list (header|footer) [text|message] of %players%",
-        "%players%'[s] (player|tab)[ ]list (header|footer) [text|message]"
-      ],
-      "returnType": {
-        "id": "TypeTextComponent",
-        "name": "Text Component"
-      }
-    },
     "ExprLastDeathLocation": {
       "origin": {
         "name": "Skript",
@@ -9062,31 +9056,34 @@
         "name": "Number"
       }
     },
-    "ExprUUID": {
+    "ExprTextOf": {
       "origin": {
         "name": "Skript",
-        "class": "ch.njol.skript.expressions.ExprUUID"
+        "class": "org.skriptlang.skript.bukkit.misc.elements.expressions.ExprTextOf",
+        "modules": [
+          "misc",
+          "bukkit"
+        ]
       },
-      "id": "ExprUUID",
-      "name": "UUID",
-      "description": "The UUID of a player, entity or world.",
+      "id": "ExprTextOf",
+      "name": "Text Of",
+      "description": "Returns or changes the <a href='#string'>text/string</a> of <a href='#display'>displays</a>.\nNote that currently you can only use Skript chat codes when running Paper.",
       "examples": [
-        "# prevents people from joining the server if they use the name of a player\n# who has played on this server at least once since this script has been added\non login:\n\tif {uuid::%name of player%} exists:\n\t\t{uuid::%name of player%} is not uuid of player\n\t\tkick player due to \"Someone with your name has played on this server before\"\n\telse:\n\t\tset {uuid::%name of player%} to uuid of player",
-        "command /what-is-my-uuid:\n\ttrigger:\n\t\tset {_uuid} to uuid of player\n\t\tsend \"Your UUID is '%string within {_uuid}%'\""
+        "set text of the last spawned text display to \"example\""
       ],
       "since": [
-        "2.1.2, 2.2 (offline players' uuids), 2.2-dev24 (other entities' uuids)"
+        "2.10"
       ],
       "requirements": [],
       "keywords": [],
       "deprecated": false,
       "patterns": [
-        "[the] uuid of %offlineplayers/worlds/entities%",
-        "%offlineplayers/worlds/entities%'[s] uuid"
+        "[the] text[s] of %displays%",
+        "%displays%'[s] text[s]"
       ],
       "returnType": {
-        "id": "TypeUuid",
-        "name": "UUID"
+        "id": "TypeTextComponent",
+        "name": "Text Component"
       }
     },
     "ExprBeehiveFlower": {
@@ -9445,6 +9442,37 @@
         "name": "Timespan"
       }
     },
+    "ExprBookAuthor": {
+      "origin": {
+        "name": "Skript",
+        "class": "org.skriptlang.skript.bukkit.item.book.elements.expressions.ExprBookAuthor",
+        "modules": [
+          "book",
+          "item",
+          "bukkit"
+        ]
+      },
+      "id": "ExprBookAuthor",
+      "name": "Book Author",
+      "description": "The author of a book.",
+      "examples": [
+        "on book sign:\n\tbroadcast \"A new book has been created by %author of event-item%\""
+      ],
+      "since": [
+        "2.2-dev31"
+      ],
+      "requirements": [],
+      "keywords": [],
+      "deprecated": false,
+      "patterns": [
+        "[the] [book] (author|writer|publisher) of %itemtypes%",
+        "%itemtypes%'[s] [book] (author|writer|publisher)"
+      ],
+      "returnType": {
+        "id": "TypeTextComponent",
+        "name": "Text Component"
+      }
+    },
     "ExprColorOf": {
       "origin": {
         "name": "Skript",
@@ -9703,6 +9731,37 @@
         "name": "Time"
       }
     },
+    "ExprLootTable": {
+      "origin": {
+        "name": "Skript",
+        "class": "org.skriptlang.skript.bukkit.loottables.elements.expressions.ExprLootTable",
+        "modules": [
+          "loot tables",
+          "bukkit"
+        ]
+      },
+      "id": "ExprLootTable",
+      "name": "Loot Table",
+      "description": "Returns the loot table of an entity or block.\nSetting the loot table of a block will update the block state, and once opened will generate loot of the specified loot table. Please note that doing so may cause warnings in the console due to over-filling the chest.\nPlease note that resetting/deleting the loot table of an ENTITY will reset the entity's loot table to its default.",
+      "examples": [
+        "set loot table of event-entity to \"minecraft:entities/ghast\"\n# this will set the loot table of the entity to a ghast's loot table, thus dropping ghast tears and gunpowder",
+        "set loot table of event-block to \"minecraft:chests/simple_dungeon\""
+      ],
+      "since": [
+        "2.10"
+      ],
+      "requirements": [],
+      "keywords": [],
+      "deprecated": false,
+      "patterns": [
+        "[the] loot[ ]table[s] of %entities/blocks%",
+        "%entities/blocks%'[s] loot[ ]table[s]"
+      ],
+      "returnType": {
+        "id": "TypeLootTable",
+        "name": "Loot Table"
+      }
+    },
     "ExprCursorSlot": {
       "origin": {
         "name": "Skript",
@@ -9852,36 +9911,6 @@
       "returnType": {
         "id": "TypeObject",
         "name": "Object"
-      }
-    },
-    "ExprTextOf": {
-      "origin": {
-        "name": "Skript",
-        "class": "org.skriptlang.skript.bukkit.misc.elements.expressions.ExprTextOf",
-        "modules": [
-          "misc",
-          "bukkit"
-        ]
-      },
-      "id": "ExprTextOf",
-      "name": "Text Of",
-      "description": "Returns or changes the <a href='#string'>text/string</a> of <a href='#display'>displays</a>.\nNote that currently you can only use Skript chat codes when running Paper.",
-      "examples": [
-        "set text of the last spawned text display to \"example\""
-      ],
-      "since": [
-        "2.10"
-      ],
-      "requirements": [],
-      "keywords": [],
-      "deprecated": false,
-      "patterns": [
-        "[the] text[s] of %displays%",
-        "%displays%'[s] text[s]"
-      ],
-      "returnType": {
-        "id": "TypeTextComponent",
-        "name": "Text Component"
       }
     },
     "ExprTextDisplayLineWidth": {
@@ -10594,77 +10623,6 @@
         "name": "Timespan"
       }
     },
-    "ExprBeaconEffects": {
-      "origin": {
-        "name": "Skript",
-        "class": "ch.njol.skript.expressions.ExprBeaconEffects"
-      },
-      "id": "ExprBeaconEffects",
-      "name": "Beacon Effects",
-      "description": "The active effects of a beacon.\nThe secondary effect can be set to anything, but the icon in the GUI will not display correctly.\nThe secondary effect can only be set when the beacon is at max tier.\nThe primary and secondary effect can not be the same, primary will always retain the potion type and secondary will be cleared.",
-      "examples": [
-        "set primary beacon effect of {_block} to haste\nset secondary effect of {_block} to resistance"
-      ],
-      "since": [
-        "2.10"
-      ],
-      "requirements": [],
-      "keywords": [],
-      "deprecated": false,
-      "events": [
-        {
-          "id": "EvtBeaconEffect",
-          "name": "On Beacon Effect"
-        },
-        {
-          "id": "EvtBeaconToggle",
-          "name": "On Beacon Toggle"
-        },
-        {
-          "id": "EvtBeaconChangeEffect",
-          "name": "On Beacon Change Effect"
-        }
-      ],
-      "patterns": [
-        "[the] (primary|secondary) [beacon] effect [of %blocks%]",
-        "%blocks%'[s] (primary|secondary) [beacon] effect"
-      ],
-      "returnType": {
-        "id": "TypePotionEffectType",
-        "name": "Potion Effect Type"
-      }
-    },
-    "ExprBookAuthor": {
-      "origin": {
-        "name": "Skript",
-        "class": "org.skriptlang.skript.bukkit.item.book.elements.expressions.ExprBookAuthor",
-        "modules": [
-          "book",
-          "item",
-          "bukkit"
-        ]
-      },
-      "id": "ExprBookAuthor",
-      "name": "Book Author",
-      "description": "The author of a book.",
-      "examples": [
-        "on book sign:\n\tbroadcast \"A new book has been created by %author of event-item%\""
-      ],
-      "since": [
-        "2.2-dev31"
-      ],
-      "requirements": [],
-      "keywords": [],
-      "deprecated": false,
-      "patterns": [
-        "[the] [book] (author|writer|publisher) of %itemtypes%",
-        "%itemtypes%'[s] [book] (author|writer|publisher)"
-      ],
-      "returnType": {
-        "id": "TypeTextComponent",
-        "name": "Text Component"
-      }
-    },
     "ExprBlockHardness": {
       "origin": {
         "name": "Skript",
@@ -10946,6 +10904,46 @@
         "name": "Number"
       }
     },
+    "ExprBeaconEffects": {
+      "origin": {
+        "name": "Skript",
+        "class": "ch.njol.skript.expressions.ExprBeaconEffects"
+      },
+      "id": "ExprBeaconEffects",
+      "name": "Beacon Effects",
+      "description": "The active effects of a beacon.\nThe secondary effect can be set to anything, but the icon in the GUI will not display correctly.\nThe secondary effect can only be set when the beacon is at max tier.\nThe primary and secondary effect can not be the same, primary will always retain the potion type and secondary will be cleared.",
+      "examples": [
+        "set primary beacon effect of {_block} to haste\nset secondary effect of {_block} to resistance"
+      ],
+      "since": [
+        "2.10"
+      ],
+      "requirements": [],
+      "keywords": [],
+      "deprecated": false,
+      "events": [
+        {
+          "id": "EvtBeaconEffect",
+          "name": "On Beacon Effect"
+        },
+        {
+          "id": "EvtBeaconToggle",
+          "name": "On Beacon Toggle"
+        },
+        {
+          "id": "EvtBeaconChangeEffect",
+          "name": "On Beacon Change Effect"
+        }
+      ],
+      "patterns": [
+        "[the] (primary|secondary) [beacon] effect [of %blocks%]",
+        "%blocks%'[s] (primary|secondary) [beacon] effect"
+      ],
+      "returnType": {
+        "id": "TypePotionEffectType",
+        "name": "Potion Effect Type"
+      }
+    },
     "ExprUnixDate": {
       "origin": {
         "name": "Skript",
@@ -11206,35 +11204,6 @@
       "returnType": {
         "id": "TypeText",
         "name": "Text"
-      }
-    },
-    "ExprVillagerProfession": {
-      "origin": {
-        "name": "Skript",
-        "class": "ch.njol.skript.expressions.ExprVillagerProfession"
-      },
-      "id": "ExprVillagerProfession",
-      "name": "Villager Profession",
-      "description": "Represents the profession of a villager/zombie villager.",
-      "examples": [
-        "set {_p} to villager profession of event-entity",
-        "villager profession of event-entity = nitwit profession",
-        "set villager profession of {_villager} to librarian profession",
-        "delete villager profession of event-entity"
-      ],
-      "since": [
-        "2.10"
-      ],
-      "requirements": [],
-      "keywords": [],
-      "deprecated": false,
-      "patterns": [
-        "[the] villager profession of %livingentities%",
-        "%livingentities%'[s] villager profession"
-      ],
-      "returnType": {
-        "id": "TypeVillagerProfession",
-        "name": "Villager Profession"
       }
     },
     "ExprVectorFromDirection": {
@@ -11567,37 +11536,6 @@
         "name": "Timespan"
       }
     },
-    "ExprDamageType": {
-      "origin": {
-        "name": "Skript",
-        "class": "org.skriptlang.skript.bukkit.damagesource.elements.expressions.ExprDamageType",
-        "modules": [
-          "damage source",
-          "bukkit"
-        ]
-      },
-      "id": "ExprDamageType",
-      "name": "Damage Source - Damage Type",
-      "description": "The type of damage of a damage source.\nAttributes of a damage source cannot be changed once created, only while within the 'custom damage source' section.",
-      "examples": [
-        "set {_source} to a custom damage source:\n\tset the damage type to magic\n\tset the causing entity to {_player}\n\tset the direct entity to {_arrow}\n\tset the damage location to location(0, 0, 10)\ndamage all players by 5 using {_source}",
-        "on death:\n\tset {_type} to the damage type of event-damage source"
-      ],
-      "since": [
-        "2.12"
-      ],
-      "requirements": [],
-      "keywords": [],
-      "deprecated": false,
-      "patterns": [
-        "[the] damage type [of %damagesources%]",
-        "%damagesources%'[s] damage type"
-      ],
-      "returnType": {
-        "id": "TypeDamageType",
-        "name": "Damage Type"
-      }
-    },
     "ExprTagContents": {
       "origin": {
         "name": "Skript",
@@ -11821,6 +11759,33 @@
       "returnType": {
         "id": "TypeVector",
         "name": "Vector"
+      }
+    },
+    "ExprUUID": {
+      "origin": {
+        "name": "Skript",
+        "class": "ch.njol.skript.expressions.ExprUUID"
+      },
+      "id": "ExprUUID",
+      "name": "UUID",
+      "description": "The UUID of a player, entity or world.",
+      "examples": [
+        "# prevents people from joining the server if they use the name of a player\n# who has played on this server at least once since this script has been added\non login:\n\tif {uuid::%name of player%} exists:\n\t\t{uuid::%name of player%} is not uuid of player\n\t\tkick player due to \"Someone with your name has played on this server before\"\n\telse:\n\t\tset {uuid::%name of player%} to uuid of player",
+        "command /what-is-my-uuid:\n\ttrigger:\n\t\tset {_uuid} to uuid of player\n\t\tsend \"Your UUID is '%string within {_uuid}%'\""
+      ],
+      "since": [
+        "2.1.2, 2.2 (offline players' uuids), 2.2-dev24 (other entities' uuids)"
+      ],
+      "requirements": [],
+      "keywords": [],
+      "deprecated": false,
+      "patterns": [
+        "[the] uuid of %offlineplayers/worlds/entities%",
+        "%offlineplayers/worlds/entities%'[s] uuid"
+      ],
+      "returnType": {
+        "id": "TypeUuid",
+        "name": "UUID"
       }
     },
     "ExprColorFromHexCode": {
@@ -12258,33 +12223,6 @@
         "name": "Vector"
       }
     },
-    "ExprItemThrower": {
-      "origin": {
-        "name": "Skript",
-        "class": "ch.njol.skript.expressions.ExprItemThrower"
-      },
-      "id": "ExprItemThrower",
-      "name": "Dropped Item Thrower",
-      "description": "The uuid of the entity or player that threw/dropped the dropped item.",
-      "examples": [
-        "set the uuid of the dropped item thrower of {_dropped item} to player\nif the uuid of the dropped item thrower of {_dropped item} is uuid of player:",
-        "clear the item thrower of {_dropped item}"
-      ],
-      "since": [
-        "2.11"
-      ],
-      "requirements": [],
-      "keywords": [],
-      "deprecated": false,
-      "patterns": [
-        "[the] uuid of [the] [dropped] item thrower [of %itementities%]",
-        "[the] [dropped] item thrower's uuid [of %itementities%]"
-      ],
-      "returnType": {
-        "id": "TypeUuid",
-        "name": "UUID"
-      }
-    },
     "ExprMaxMinecartSpeed": {
       "origin": {
         "name": "Skript",
@@ -12337,6 +12275,40 @@
       "returnType": {
         "id": "TypeVector",
         "name": "Vector"
+      }
+    },
+    "ExprPlayerListName": {
+      "origin": {
+        "name": "Skript",
+        "class": "org.skriptlang.skript.bukkit.entity.player.elements.expressions.ExprPlayerListName",
+        "modules": [
+          "player",
+          "entity",
+          "bukkit"
+        ]
+      },
+      "id": "ExprPlayerListName",
+      "name": "Player List Name",
+      "description": "The name of a player in the player list in the tab menu.",
+      "examples": [
+        "on join:\n\tplayer has permission \"name.red\"\n\tset the player's tab list name to \"<red>%player's name%\""
+      ],
+      "since": [
+        "Before 2.1"
+      ],
+      "requirements": [],
+      "keywords": [
+        "tablist",
+        "tab list"
+      ],
+      "deprecated": false,
+      "patterns": [
+        "[the] (player|tab)[ ]list name[s] of %players%",
+        "%players%'[s] (player|tab)[ ]list name[s]"
+      ],
+      "returnType": {
+        "id": "TypeTextComponent",
+        "name": "Text Component"
       }
     },
     "ExprFoodLevel": {
@@ -12752,6 +12724,37 @@
         "name": "Item Type"
       }
     },
+    "ExprBookTitle": {
+      "origin": {
+        "name": "Skript",
+        "class": "org.skriptlang.skript.bukkit.item.book.elements.expressions.ExprBookTitle",
+        "modules": [
+          "book",
+          "item",
+          "bukkit"
+        ]
+      },
+      "id": "ExprBookTitle",
+      "name": "Book Title",
+      "description": "The title of a book.",
+      "examples": [
+        "on book sign:\n\tmessage \"You finished your book titled %title of event-item%\""
+      ],
+      "since": [
+        "2.2-dev31"
+      ],
+      "requirements": [],
+      "keywords": [],
+      "deprecated": false,
+      "patterns": [
+        "[the] book (name|title) of %itemtypes%",
+        "%itemtypes%'[s] book (name|title)"
+      ],
+      "returnType": {
+        "id": "TypeTextComponent",
+        "name": "Text Component"
+      }
+    },
     "ExprSaturation": {
       "origin": {
         "name": "Skript",
@@ -12842,32 +12845,6 @@
       "returnType": {
         "id": "TypeNumber",
         "name": "Number"
-      }
-    },
-    "ExprItemOwner": {
-      "origin": {
-        "name": "Skript",
-        "class": "ch.njol.skript.expressions.ExprItemOwner"
-      },
-      "id": "ExprItemOwner",
-      "name": "Dropped Item Owner",
-      "description": "The uuid of the owner of the dropped item.\nSetting the owner of a dropped item means only that entity or player can pick it up.\nDropping an item does not automatically make the entity or player the owner.",
-      "examples": [
-        "\tset the uuid of the dropped item owner of last dropped item to player\n\tif the uuid of the dropped item owner of last dropped item is uuid of player:"
-      ],
-      "since": [
-        "2.11"
-      ],
-      "requirements": [],
-      "keywords": [],
-      "deprecated": false,
-      "patterns": [
-        "[the] uuid of [the] [dropped] item owner [of %itementities%]",
-        "[the] [dropped] item owner's uuid [of %itementities%]"
-      ],
-      "returnType": {
-        "id": "TypeUuid",
-        "name": "UUID"
       }
     },
     "ExprTool": {
@@ -13165,6 +13142,34 @@
         "name": "Location"
       }
     },
+    "ExprVillagerType": {
+      "origin": {
+        "name": "Skript",
+        "class": "ch.njol.skript.expressions.ExprVillagerType"
+      },
+      "id": "ExprVillagerType",
+      "name": "Villager Type",
+      "description": "Represents the type of a villager/zombie villager. This usually represents the biome the villager is from.",
+      "examples": [
+        "set {_type} to villager type of {_villager}",
+        "villager type of {_villager} = plains",
+        "set villager type of event-entity to plains"
+      ],
+      "since": [
+        "2.10"
+      ],
+      "requirements": [],
+      "keywords": [],
+      "deprecated": false,
+      "patterns": [
+        "[the] villager type of %livingentities%",
+        "%livingentities%'[s] villager type"
+      ],
+      "returnType": {
+        "id": "TypeVillagerType",
+        "name": "Villager Type"
+      }
+    },
     "ExprCommandBlockCommand": {
       "origin": {
         "name": "Skript",
@@ -13190,40 +13195,6 @@
       "returnType": {
         "id": "TypeText",
         "name": "Text"
-      }
-    },
-    "ExprPlayerListName": {
-      "origin": {
-        "name": "Skript",
-        "class": "org.skriptlang.skript.bukkit.entity.player.elements.expressions.ExprPlayerListName",
-        "modules": [
-          "player",
-          "entity",
-          "bukkit"
-        ]
-      },
-      "id": "ExprPlayerListName",
-      "name": "Player List Name",
-      "description": "The name of a player in the player list in the tab menu.",
-      "examples": [
-        "on join:\n\tplayer has permission \"name.red\"\n\tset the player's tab list name to \"<red>%player's name%\""
-      ],
-      "since": [
-        "Before 2.1"
-      ],
-      "requirements": [],
-      "keywords": [
-        "tablist",
-        "tab list"
-      ],
-      "deprecated": false,
-      "patterns": [
-        "[the] (player|tab)[ ]list name[s] of %players%",
-        "%players%'[s] (player|tab)[ ]list name[s]"
-      ],
-      "returnType": {
-        "id": "TypeTextComponent",
-        "name": "Text Component"
       }
     },
     "ExprItemWithEnchantmentGlint": {
@@ -13467,6 +13438,37 @@
         "name": "World Environment"
       }
     },
+    "ExprDamageType": {
+      "origin": {
+        "name": "Skript",
+        "class": "org.skriptlang.skript.bukkit.damagesource.elements.expressions.ExprDamageType",
+        "modules": [
+          "damage source",
+          "bukkit"
+        ]
+      },
+      "id": "ExprDamageType",
+      "name": "Damage Source - Damage Type",
+      "description": "The type of damage of a damage source.\nAttributes of a damage source cannot be changed once created, only while within the 'custom damage source' section.",
+      "examples": [
+        "set {_source} to a custom damage source:\n\tset the damage type to magic\n\tset the causing entity to {_player}\n\tset the direct entity to {_arrow}\n\tset the damage location to location(0, 0, 10)\ndamage all players by 5 using {_source}",
+        "on death:\n\tset {_type} to the damage type of event-damage source"
+      ],
+      "since": [
+        "2.12"
+      ],
+      "requirements": [],
+      "keywords": [],
+      "deprecated": false,
+      "patterns": [
+        "[the] damage type [of %damagesources%]",
+        "%damagesources%'[s] damage type"
+      ],
+      "returnType": {
+        "id": "TypeDamageType",
+        "name": "Damage Type"
+      }
+    },
     "PropExprNumber": {
       "origin": {
         "name": "Skript",
@@ -13573,37 +13575,6 @@
       "returnType": {
         "id": "TypeLocation",
         "name": "Location"
-      }
-    },
-    "ExprDisplayTransformationRotation": {
-      "origin": {
-        "name": "Skript",
-        "class": "org.skriptlang.skript.bukkit.entity.displays.elements.expressions.ExprDisplayTransformationRotation",
-        "modules": [
-          "displays",
-          "entity",
-          "bukkit"
-        ]
-      },
-      "id": "ExprDisplayTransformationRotation",
-      "name": "Display Transformation Rotation",
-      "description": "Returns or changes the transformation rotation of <a href='#display'>displays</a>.\nThe left rotation is applied first, with the right rotation then being applied based on the rotated axis.",
-      "examples": [
-        "set left transformation rotation of last spawned block display to quaternion(1, 0, 0, 0) # reset block display"
-      ],
-      "since": [
-        "2.10"
-      ],
-      "requirements": [],
-      "keywords": [],
-      "deprecated": false,
-      "patterns": [
-        "[the] (left|right) [transformation] rotation [of %displays%]",
-        "%displays%'[s] (left|right) [transformation] rotation"
-      ],
-      "returnType": {
-        "id": "TypeQuaternion",
-        "name": "Quaternion"
       }
     },
     "ExprEntitySnapshot": {
@@ -13792,6 +13763,35 @@
           }
         ],
         "disallowed": []
+      }
+    },
+    "ExprVillagerProfession": {
+      "origin": {
+        "name": "Skript",
+        "class": "ch.njol.skript.expressions.ExprVillagerProfession"
+      },
+      "id": "ExprVillagerProfession",
+      "name": "Villager Profession",
+      "description": "Represents the profession of a villager/zombie villager.",
+      "examples": [
+        "set {_p} to villager profession of event-entity",
+        "villager profession of event-entity = nitwit profession",
+        "set villager profession of {_villager} to librarian profession",
+        "delete villager profession of event-entity"
+      ],
+      "since": [
+        "2.10"
+      ],
+      "requirements": [],
+      "keywords": [],
+      "deprecated": false,
+      "patterns": [
+        "[the] villager profession of %livingentities%",
+        "%livingentities%'[s] villager profession"
+      ],
+      "returnType": {
+        "id": "TypeVillagerProfession",
+        "name": "Villager Profession"
       }
     },
     "ExprVectorLength": {
@@ -14043,40 +14043,6 @@
           }
         ],
         "disallowed": []
-      }
-    },
-    "ExprLore": {
-      "origin": {
-        "name": "Skript",
-        "class": "org.skriptlang.skript.bukkit.item.elements.ExprLore",
-        "modules": [
-          "item",
-          "bukkit"
-        ]
-      },
-      "id": "ExprLore",
-      "name": "Lore",
-      "description": "Returns the lore of an item.",
-      "examples": [
-        "set the 1st line of the item's lore to \"<orange>Excalibur 2.0\""
-      ],
-      "since": [
-        "2.1"
-      ],
-      "requirements": [],
-      "keywords": [],
-      "deprecated": false,
-      "patterns": [
-        "[the] lore of %itemtype%",
-        "%itemtype%'[s] lore",
-        "[the] line %number% of [the] lore of %itemtype%",
-        "[the] line %number% of %itemtype%'[s] lore",
-        "[the] %number%(st|nd|rd|th) line of [the] lore of %itemtype%",
-        "[the] %number%(st|nd|rd|th) line of %itemtype%'[s] lore"
-      ],
-      "returnType": {
-        "id": "TypeTextComponent",
-        "name": "Text Component"
       }
     },
     "ExprNamed": {
@@ -14334,6 +14300,37 @@
         "name": "Object"
       }
     },
+    "ExprSignText": {
+      "origin": {
+        "name": "Skript",
+        "class": "org.skriptlang.skript.bukkit.block.sign.elements.expressions.ExprSignText",
+        "modules": [
+          "sign",
+          "block",
+          "bukkit"
+        ]
+      },
+      "id": "ExprSignText",
+      "name": "Sign Text",
+      "description": "A line of text on a sign. Can be changed, but note that there is a 16 character limit per line.",
+      "examples": [
+        "on right click:\n\tclicked block is tagged as \"minecraft:all_signs\"\n\tif line 2 of the clicked block is \"[Heal]\":\n\t\theal the player"
+      ],
+      "since": [
+        "1.3"
+      ],
+      "requirements": [],
+      "keywords": [],
+      "deprecated": false,
+      "patterns": [
+        "line %integer% [of %block%]",
+        "[the] (1st|first|2nd|second|3rd|third|4th|fourth) line [of %block%]"
+      ],
+      "returnType": {
+        "id": "TypeTextComponent",
+        "name": "Text Component"
+      }
+    },
     "ExprArmorSlot": {
       "origin": {
         "name": "Skript",
@@ -14389,31 +14386,34 @@
         "name": "Number"
       }
     },
-    "ExprSignText": {
+    "ExprLore": {
       "origin": {
         "name": "Skript",
-        "class": "org.skriptlang.skript.bukkit.block.sign.elements.expressions.ExprSignText",
+        "class": "org.skriptlang.skript.bukkit.item.elements.ExprLore",
         "modules": [
-          "sign",
-          "block",
+          "item",
           "bukkit"
         ]
       },
-      "id": "ExprSignText",
-      "name": "Sign Text",
-      "description": "A line of text on a sign. Can be changed, but note that there is a 16 character limit per line.",
+      "id": "ExprLore",
+      "name": "Lore",
+      "description": "Returns the lore of an item.",
       "examples": [
-        "on right click:\n\tclicked block is tagged as \"minecraft:all_signs\"\n\tif line 2 of the clicked block is \"[Heal]\":\n\t\theal the player"
+        "set the 1st line of the item's lore to \"<orange>Excalibur 2.0\""
       ],
       "since": [
-        "1.3"
+        "2.1"
       ],
       "requirements": [],
       "keywords": [],
       "deprecated": false,
       "patterns": [
-        "line %integer% [of %block%]",
-        "[the] (1st|first|2nd|second|3rd|third|4th|fourth) line [of %block%]"
+        "[the] lore of %itemtype%",
+        "%itemtype%'[s] lore",
+        "[the] line %number% of [the] lore of %itemtype%",
+        "[the] line %number% of %itemtype%'[s] lore",
+        "[the] %number%(st|nd|rd|th) line of [the] lore of %itemtype%",
+        "[the] %number%(st|nd|rd|th) line of %itemtype%'[s] lore"
       ],
       "returnType": {
         "id": "TypeTextComponent",
@@ -34164,7 +34164,7 @@
       "requirements": [],
       "keywords": [],
       "deprecated": false,
-      "phase": "stable",
+      "phase": "STABLE",
       "pattern": "examples"
     },
     "ExpQueues": {
@@ -34185,7 +34185,7 @@
       "requirements": [],
       "keywords": [],
       "deprecated": false,
-      "phase": "experimental",
+      "phase": "EXPERIMENTAL",
       "pattern": "queues"
     },
     "ExpForLoops": {
@@ -34206,7 +34206,7 @@
       "requirements": [],
       "keywords": [],
       "deprecated": false,
-      "phase": "mainstream",
+      "phase": "MAINSTREAM",
       "pattern": "for [each] loop[s]"
     },
     "ExpScriptReflection": {
@@ -34224,7 +34224,7 @@
       "requirements": [],
       "keywords": [],
       "deprecated": false,
-      "phase": "stable",
+      "phase": "STABLE",
       "pattern": "[script] reflection"
     },
     "ExpRuntimeErrorCatching": {
@@ -34244,7 +34244,7 @@
       "requirements": [],
       "keywords": [],
       "deprecated": false,
-      "phase": "experimental",
+      "phase": "EXPERIMENTAL",
       "pattern": "error catching [section]"
     },
     "ExpTypeHints": {
@@ -34262,7 +34262,7 @@
       "requirements": [],
       "keywords": [],
       "deprecated": false,
-      "phase": "experimental",
+      "phase": "EXPERIMENTAL",
       "pattern": "[local variable] type hints"
     },
     "ExpDamageSources": {
@@ -34282,7 +34282,7 @@
       "requirements": [],
       "keywords": [],
       "deprecated": false,
-      "phase": "mainstream",
+      "phase": "MAINSTREAM",
       "pattern": "damage source[s]"
     },
     "ExpEquippableComponents": {
@@ -34302,7 +34302,7 @@
       "requirements": [],
       "keywords": [],
       "deprecated": false,
-      "phase": "experimental",
+      "phase": "EXPERIMENTAL",
       "pattern": "equippable components"
     }
   },
@@ -34612,11 +34612,11 @@
           },
           "plural": false,
           "modifiers": {
-            "optional": true,
             "ranged": {
               "min": "0",
               "max": "255"
-            }
+            },
+            "optional": true
           }
         }
       }
