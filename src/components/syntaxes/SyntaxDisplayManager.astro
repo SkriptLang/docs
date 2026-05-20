@@ -210,8 +210,8 @@ export interface VersionFilterData {
         // filter for matches and store them
         allItems
             .map(item => ({
-                item,
-                score: scoreSearchMatch(item, queryLower)
+                item: item,
+                score: scoreSearchMatch(item, queryLower),
             }))
             .filter(s => s.score !== 0)
             .forEach(s => searchCache.set(s.item.syntaxId, s.score))
@@ -244,8 +244,16 @@ export interface VersionFilterData {
         let score = 0;
         const element = item.element;
 
-        // Weigh ID
+        // Handle exact ID lookup
         const id = item.syntaxId.toLowerCase();
+        if (searchLower[0] === '#') {
+            if (`#${id}` === searchLower) {
+                return Number.MAX_SAFE_INTEGER;
+            }
+            return 0;
+        }
+
+        // Weigh ID
         if (id === searchLower) { // Exact match on syntax ID, immediately return
             return Number.MAX_SAFE_INTEGER;
         }
@@ -514,8 +522,9 @@ export interface VersionFilterData {
         }
         event.preventDefault();
         if ((event.target.closest('.documentation-card') as HTMLElement)?.dataset.syntaxId === hash) { // copying link to card
-            url.search = ''; // remove search from URL for linking
-            url.hash = hash;
+            url.search = '';
+            url.searchParams.set('search', '#' + hash);
+            url.hash = '';
             navigator.clipboard.writeText(url.href).then(() => {
                 // TODO some sort of popup notifying link copied
             });
