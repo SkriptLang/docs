@@ -146,5 +146,14 @@ export interface Parameter {
  */
 
 export interface Experiment extends Documentation {
+    phase: keyof typeof ExperimentLifeCycle,
     pattern: string,
+}
+
+export enum ExperimentLifeCycle {
+    STABLE = "Stable",
+    EXPERIMENTAL = "Experimental",
+    DEPRECATED = "Deprecated",
+    MAINSTREAM = "Mainstream",
+    UNKNOWN = "Unknown",
 }

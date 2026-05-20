@@ -19,6 +19,7 @@ const { defaultProps, expression }: Props = Astro.props;
         <SyntaxBadge
                 badgeProps={{text: "Return Type", size: 'medium'}}
                 entries={[{text: expression.returnType.name, cardRef: expression.returnType.id}]}
+                description="The type of the value returned by this expression."
         />
     </Fragment>
 </SyntaxCard>

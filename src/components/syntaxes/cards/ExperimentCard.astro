@@ -3,6 +3,8 @@ import {type Experiment} from '../documentation'
 import CodeCard from "../../CodeCard.astro";
 import DocumentationCard from "./DocumentationCard.astro";
 import type {DocumentableCardProps} from "./DocumentableCard.astro";
+import SyntaxBadge from "../SyntaxBadge.astro";
+import {ExperimentLifeCycle} from "../documentation.ts";
 
 interface Props {
     defaultProps: DocumentableCardProps,
@@ -13,6 +15,18 @@ const { defaultProps, experiment }: Props = Astro.props;
 ---
 
 <DocumentationCard defaultProps={defaultProps} documentation={experiment}>
+    <Fragment slot="badges">
+        <SyntaxBadge
+                badgeProps={{text: "Phase", size: 'medium'}}
+                entries={[{text: ExperimentLifeCycle[experiment.phase]}]}
+                description={
+                    "The phase of an experiment represents the experiment's standing in being implemented." +
+                    " Experimental is the default phase, meaning features locked behind it are in preview." +
+                    " Mainstream indicates that an experiment has come to an end, and its features are stable to use." +
+                    " Stable indicates a long-term experiment whose features are safe to be used without breaking changes."
+                }
+        />
+    </Fragment>
     <Fragment slot="right-column">
         <CodeCard title="Experiment Pattern" wrap={true} code={[experiment.pattern]}/>
     </Fragment>

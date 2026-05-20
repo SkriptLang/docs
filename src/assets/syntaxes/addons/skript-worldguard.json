@@ -8,37 +8,6 @@
     "version": "1.0.1"
   },
   "expressions": {
-    "ExprMoveType": {
-      "origin": {
-        "name": "skript-worldguard",
-        "class": "org.skriptlang.skriptworldguard.elements.expressions.ExprMoveType"
-      },
-      "id": "ExprMoveType",
-      "name": "WorldGuard Move Type",
-      "description": "The movement type in a 'region enter/leave' event. This represents how the player ended up in/out of a region.",
-      "examples": [
-        "on region enter:\n\tif the movement type is swimming:\n\t\tmessage \"You have swum into %region%!\"\n"
-      ],
-      "since": [
-        "1.0"
-      ],
-      "requirements": [],
-      "keywords": [],
-      "deprecated": false,
-      "events": [
-        {
-          "id": "EvtRegionEnterLeave",
-          "name": "On Region Enter/Leave"
-        }
-      ],
-      "patterns": [
-        "[the] [worldguard] move[ment][ ]type"
-      ],
-      "returnType": {
-        "id": "TypeWorldguardMovementType",
-        "name": "WorldGuard Move Type"
-      }
-    },
     "ExprRegion": {
       "origin": {
         "name": "skript-worldguard",
@@ -48,7 +17,7 @@
       "name": "Region",
       "description": "The region in any region related event.",
       "examples": [
-        "on region enter:\n\tsend \"You have entered %region%\"\n"
+        "on region enter:\n\tsend \"You have entered %region%\""
       ],
       "since": [
         "1.0"
@@ -66,8 +35,39 @@
         "[the] [worldguard] region"
       ],
       "returnType": {
-        "id": "TypeWorldguardRegion",
+        "id": "TypeRegion",
         "name": "Region"
+      }
+    },
+    "ExprMoveType": {
+      "origin": {
+        "name": "skript-worldguard",
+        "class": "org.skriptlang.skriptworldguard.elements.expressions.ExprMoveType"
+      },
+      "id": "ExprMoveType",
+      "name": "WorldGuard Move Type",
+      "description": "The movement type in a 'region enter/leave' event. This represents how the player ended up in/out of a region.",
+      "examples": [
+        "on region enter:\n\tif the movement type is swimming:\n\t\tmessage \"You have swum into %region%!\""
+      ],
+      "since": [
+        "1.0"
+      ],
+      "requirements": [],
+      "keywords": [],
+      "deprecated": false,
+      "events": [
+        {
+          "id": "EvtRegionEnterLeave",
+          "name": "On Region Enter/Leave"
+        }
+      ],
+      "patterns": [
+        "[the] [worldguard] move[ment][ ]type"
+      ],
+      "returnType": {
+        "id": "TypeWorldguardMoveType",
+        "name": "WorldGuard Move Type"
       }
     },
     "ExprRegions": {
@@ -94,7 +94,7 @@
         "[all [[of] the]|the] [worldguard] regions [(in|of) %worlds%]"
       ],
       "returnType": {
-        "id": "TypeWorldguardRegion",
+        "id": "TypeRegion",
         "name": "Region"
       }
     },
@@ -107,8 +107,8 @@
       "name": "Region Members/Owners",
       "description": "An expression to obtain the members/owners of the given regions.\nThe members/owners of a region are made up of players and groups (strings).\nBy default, this expression returns both. However, keyword specifiers for each type (player/group) are available.",
       "examples": [
-        "on region enter:\n\tmessage \"You have entered %region%. It is owned by %owners of region%.\"\n",
-        "command /promote <text> <player>:\n\ttrigger:\n\t\tset {_region} to the region text-argument in the player's world\n\t\tif player-argument is an owner of {_region}:\n\t\t\tmessage \"<red>%player-argument% is already an owner of %{_region}%\"\n\t\telse if player-argument is a member of {_region}:\n\t\t\tadd player to the owners of {_region}\n\t\t\tmessage \"<green>%player-argument% has been promoted to an owner of %{_region}%\"\n\t\telse:\n\t\t\tadd player to the members of {_region}\n\t\t\tmessage \"<green>%player-argument% has been promoted to a member of %{_region}%\"\n"
+        "on region enter:\n\tmessage \"You have entered %region%. It is owned by %owners of region%.\"",
+        "command /promote <text> <player>:\n\ttrigger:\n\t\tset {_region} to the region text-argument in the player's world\n\t\tif player-argument is an owner of {_region}:\n\t\t\tmessage \"<red>%player-argument% is already an owner of %{_region}%\"\n\t\telse if player-argument is a member of {_region}:\n\t\t\tadd player to the owners of {_region}\n\t\t\tmessage \"<green>%player-argument% has been promoted to an owner of %{_region}%\"\n\t\telse:\n\t\t\tadd player to the members of {_region}\n\t\t\tmessage \"<green>%player-argument% has been promoted to a member of %{_region}%\""
       ],
       "since": [
         "1.0"
@@ -127,16 +127,17 @@
         "name": "Object"
       }
     },
-    "ExprBlocksInRegion": {
+    "ExprRegionParent": {
       "origin": {
         "name": "skript-worldguard",
-        "class": "org.skriptlang.skriptworldguard.elements.expressions.ExprBlocksInRegion"
+        "class": "org.skriptlang.skriptworldguard.elements.expressions.ExprRegionParent"
       },
-      "id": "ExprBlocksInRegion",
-      "name": "Blocks of Region",
-      "description": "An expression that returns all of the blocks in the given regions.",
+      "id": "ExprRegionParent",
+      "name": "Region Parent",
+      "description": "An expression to obtain and change the direct parent of a region.\nIt is also possible to obtain all parents of a region (e.g., including a parent region's parent region).\nWhen a region has a parent, it inherits the parents members, owners, and flags (that aren't defined on the child).",
       "examples": [
-        "command /fillregion <text> <material>:\n\ttrigger:\n\t\tset {_region} to the region text-argument in the player's world\n\t\tset the blocks of {_region} to material-argument\n"
+        "command /setparent <text> <text>:\n\ttrigger:\n\t\tset the parent of the region text-argument-1 to the region text-argument-2",
+        "if any of all of the parent regions of {_region} are global"
       ],
       "since": [
         "1.0"
@@ -145,12 +146,13 @@
       "keywords": [],
       "deprecated": false,
       "patterns": [
-        "[the] blocks of %worldguardregions%",
-        "%worldguardregions%'[s] blocks"
+        "[the] parent region[s] of %worldguardregions%",
+        "%worldguardregions%'[s] parent region[s]",
+        "all [[of] the] parent regions of %worldguardregions%"
       ],
       "returnType": {
-        "id": "TypeBlock",
-        "name": "Block"
+        "id": "TypeRegion",
+        "name": "Region"
       }
     },
     "ExprRegionPoints": {
@@ -162,7 +164,7 @@
       "name": "Region Points",
       "description": "An expression to obtain the points of a region.\nNote that when obtaining the points of a region, the region itself is projected onto an X-Z plane. Thus, the points do not have a y-component. However, for simplicity, the y-component of the minimum point is used.",
       "examples": [
-        "command /highlight-points <text>:\n\ttrigger:\n\t\tset the blocks at the points of the region text-argument to red wool\n"
+        "command /highlight-points <text>:\n\ttrigger:\n\t\tset the blocks at the points of the region text-argument to red wool"
       ],
       "since": [
         "1.0"
@@ -190,7 +192,7 @@
       "name": "Region Priority",
       "description": "An expression to obtain and change the priority of a region.\nWhen regions overlap, the priority is used to determine properties such as membership, ability to build, and flag values.",
       "examples": [
-        "function get_highest_priority_region(location: location) returns worldguard region:\n\tset {_regions::*} to the regions at {_location}\n\tsort {_regions::*} in descending order by priority of input\n\treturn {_regions::1}\n"
+        "function get_highest_priority_region(location: location) returns worldguard region:\n\tset {_regions::*} to the regions at {_location}\n\tsort {_regions::*} in descending order by priority of input\n\treturn {_regions::1}"
       ],
       "since": [
         "1.0"
@@ -207,17 +209,16 @@
         "name": "Number"
       }
     },
-    "ExprRegionParent": {
+    "ExprBlocksInRegion": {
       "origin": {
         "name": "skript-worldguard",
-        "class": "org.skriptlang.skriptworldguard.elements.expressions.ExprRegionParent"
+        "class": "org.skriptlang.skriptworldguard.elements.expressions.ExprBlocksInRegion"
       },
-      "id": "ExprRegionParent",
-      "name": "Region Parent",
-      "description": "An expression to obtain and change the direct parent of a region.\nIt is also possible to obtain all parents of a region (e.g., including a parent region's parent region).\nWhen a region has a parent, it inherits the parents members, owners, and flags (that aren't defined on the child).",
+      "id": "ExprBlocksInRegion",
+      "name": "Blocks of Region",
+      "description": "An expression that returns all of the blocks in the given regions.",
       "examples": [
-        "command /setparent <text> <text>:\n\ttrigger:\n\t\tset the parent of the region text-argument-1 to the region text-argument-2\n",
-        "if any of all of the parent regions of {_region} are global"
+        "command /fillregion <text> <material>:\n\ttrigger:\n\t\tset {_region} to the region text-argument in the player's world\n\t\tset the blocks of {_region} to material-argument"
       ],
       "since": [
         "1.0"
@@ -226,13 +227,12 @@
       "keywords": [],
       "deprecated": false,
       "patterns": [
-        "[the] parent region[s] of %worldguardregions%",
-        "%worldguardregions%'[s] parent region[s]",
-        "all [[of] the] parent regions of %worldguardregions%"
+        "[the] blocks of %worldguardregions%",
+        "%worldguardregions%'[s] blocks"
       ],
       "returnType": {
-        "id": "TypeWorldguardRegion",
-        "name": "Region"
+        "id": "TypeBlock",
+        "name": "Block"
       }
     },
     "ExprRegionFlag": {
@@ -270,7 +270,7 @@
       "name": "Regions At",
       "description": "An expression to obtain the regions at a specific location.\nNote that the regions will be returned in ascending order by priority.",
       "examples": [
-        "on right click:\n\tthe clicked block is tagged with minecraft tag \"all_signs\"\n\tline 1 of the clicked block is \"[Region Info]\"\n\tset {_regions::*} to the regions at the clicked block\n\tif {_regions::*} is not set:\n\t\tmessage \"No regions exist at this sign.\"\n\telse:\n\t\tmessage \"You are in: %{_regions::*}%.\"\n"
+        "on right click:\n\tthe clicked block is tagged with minecraft tag \"all_signs\"\n\tline 1 of the clicked block is \"[Region Info]\"\n\tset {_regions::*} to the regions at the clicked block\n\tif {_regions::*} is not set:\n\t\tmessage \"No regions exist at this sign.\"\n\telse:\n\t\tmessage \"You are in: %{_regions::*}%.\""
       ],
       "since": [
         "1.0"
@@ -282,7 +282,7 @@
         "[the] regions %direction% %locations%"
       ],
       "returnType": {
-        "id": "TypeWorldguardRegion",
+        "id": "TypeRegion",
         "name": "Region"
       }
     }
@@ -325,7 +325,7 @@
       "name": "On Region Enter/Leave",
       "description": "Called when a player enters or leaves a region.",
       "examples": [
-        "on region enter:\n\tsend \"You entered %region%\"\n"
+        "on region enter:\n\tsend \"You entered %region%\""
       ],
       "since": [
         "1.0"
@@ -343,7 +343,7 @@
       "eventValues": [
         {
           "type": {
-            "id": "TypeWorldguardRegion",
+            "id": "TypeRegion",
             "name": "Region"
           },
           "plural": false,
@@ -363,7 +363,7 @@
         },
         {
           "type": {
-            "id": "TypeWorldguardMovementType",
+            "id": "TypeWorldguardMoveType",
             "name": "WorldGuard Move Type"
           },
           "plural": false,
@@ -384,7 +384,7 @@
       "name": "Is Region Member/Owner",
       "description": "A condition to test whether a player/group is a member/owner of a region.",
       "examples": [
-        "on region enter:\n\tplayer is the owner of the region\n\tmessage \"Welcome back to %region%\"\n\tmessage \"%player's name% just entered %region%\" to the members of the region\n"
+        "on region enter:\n\tplayer is the owner of the region\n\tmessage \"Welcome back to %region%\"\n\tmessage \"%player's name% just entered %region%\" to the members of the region"
       ],
       "since": [
         "1.0"
@@ -397,6 +397,28 @@
         "%offlineplayers/strings% (isn't|is not|aren't|are not) ([a] member|[the|an] owner) of %worldguardregions%"
       ]
     },
+    "CondIsRegionTemporary": {
+      "origin": {
+        "name": "skript-worldguard",
+        "class": "org.skriptlang.skriptworldguard.elements.conditions.CondIsRegionTemporary"
+      },
+      "id": "CondIsRegionTemporary",
+      "name": "Is Region Temporary",
+      "description": "A condition to test whether a region is temporary.\nTemporary regions are those that are removed when the server restarts.",
+      "examples": [
+        "on region enter:\n\tif the region is temporary:\n\t\tmessage \"Be ready! This protected region will expire when the server restarts.\""
+      ],
+      "since": [
+        "1.0"
+      ],
+      "requirements": [],
+      "keywords": [],
+      "deprecated": false,
+      "patterns": [
+        "%worldguardregions% (is|are) (temporary|transient)",
+        "%worldguardregions% (isn't|is not|aren't|are not) (temporary|transient)"
+      ]
+    },
     "CondIsValidRegionId": {
       "origin": {
         "name": "skript-worldguard",
@@ -406,7 +428,7 @@
       "name": "Is Valid Region ID",
       "description": "A condition to test whether a string is a valid region ID.\nValid region IDs only contain letters, numbers, underscores, commas, single quotation marks, dashes, pluses, or forward slashes.",
       "examples": [
-        "command /createregion <text>:\n\tif the text-argument is not a valid region id:\n\t\tmessage \"<red>'%text-argument%' is not a valid region ID\")\n\t# here is where the rest of the command would go :)\n"
+        "command /createregion <text>:\n\tif the text-argument is not a valid region id:\n\t\tmessage \"<red>'%text-argument%' is not a valid region ID\")\n\t# here is where the rest of the command would go :)"
       ],
       "since": [
         "1.0"
@@ -428,7 +450,7 @@
       "name": "Is Region Type",
       "description": "A condition to test what type/shape a region is.",
       "examples": [
-        "on region enter:\n\tif the region is polygonal:\n\t\tmessage \"Welcome to my wacky region!\"\n"
+        "on region enter:\n\tif the region is polygonal:\n\t\tmessage \"Welcome to my wacky region!\""
       ],
       "since": [
         "1.0"
@@ -441,28 +463,6 @@
         "%worldguardregions% (isn't|is not|aren't|are not) [a] (global|cuboid[s]|polygon[s|al]) [region[s]]"
       ]
     },
-    "CondIsRegionTemporary": {
-      "origin": {
-        "name": "skript-worldguard",
-        "class": "org.skriptlang.skriptworldguard.elements.conditions.CondIsRegionTemporary"
-      },
-      "id": "CondIsRegionTemporary",
-      "name": "Is Region Temporary",
-      "description": "A condition to test whether a region is temporary.\nTemporary regions are those that are removed when the server restarts.",
-      "examples": [
-        "on region enter:\n\tif the region is temporary:\n\t\tmessage \"Be ready! This protected region will expire when the server restarts.\"\n"
-      ],
-      "since": [
-        "1.0"
-      ],
-      "requirements": [],
-      "keywords": [],
-      "deprecated": false,
-      "patterns": [
-        "%worldguardregions% (is|are) (temporary|transient)",
-        "%worldguardregions% (isn't|is not|aren't|are not) (temporary|transient)"
-      ]
-    },
     "CondIsParentRegion": {
       "origin": {
         "name": "skript-worldguard",
@@ -472,7 +472,7 @@
       "name": "Is Parent Region",
       "description": "A condition to test whether a region is a parent region of another.",
       "examples": [
-        "command /printchildren <text>:\n\ttrigger:\n\t\tset {_parent} to the region text-argument\n\t\tmessage \"Children of %{_parent}%:\"\n\t\tloop all regions:\n\t\t\tif {_parent} is a parent region of loop-region:\n\t\t\t\tmessage \"- %loop-region%\"\n"
+        "command /printchildren <text>:\n\ttrigger:\n\t\tset {_parent} to the region text-argument\n\t\tmessage \"Children of %{_parent}%:\"\n\t\tloop all regions:\n\t\t\tif {_parent} is a parent region of loop-region:\n\t\t\t\tmessage \"- %loop-region%\""
       ],
       "since": [
         "1.0"
@@ -494,7 +494,7 @@
       "name": "Can Build In Regions",
       "description": "A condition to test whether a player can build in a region or at a specific location.",
       "examples": [
-        "command /setblock <material>:\n\tdescription: Sets your targeted block to a different type.\n\ttrigger:\n\t\tif the player cannot build at the targeted block:\n\t\t\tmessage \"<red>You do not have permission to modify your targeted block!\"\n\t\telse:\n\t\t\tset the targeted block to the material-argument\n"
+        "command /setblock <material>:\n\tdescription: Sets your targeted block to a different type.\n\ttrigger:\n\t\tif the player cannot build at the targeted block:\n\t\t\tmessage \"<red>You do not have permission to modify your targeted block!\"\n\t\telse:\n\t\t\tset the targeted block to the material-argument"
       ],
       "since": [
         "1.0"
@@ -512,11 +512,11 @@
   },
   "structures": {},
   "types": {
-    "TypeWorldguardRegion": {
+    "TypeRegion": {
       "origin": {
         "name": "skript-worldguard"
       },
-      "id": "TypeWorldguardRegion",
+      "id": "TypeRegion",
       "name": "Region",
       "description": "A WorldGuard region.",
       "examples": [
@@ -533,16 +533,6 @@
       "properties": [
         {
           "property": {
-            "id": "PropContains",
-            "name": "Contains"
-          },
-          "origin": {
-            "name": "skript-worldguard"
-          },
-          "description": "Regions can contain chunks and locations."
-        },
-        {
-          "property": {
             "id": "PropName",
             "name": "Name"
           },
@@ -550,6 +540,16 @@
             "name": "skript-worldguard"
           },
           "description": "The name (ID) of a region as text. Cannot be changed."
+        },
+        {
+          "property": {
+            "id": "PropContains",
+            "name": "Contains"
+          },
+          "origin": {
+            "name": "skript-worldguard"
+          },
+          "description": "Regions can contain chunks and locations."
         }
       ]
     }
