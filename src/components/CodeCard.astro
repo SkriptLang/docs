@@ -19,10 +19,11 @@ const { title, wrap, code} = Astro.props;
     </div>
 </div>
 
-<style>
+<style is:global>
     .code-card {
         display: flex;
         flex-direction: column;
+        gap: 0.25rem;
         padding: 1rem;
 
         background-color: var(--sl-color-black);
@@ -31,8 +32,10 @@ const { title, wrap, code} = Astro.props;
     }
     .title {
         font-size: var(--sl-text-xl);
-        margin-bottom: 0.5rem;
+        margin-bottom: 0.25rem;
     }
+</style>
+<style>
     .code-card-blocks {
         max-height: 10lh;
         overflow-y: auto;

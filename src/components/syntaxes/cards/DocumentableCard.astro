@@ -7,6 +7,7 @@ import ExpressionCard from "./ExpressionCard.astro";
 import FunctionCard from "./FunctionCard.astro";
 import PropertyCard from "./PropertyCard.astro";
 import TypeCard from "./TypeCard.astro";
+import StructureCard from "./StructureCard.astro";
 import SyntaxCard from "./SyntaxCard.astro";
 
 export interface DocumentableCardProps {
@@ -24,11 +25,12 @@ const { defaultProps, documentation }: Props = Astro.props;
 
 {(() => {
     switch (documentation.type) {
-        case DocumentableType.STRUCTURE:
         case DocumentableType.SECTION:
         case DocumentableType.EFFECT:
         case DocumentableType.CONDITION:
             return (<SyntaxCard defaultProps={defaultProps} syntax={documentation as any}/>);
+        case DocumentableType.STRUCTURE:
+            return (<StructureCard defaultProps={defaultProps} structure={documentation as any}/>);
         case DocumentableType.EXPRESSION:
             return (<ExpressionCard defaultProps={defaultProps} expression={documentation as any}/>);
         case DocumentableType.EVENT:

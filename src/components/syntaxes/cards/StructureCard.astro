@@ -1,0 +1,41 @@
+---
+import {type Structure} from '../documentation'
+import SyntaxCard from "./SyntaxCard.astro";
+import SyntaxBadge from "../SyntaxBadge.astro";
+import type {DocumentableCardProps} from "./DocumentableCard.astro";
+
+interface Props {
+    defaultProps: DocumentableCardProps,
+    structure: Structure,
+}
+
+const { defaultProps, structure }: Props = Astro.props;
+---
+
+<SyntaxCard defaultProps={defaultProps} syntax={structure}>
+    <Fragment slot="right-column">
+        {structure.entries && (
+                <div class="code-card">
+                    <span class="title">Structure Entries</span>
+                    {Object.values(structure.entries).map(entry => {
+                        let description = entry.optional ? "optional" : "required";
+                        if (entry.multiple) {
+                            description += ", can be repeated";
+                        }
+                        return (<SyntaxBadge
+                                badgeProps={{text: entry.key, size: 'medium'}}
+                                entries={[{text: description}]}
+                        />);
+                    })}
+                </div>
+        )}
+    </Fragment>
+</SyntaxCard>
+
+<style is:global>
+    [data-syntax-type="Structure"] {
+        /* Sky Blue */
+        --custom-badge-light: lightskyblue;
+        --custom-badge-dark: #00688B;
+    }
+</style>

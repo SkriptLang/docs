@@ -76,6 +76,23 @@ export interface Expression extends Syntax {
     returnType: DocumentableReference,
 }
 
+export interface Structure extends Syntax {
+    nodeType: keyof typeof StructureNodeType,
+    entries?: {
+        [key: string]: StructureEntryData, // key is same as StructureEntryData.name
+    },
+}
+export enum StructureNodeType {
+    "SIMPLE" = "Simple",
+    "SECTION" = "Section",
+    "BOTH" = "Both",
+}
+export interface StructureEntryData {
+    key: string,
+    optional: string,
+    multiple: string,
+}
+
 export interface Event extends Syntax {
     cancellable: boolean,
     eventValues: EventValue[],

@@ -65,15 +65,11 @@ const { defaultProps, syntax, ...rest }: Props = Astro.props;
         {syntax.patterns.length > 0 && (
                 <CodeCard title="Syntax Patterns" wrap={true} code={syntax.patterns.filter(pattern => pattern.trim().length !== 0)}/>
         )}
+        <slot name="right-column" />
     </Fragment>
 </DocumentationCard>
 
 <style is:global>
-    [data-syntax-type="Structure"] {
-        /* Sky Blue */
-        --custom-badge-light: lightskyblue;
-        --custom-badge-dark: #00688B;
-    }
     [data-syntax-type="Section"] {
         /* Salmon */
         --custom-badge-light: lightsalmon;
