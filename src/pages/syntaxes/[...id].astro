@@ -123,6 +123,7 @@ if (currentVersion.endsWith(".0")) {
 
 Astro.locals.syntaxesData = {
     addons: addons,
+    version: currentVersion,
     types: syntaxes.filter(syntax => syntax.type === DocumentableType.TYPE).map(syntax => syntax.name),
 }
 
