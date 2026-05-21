@@ -87,13 +87,6 @@ code[dir="auto"] {
     padding: 0.25rem;
 }
 
-@media (min-width: 50rem) {
-    .card-grid {
-        grid-template-columns: 1fr 1fr;
-        gap: 1.5rem;
-    }
-}
-
 .social-icons a {
     color: var(--sl-color-text);
 }
@@ -102,6 +95,15 @@ code[dir="auto"] {
     color: var(--sl-color-white);
 }
 
+.hero {
+    /* align hero with link cards */
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 1.5rem;
+}
+.hero .stack {
+    grid-column: span 2;
+}
 .hero img {
     pointer-events: none;
     user-select: none;
