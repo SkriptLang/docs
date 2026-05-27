@@ -1,0 +1,31 @@
+---
+import {type EntityData} from '../documentation'
+import CodeCard from "../../CodeCard.astro";
+import DocumentationCard from "./DocumentationCard.astro";
+import type {DocumentableCardProps} from "./DocumentableCard.astro";
+
+interface Props {
+    defaultProps: DocumentableCardProps,
+    entityData: EntityData,
+    [key: string]: any,
+}
+
+const { defaultProps, entityData, ...rest }: Props = Astro.props;
+---
+
+<DocumentationCard defaultProps={defaultProps} documentation={entityData} {...rest}>
+    <Fragment slot="left-column">
+        {entityData.patterns.length > 0 && (
+                <CodeCard title="Entity Patterns" wrap={true} code={entityData.patterns.filter(pattern => pattern.trim().length !== 0)}/>
+        )}
+        <slot name="left-column" />
+    </Fragment>
+</DocumentationCard>
+
+<style is:global>
+    [data-syntax-type="Entity Data"] {
+        /* Eggplant */
+        --custom-badge-light: #DDA7E3;
+        --custom-badge-dark: #311432;
+    }
+</style>

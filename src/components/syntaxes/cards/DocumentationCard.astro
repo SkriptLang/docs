@@ -60,6 +60,7 @@ const isNew = documentation.since && documentation.since.join().includes(current
             )}
             <slot name="badges" />
         </div>
+        <slot name="left-column" />
     </div>
     <div class="right">
         <slot name="right-column" />
@@ -144,10 +145,17 @@ const isNew = documentation.since && documentation.since.join().includes(current
         margin-top: 0.25rem;
     }
 
+    p:empty {
+        margin-top: 0;
+    }
+
     .badges {
         display: flex;
         flex-direction: column;
         gap: 0.75rem;
+    }
+    .badges:not(:has(*)) {
+        margin-top: 0;
     }
 
     hr {

@@ -6,6 +6,7 @@ export enum DocumentableType {
     CONDITION = "Condition",
     EXPRESSION = "Expression",
     EVENT = "Event",
+    ENTITY_DATA = "Entity Data",
     // types
     TYPE = "Type",
     // properties
@@ -108,6 +109,10 @@ export enum EventValueTime {
     PAST = "Past",
     NOW = "Present",
     FUTURE = "Future",
+}
+
+export interface EntityData extends Syntax {
+
 }
 
 /*

@@ -30,6 +30,9 @@ const { title, wrap, code} = Astro.props;
         border: 1px solid var(--sl-color-gray-5);
         border-radius: 0.5rem;
     }
+    .code-card > * {
+        overscroll-behavior: contain;
+    }
     .title {
         font-size: var(--sl-text-xl);
         margin-bottom: 0.25rem;

@@ -5,6 +5,7 @@ import { Icon } from '@astrojs/starlight/components'
 import SyntaxDisplayManager from "../../components/syntaxes/SyntaxDisplayManager.astro";
 import { DocumentableType, type Documentation } from "../../components/syntaxes/documentation";
 import DocumentableCard from "../../components/syntaxes/cards/DocumentableCard.astro";
+import {getPlural} from "../../utils/utils.ts";
 
 export const repositorySources = new Map([
     ["Skript", "https://github.com/SkriptLang/Skript/tree/master/src/main/java"],
@@ -33,31 +34,23 @@ const { rawSyntaxes }: Props = Astro.props;
  * Syntax Processing
  */
 
-function processRawEntries(entries: any, type: DocumentableType) : any {
+function processRawEntries(entries: any, type: DocumentableType) : Documentation[] {
     return [...Object.values(entries)].map((entry) => {
         (entry as any).type = type;
-        return entry;
+        return entry as Documentation;
     });
 }
 
 function processSyntaxJson(rawSyntaxes: any): Documentation[] {
-    return [
-        // syntax
-        ...processRawEntries(rawSyntaxes.structures, DocumentableType.STRUCTURE),
-        ...processRawEntries(rawSyntaxes.sections, DocumentableType.SECTION),
-        ...processRawEntries(rawSyntaxes.effects, DocumentableType.EFFECT),
-        ...processRawEntries(rawSyntaxes.conditions, DocumentableType.CONDITION),
-        ...processRawEntries(rawSyntaxes.expressions, DocumentableType.EXPRESSION),
-        ...processRawEntries(rawSyntaxes.events, DocumentableType.EVENT),
-        // types
-        ...processRawEntries(rawSyntaxes.types, DocumentableType.TYPE),
-        // properties
-        ...processRawEntries(rawSyntaxes.properties, DocumentableType.PROPERTY),
-        // functions
-        ...processRawEntries(rawSyntaxes.functions, DocumentableType.FUNCTION),
-        // experiments
-        ...processRawEntries(rawSyntaxes.experiments, DocumentableType.EXPERIMENT),
-    ];
+    return Object.values(DocumentableType)
+        .flatMap((type) => {
+            const key = getPlural(type.toLowerCase().replaceAll(" ", ""));
+            const rawEntries = rawSyntaxes[key];
+            if (rawEntries) {
+                return processRawEntries(rawEntries, (type as DocumentableType));
+            }
+            return [];
+        });
 }
 
 let addons: string[];

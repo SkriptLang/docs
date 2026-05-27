@@ -1,6 +1,7 @@
 ---
 import { DocumentableType, type Documentation } from "../documentation";
 import DocumentationCard from "./DocumentationCard.astro";
+import EntityDataCard from "./EntityDataCard.astro";
 import EventCard from "./EventCard.astro";
 import ExperimentCard from "./ExperimentCard.astro";
 import ExpressionCard from "./ExpressionCard.astro";
@@ -35,6 +36,8 @@ const { defaultProps, documentation }: Props = Astro.props;
             return (<ExpressionCard defaultProps={defaultProps} expression={documentation as any}/>);
         case DocumentableType.EVENT:
             return (<EventCard defaultProps={defaultProps} event={documentation as any}/>);
+        case DocumentableType.ENTITY_DATA:
+            return (<EntityDataCard defaultProps={defaultProps} entityData={documentation as any}/>);
         case DocumentableType.TYPE:
             return (<TypeCard defaultProps={defaultProps} type={documentation as any}/>);
         case DocumentableType.PROPERTY:
