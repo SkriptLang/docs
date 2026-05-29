@@ -1,5 +1,8 @@
 ---
 title: Writing Syntax
+tableOfContents:
+  minHeadingLevel: 1
+  maxHeadingLevel: 4
 sidebar:
     order: 5
 ---

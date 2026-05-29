@@ -24,4 +24,4 @@ Language entries are defined in a tree-like structure:
 error messages:
     unknown error: An unknown error has occurred.
 ```
-This entry would then be available under the key `error messages.unknown error`.
+This entry would be available under the key `error messages.unknown error`.
