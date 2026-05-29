@@ -119,6 +119,30 @@ Parse tags are then applied to each choice, meaning it is equivalent to writing 
 Note that there is a group surrounding the parse tag.
 For this feature to work, the parse tag must be empty, and surrounding putting the parse tag within a group ensures this is the case.
 
+#### Parse marks
+
+The parse mark is the simpler predecessor to the parse tag.
+While less commonly used today, it is still supported.
+Essentially, it is a numeric parse tag, as they are written in the same manner:
+```text
+(1:stop|shutdown) [the] server [in %-timespan%]
+```
+
+When a pattern element with a parse mark is used, the parse mark value of the parse is updated.
+In the example above, when `stop` is used, the parse mark value will be `1`.
+
+Unlike parse tags, there is only a single parse mark value when an entire pattern is parsed.
+So, what happens when multiple parse marks are reached?
+Their values are XORed.
+Consider the following example:
+```text
+(1:stop|shutdown) [the] server [2:and display an alert]
+```
+In this example, if `stop` is not used, but `and display an alert` is, the parse mark value will be `2`.
+However, if both are used, since the values are XORed, the parse mark value will be `3`.
+
+In general, parse tags are recommended over parse marks for their superior readability, but parse marks are still supported for situations that warrant their usage.
+
 #### Pattern options summarized
 The pattern options summarized are:
 - Use square brackets (`[the]`) for optional text
@@ -129,7 +153,7 @@ The pattern options summarized are:
   - Prefix with `-` to mark as nullable
   - Suffix with `@-1` or `@1` to force the time state
 - Use angle brackets (`<expr>`) for regular expressions
-- Use colons (`tag:pattern`) for parse tags
+- Use colons for parse tags (`tag:pattern`) and parse marks (`number:pattern`)
 
 #### Adding patterns to a syntax info
 When creating a syntax info, patterns can be added by using the following methods from the SyntaxInfo.Builder interface:
