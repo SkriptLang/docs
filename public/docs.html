@@ -2,6 +2,6 @@
     // We do this manually so that we can preserve: docs.html?isNew
     // Not a real redirect, but it doesn't really matter
     const url = new URL('syntaxes', window.location.origin);
-    url.search = window.location.search;
+    url.search = window.location.search + window.location.hash;
     window.location.replace(url.toString());
 </script>

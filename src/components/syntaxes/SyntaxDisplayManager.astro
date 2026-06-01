@@ -247,7 +247,7 @@ export interface VersionFilterData {
         // Handle exact ID lookup
         const id = item.syntaxId.toLowerCase();
         if (searchLower[0] === '#') {
-            if (`#${id}` === searchLower) {
+            if (`#${id}` === searchLower || (searchLower.length > 1 && `#${id}` === `#func${searchLower.slice(1)}`)) {
                 return Number.MAX_SAFE_INTEGER;
             }
             return 0;
