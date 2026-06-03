@@ -1,0 +1,92 @@
+---
+import { getEntry, render } from 'astro:content';
+import {Card, Icon} from '@astrojs/starlight/components';
+
+interface Props {
+  id: string;
+  title: string;
+}
+
+const { title, id }: Props = Astro.props;
+
+const release = await getEntry('githubReleaseBodies', id)!;
+const { Content } = await render(release);
+---
+
+<div class=`release-card ${release.data.prerelease ? 'prerelease' : ''}`>
+    <Card title={title} icon={release.data.prerelease ? 'warning' : 'star'}>
+        <Content />
+        <div class="links">
+            <a class="download" href={release.data.download_url} target="_blank">
+                <Icon name="external"/> Download
+            </a>
+            <a href={release.data.url} target="_blank">
+                <Icon name="external"/> Changelog
+            </a>
+        </div>
+    </Card>
+</div>
+
+<style>
+    .links {
+        display: flex;
+        align-items: end;
+        gap: 1rem;
+        margin-top: auto;
+        min-height: 2lh;
+    }
+    .links a {
+        display: flex;
+        flex-direction: row;
+        gap: 0.25rem;
+        align-items: center;
+
+        height: fit-content;
+        padding: 0.5rem;
+        margin: 0;
+        border: 1px solid;
+        border-radius: 0.75rem;
+
+        color: var(--sl-color-text-accent);
+        text-decoration: none;
+        transition: transform 0.1s cubic-bezier(0.45, 0, 0.55, 1);
+    }
+    .links a:hover {
+        background-color: var(--sl-color-accent-low);
+        transform: scale(105%);
+    }
+    .download {
+        color: var(--sl-color-green) !important;
+    }
+    .download:hover {
+        background-color: var(--sl-color-green-low) !important;
+    }
+</style>
+
+<style is:global>
+    .release-card {
+        --sl-text-body: 1.05rem;
+    }
+    .release-card .title {
+        font-size: var(--sl-text-h2);
+    }
+    .release-card .icon {
+        --sl-card-border: var(--sl-color-green);
+        --sl-card-bg: var(--sl-color-green-low);
+    }
+    .release-card.prerelease .icon {
+        --sl-card-border: var(--sl-color-red);
+        --sl-card-bg: var(--sl-color-red-low);
+    }
+    .release-card .body {
+        display: flex;
+        flex-direction: column;
+        height: 100%;
+    }
+    .card-grid:has(.release-card) article {
+        height: 100%;
+    }
+    .card-grid:has(.release-card:only-child) {
+        grid-template-columns: 1fr;
+    }
+</style>

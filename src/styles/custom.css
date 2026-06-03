@@ -99,10 +99,16 @@ code[dir="auto"] {
     /* align hero with link cards */
     display: grid;
     grid-template-columns: 1fr 1fr 1fr;
+    grid-template-areas: 'stack';
     gap: 1.5rem;
 }
 .hero .stack {
+    grid-area: stack;
     grid-column: span 2;
+    text-align: left;
+    * {
+        align-items: start;
+    }
 }
 .hero img {
     pointer-events: none;

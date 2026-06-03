@@ -6,20 +6,22 @@ import { Icon } from '@astrojs/starlight/components';
 import type { StarlightIcon } from '@astrojs/starlight/types';
 
 interface Props {
-    icon?: StarlightIcon;
-    title: string;
-    variant: "primary" | "secondary";
+    title: string,
+    href: string,
+    icon?: StarlightIcon,
 }
 
-const { icon, title, variant, ...attributes } = Astro.props;
+const { icon, title, href } = Astro.props;
 ---
 
-<a class:list={["index-card-link", "sl-flex", variant]} {...attributes}>
-        <p class="title sl-flex">
-            {icon && <Icon name={icon} class="icon" size="1.333em" />}
-            <span set:html={title} />
-        </p>
-    <div class="body"><slot /></div>
+<a class:list={["index-card-link", "sl-flex", "secondary"]} href={href}>
+    <p class="title sl-flex">
+        {icon && <Icon name={icon} class="icon" size="1.333em" />}
+        <span set:html={title} />
+    </p>
+    <div class="body">
+        <slot />
+    </div>
 </a>
 
 <style>
