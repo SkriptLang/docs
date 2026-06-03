@@ -48,41 +48,41 @@ export const collections = {
                }));
            })
     }),
+    githubReleaseBodies: defineCollection({
+       loader: function releaseLoader() {
+           return {
+               name: 'githubReleaseBodies',
+               async load({ renderMarkdown, store }) {
+                   store.clear();
+
+                   const skriptReleases = (await getCollection("skriptReleasesJson"));
+                   const entries = {
+                       'Skript/latest': skriptReleases
+                           .find(entry => entry.data.order == 0)!
+                           .data,
+                       'Skript/latestStable': skriptReleases
+                           .sort((a, b) => a.data.order - b.data.order)!
+                           .find(entry => !entry.data.prerelease)!
+                           .data,
+                   }
+
+                   for (const [id, data] of Object.entries(entries)) {
+                       let body = data.body;
+                       // TODO this is very questionable
+                       body = '##' + body.substring(0, body.indexOf('Happy Skripting!') + 16);
+                       store.set({
+                           id: id,
+                           data: {
+                               tag_name: data.tag_name,
+                               prerelease: data.prerelease,
+                               url: data.html_url,
+                               download_url: data.assets[0].browser_download_url,
+                           },
+                           rendered: await renderMarkdown(body),
+                       });
+                   }
+               },
+           } satisfies Loader;
+       }()
+    }),
 };
-collections.githubReleaseBodies = defineCollection({
-    loader: function releaseLoader() {
-        return {
-            name: 'githubReleaseBodies',
-            async load({ renderMarkdown, store }) {
-                store.clear();
-
-                const skriptReleases = (await getCollection("skriptReleasesJson"));
-                const entries = {
-                    'Skript/latest': skriptReleases
-                        .find(entry => entry.data.order == 0)!
-                        .data,
-                    'Skript/latestStable': skriptReleases
-                        .sort((a, b) => a.data.order - b.data.order)!
-                        .find(entry => !entry.data.prerelease)!
-                        .data,
-                }
-
-                for (const [id, data] of Object.entries(entries)) {
-                    let body = data.body;
-                    // TODO this is very questionable
-                    body = '##' + body.substring(0, body.indexOf('Happy Skripting!') + 16);
-                    store.set({
-                        id: id,
-                        data: {
-                            tag_name: data.tag_name,
-                            prerelease: data.prerelease,
-                            url: data.html_url,
-                            download_url: data.assets[0].browser_download_url,
-                        },
-                        rendered: await renderMarkdown(body),
-                    });
-                }
-            },
-        } satisfies Loader;
-    }()
-})
