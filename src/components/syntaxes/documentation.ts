@@ -121,6 +121,10 @@ export interface EntityData extends Syntax {
 
 export interface Type extends Documentation {
     usage?: string[],
+    codename: {
+        singular: string,
+        plural: string,
+    },
     properties: {
         property: DocumentableReference,
         origin: Origin,

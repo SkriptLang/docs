@@ -3,7 +3,7 @@ import { getCollection } from "astro:content";
 import StarlightPage from '@astrojs/starlight/components/StarlightPage.astro';
 import { Icon } from '@astrojs/starlight/components'
 import SyntaxDisplayManager from "../../components/syntaxes/SyntaxDisplayManager.astro";
-import { DocumentableType, type Documentation } from "../../components/syntaxes/documentation";
+import {DocumentableType, type Documentation, type Type} from "../../components/syntaxes/documentation";
 import DocumentableCard from "../../components/syntaxes/cards/DocumentableCard.astro";
 import {getPlural} from "../../utils/utils.ts";
 
@@ -117,7 +117,12 @@ if (currentVersion.endsWith(".0")) {
 Astro.locals.syntaxesData = {
     addons: addons,
     version: currentVersion,
-    types: syntaxes.filter(syntax => syntax.type === DocumentableType.TYPE).map(syntax => syntax.name),
+    types: syntaxes.filter(syntax => syntax.type === DocumentableType.TYPE)
+        .map(syntax => ({
+            id: syntax.id,
+            name: syntax.name,
+            codename: (syntax as Type).codename || { singular: syntax.name.toLowerCase(), plural: getPlural(syntax.name.toLowerCase()) },
+        })),
 }
 
 const sidebarEntries = syntaxes.map(syntax => ({

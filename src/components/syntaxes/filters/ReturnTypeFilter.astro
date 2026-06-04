@@ -1,7 +1,8 @@
 ---
 import SearchableDropdown from '../../SearchableDropdown.astro';
 
-const returnTypeOptions = Astro.locals.syntaxesData.types;
+const returnTypeOptions = Astro.locals.syntaxesData.types
+    .map(type => type.name);
 ---
 <script>
     import { getParam, setParam } from "../../../utils/utils";

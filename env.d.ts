@@ -3,7 +3,14 @@ declare namespace App {
         syntaxesData: {
             addons: string[],
             version: string,
-            types: string[],
+            types: {
+                id: string,
+                name: string,
+                codename: {
+                    singular: string,
+                    plural: string,
+                }
+            }[],
         },
     }
 }

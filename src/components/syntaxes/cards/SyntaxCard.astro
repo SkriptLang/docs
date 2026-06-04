@@ -13,6 +13,27 @@ interface Props {
 }
 
 const { defaultProps, syntax, ...rest }: Props = Astro.props;
+
+// Adapted from ClassInfo#isValidCodeName
+const patternRegex = /%((?:\/?(?:any-)?[a-z0-9]+)+)%/g;
+const patterns = syntax.patterns
+    .filter(pattern => pattern.trim().length !== 0)
+    .map(pattern => {
+        return pattern.replace(patternRegex, (_, key: string) => {
+            const types = key.split("/")
+                .map(type => {
+                    const id = Astro.locals.syntaxesData.types.find(entry => {
+                        return type === entry.codename.singular || type === entry.codename.plural;
+                    })?.id;
+                    if (id) {
+                        return `\\[${type}](#${id})`;
+                    }
+                    // could not resolve a link, skip this one
+                    return type;
+                });
+            return '%' + types.join("/") + '%';
+        });
+    });
 ---
 
 <DocumentationCard defaultProps={defaultProps} documentation={syntax} {...rest}>
@@ -63,7 +84,7 @@ const { defaultProps, syntax, ...rest }: Props = Astro.props;
     </Fragment>
     <Fragment slot="right-column">
         {syntax.patterns.length > 0 && (
-                <CodeCard title="Syntax Patterns" wrap={true} code={syntax.patterns.filter(pattern => pattern.trim().length !== 0)}/>
+                <CodeCard title="Syntax Patterns" wrap={true} code={patterns}/>
         )}
         <slot name="right-column" />
     </Fragment>
