@@ -24,7 +24,7 @@ const { defaultProps, func }: Props = Astro.props;
     </Fragment>
     <Fragment slot="right-column">
         {func.parameters && (
-                <div class="code-card">
+                <div class="code-card show-all">
                     <span class="title">Function Parameters</span>
                     {Object.values(func.parameters).map(parameter => {
                         let description = changeSingular(parameter.type.name, parameter.plural);

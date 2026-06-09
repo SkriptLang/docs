@@ -193,7 +193,7 @@ const isNew = documentation.since && documentation.since.join().includes(current
 </style>
 
 <style is:global>
-    .right > * {
+    .right > :not(.show-all) {
         max-height: 10lh;
     }
     @supports (-webkit-app-region: inherit) { /* chromium only */
@@ -201,7 +201,10 @@ const isNew = documentation.since && documentation.since.join().includes(current
         .right > * {
             flex: 1 1 10lh;
             min-height: 0;
-            max-height: max-content;
+            max-height: max-content !important;
+        }
+        .right > .show-all {
+            min-height: max-content;
         }
     }
 </style>

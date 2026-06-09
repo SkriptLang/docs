@@ -15,7 +15,7 @@ const { defaultProps, structure }: Props = Astro.props;
 <SyntaxCard defaultProps={defaultProps} syntax={structure}>
     <Fragment slot="right-column">
         {structure.entries && (
-                <div class="code-card">
+                <div class="code-card show-all">
                     <span class="title">Structure Entries</span>
                     {Object.values(structure.entries).map(entry => {
                         let description = entry.optional ? "optional" : "required";
