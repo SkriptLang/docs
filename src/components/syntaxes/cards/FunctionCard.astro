@@ -27,13 +27,14 @@ const { defaultProps, func }: Props = Astro.props;
                 <div class="code-card show-all">
                     <span class="title">Function Parameters</span>
                     {Object.values(func.parameters).map(parameter => {
-                        let description = changeSingular(parameter.type.name, parameter.plural);
+                        let name = changeSingular(parameter.type.name, parameter.plural);
+                        let description = "";
                         if (parameter.modifiers) {
                             if (parameter.modifiers.ranged) {
                                 description += ` (between ${parameter.modifiers.ranged.min} and ${parameter.modifiers.ranged.max})`;
                             }
                             if (parameter.modifiers.optional) {
-                                if (!description.endsWith(" ")) {
+                                if (description.length !== 0) {
                                     description += ", ";
                                 }
                                 description += "optional"
@@ -41,7 +42,8 @@ const { defaultProps, func }: Props = Astro.props;
                         }
                         return (<SyntaxBadge
                                 badgeProps={{text: parameter.name, size: 'medium'}}
-                                entries={[{text: description}]}
+                                entries={[{text: name, cardRef: parameter.type.id, cardRefText: description}]}
+                                useOrganizedDisplay={false}
                         />);
                     })}
                 </div>

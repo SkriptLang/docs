@@ -10,12 +10,13 @@ interface Props {
         cardRefText?: string,
     }[],
     description?: string,
+    useOrganizedDisplay?: boolean,
 }
 
-const { badgeProps, entries, description }: Props = Astro.props;
+const { badgeProps, entries, description, useOrganizedDisplay = true }: Props = Astro.props;
 ---
 
-<span class="prefix-badge" title={description}>
+<span class=`prefix-badge ${useOrganizedDisplay ? 'entry-grid-display' : ''}` title={description}>
     <Badge {...badgeProps} class="cb"/>
     {entries.map(({ text, cardRef, cardRefText }, index) =>
             <>
@@ -45,10 +46,10 @@ const { badgeProps, entries, description }: Props = Astro.props;
         padding: 0;
         margin: 0;
     }
-    .prefix-badge span, p:not(:last-child) {
+    .prefix-badge span, .entry-grid-display p:not(:last-child) {
         margin-right: 0.25rem;
     }
-    .prefix-badge:has(.card-ref) {
+    .entry-grid-display:has(.card-ref) {
         display: grid;
         grid-template-columns: fit-content(100%) auto;
         grid-gap: 0 0.5rem;
