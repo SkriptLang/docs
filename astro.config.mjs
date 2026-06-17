@@ -17,6 +17,7 @@ export default defineConfig({
             },*/
             social: [
                 { icon: 'github', label: 'GitHub', href: 'https://github.com/SkriptLang' },
+                { icon: 'seti:java', label: 'Javadoc', href: 'https://javadocs.skriptlang.org/skript' },
                 { icon: 'discord', label: 'Discord', href: 'https://discord.gg/skriptlang-988998880794402856' },
                 { icon: 'openCollective', label: 'OpenCollective', href: 'https://opencollective.com/skriptlang' },
             ],
