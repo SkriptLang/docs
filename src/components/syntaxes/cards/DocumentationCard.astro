@@ -1,4 +1,5 @@
 ---
+import { render } from 'astro:content';
 import { Badge, Icon } from '@astrojs/starlight/components';
 import AnchorHeading from '@astrojs/starlight/components/AnchorHeading.astro';
 import { type Documentation } from '../documentation'
@@ -16,6 +17,8 @@ interface Props {
 const { documentation, defaultProps, ...rest }: Props = Astro.props;
 const { currentVersion, hide }: DocumentableCardProps = defaultProps;
 const isNew = documentation.since && documentation.since.join().includes(currentVersion);
+
+const { Content } = await render(documentation as any);
 ---
 
 <section id=`card-${documentation.id}` class="documentation-card"
@@ -48,7 +51,7 @@ const isNew = documentation.since && documentation.since.join().includes(current
                     <Badge class="sb" size='medium' text={"Requires " + documentation.requirements.join(", ")}/>
             )}
         </div>
-        <p set:html={documentation.description}></p>
+        <Content />
         <hr>
         <div class="badges">
             {documentation.since.length > 0 && (

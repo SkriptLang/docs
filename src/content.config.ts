@@ -5,6 +5,38 @@ import { docsSchema } from '@astrojs/starlight/schema';
 import { autoSidebarLoader } from 'starlight-auto-sidebar/loader'
 import { autoSidebarSchema } from 'starlight-auto-sidebar/schema'
 
+// function for creating a loader for syntax files
+function syntaxesLoader(name: string, path: string) : Loader {
+    return {
+        name: name,
+        async load(context) {
+            context.store.clear();
+            await glob({
+                pattern: '*.json',
+                base: path,
+            }).load(context);
+            for (const [_, entry] of context.store.entries()) {
+                await insertRendered(entry.data, context.renderMarkdown);
+            }
+        }
+    };
+}
+
+// utility function for recursively inserting rendered descriptions
+async function insertRendered(object: any, renderMarkdown: any) {
+    const children = Object.keys(object);
+    if (children.some(child => child === 'description')) {
+        object.rendered = await renderMarkdown(object.description);
+    } else {
+        children.forEach(child => {
+            const childObject = object[child];
+            if (typeof childObject === 'object') {
+                insertRendered(childObject, renderMarkdown);
+            }
+        });
+    }
+}
+
 const skriptReleases = await fetch('https://api.github.com/repos/SkriptLang/Skript/releases?per_page=100', {
         headers: {
             'Accept': 'application/vnd.github+json',
@@ -28,16 +60,10 @@ export const collections = {
         schema: autoSidebarSchema(),
     }),
     syntaxes: defineCollection({
-        loader: glob({
-            pattern: '*.json',
-            base: './src/assets/syntaxes/',
-        }),
+        loader: syntaxesLoader('syntaxes', './src/assets/syntaxes/')
     }),
     addonSyntaxes: defineCollection({
-        loader: glob({
-            pattern: '*.json',
-            base: './src/assets/syntaxes/addons/',
-        }),
+        loader: syntaxesLoader('addonSyntaxes', './src/assets/syntaxes/addons/')
     }),
     skriptReleasesJson: defineCollection({
        loader: () => {
