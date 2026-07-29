@@ -26,7 +26,7 @@ export default defineConfig({
                         },
                     ],
                     {
-                        exclude: ['/syntaxes'],
+                        exclude: ['/syntaxes/**'],
                     }
                 ),
                 starlightAutoSidebar(),

@@ -33,11 +33,11 @@ versions[0] = versions[0] + ' (Latest)';
             ))}
         </select>
     </label>
-    <button id="toggle-filters" class="toggle-button">
-        Toggle Filters
+    <button id='toggle-filters' class='toggle-button'>
+        <Icon name='left-caret' size='25px'/>
     </button>
-    <button id="toggle-syntax-list" class="toggle-button">
-        Toggle Syntax List
+    <button id='toggle-syntax-list' class='toggle-button'>
+        <Icon name='right-caret' size='25px'/>
     </button>
 </div>
 
@@ -191,27 +191,59 @@ versions[0] = versions[0] + ' (Latest)';
         font-family: var(--__sl-font);
     }
 
-    #syntax-version-selector, .toggle-button {
+    #syntax-version-selector {
         height: 2.5rem;
+        max-width: 8.5rem;
+        field-sizing: content;
         background-color: var(--sl-color-black);
         border: 1px solid var(--sl-color-gray-5);
         border-radius: 0.5rem;
         cursor: pointer;
         color: var(--sl-color-text);
         transition: background-color 0.2s;
+        text-overflow: ellipsis;
     }
-    #syntax-version-selector:hover, .toggle-button:hover {
+    #syntax-version-selector:hover {
         background-color: var(--sl-color-gray-5);
     }
-    #syntax-version-selector {
-        max-width: 22rem;
-    }
+
     .toggle-button {
-        min-width: fit-content;
+        position: absolute;
+        top: var(--sl-nav-height);
+        width: 25px;
+        height: 25px;
+        line-height: 25px;
+        padding: 0;
+        margin: 0;
+
+        display: inline-flex;
+        align-items: center;
+
+        border: 1px solid var(--sl-color-gray-5);
+        background-color: var(--sl-color-gray-6);
+    }
+    #toggle-filters {
+        left: calc(var(--sl-sidebar-width) - 1px);
+    }
+    :global(.page:has(#starlight__sidebar.collapsed) #toggle-filters) {
+        left: 0;
+        transform: scaleX(-1);
+    }
+    #toggle-syntax-list {
+        right: calc(var(--sl-sidebar-width) - 1px);
+    }
+    :global(.page:has(.right-sidebar-container.collapsed) #toggle-syntax-list) {
+        right: 0;
+        transform: scaleX(-1);
     }
     @media (max-width: 50rem) {
         .toggle-button {
             display: none;
+        }
+    }
+    @media (min-width: 50.01rem) {
+        :global(#starlight__mobile-toc summary) {
+            padding-left: calc(1rem + 25px);
         }
     }
     @media (max-width: 71.99rem) { /* starlight switches to mobile TOC at 72rem */
