@@ -1,6 +1,7 @@
 // @ts-check
 import { defineConfig } from 'astro/config';
 import starlight from '@astrojs/starlight';
+import starlightSidebarTopics from 'starlight-sidebar-topics'
 import starlightAutoSidebar from 'starlight-auto-sidebar'
 
 // https://astro.build/config
@@ -8,7 +9,28 @@ export default defineConfig({
     site: 'https://beta-docs.skriptlang.org',
     integrations: [
         starlight({
-            plugins: [starlightAutoSidebar()],
+            plugins: [
+                starlightSidebarTopics(
+                    [
+                        {
+                            label: 'Scripting',
+                            link: '/scripting/',
+                            icon: 'open-book',
+                            items: [{ autogenerate: { directory: 'scripting' } }],
+                        },
+                        {
+                            label: 'API',
+                            link: '/api/',
+                            icon: 'puzzle',
+                            items: [{ autogenerate: { directory: 'api' } }],
+                        },
+                    ],
+                    {
+                        exclude: ['/syntaxes'],
+                    }
+                ),
+                starlightAutoSidebar(),
+            ],
             title: 'Skript',
             favicon: '/favicon.svg',
             /*logo: {
