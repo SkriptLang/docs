@@ -1,6 +1,9 @@
 ---
 // SyntaxDisplayManager.astro - Handles the displaying of the SyntaxCards, including combined filtering, virtual scrolling, and jumping via sidebar 
 // represent all syntax cards as virtual items and only display them when needed.
+
+import type {Version} from "../../utils/utils.ts";
+
 export interface VirtualItem {
     element: HTMLElement; // actual html element to show/hide
     syntaxName: string;   // display name of syntax
@@ -8,12 +11,6 @@ export interface VirtualItem {
     syntaxId: string;     // id of syntax (for search filtering)
     sidebarElement: HTMLElement | null; // corresponding element in the sidebar
     originalIndex: number; // index to sort the items properly
-}
-
-export interface Version {
-    major: number;
-    minor: number;
-    patch: number;
 }
 
 export interface VersionFilterData {
@@ -27,7 +24,8 @@ export interface VersionFilterData {
     // -------------------
     // Setup
     // -------------------
-    import type { VirtualItem, Version, VersionFilterData } from "./SyntaxDisplayManager.astro";
+    import type { VirtualItem, VersionFilterData } from "./SyntaxDisplayManager.astro";
+    import {parseVersionInString, compareVersions} from "../../utils/utils.ts";
 
     // obtain container references
     const wrapper = document.getElementById('syntaxes-wrapper')!;
@@ -121,7 +119,7 @@ export interface VersionFilterData {
 
                 for (const desired of versionFilter.versions) {
                     for (const entry of since) {
-                        const provided = parseVersion(entry);
+                        const provided = parseVersionInString(entry);
                         if (provided === null) {
                             continue;
                         }
@@ -159,40 +157,6 @@ export interface VersionFilterData {
 
         // Default: sort by original alphabetical order
         return filtered.sort((a, b) => a.originalIndex - b.originalIndex);
-    }
-
-    const versionPattern = /.*?(\d+)\.(\d+)(?:\.(\d+))?.*/i;
-    export function parseVersion(version: string): Version | null {
-        const matches = versionPattern.exec(version);
-        if (!matches) {
-            return null;
-        }
-        return {
-            major: parseInt(matches[1]),
-            minor: parseInt(matches[2]),
-            patch: matches[3] !== undefined ? parseInt(matches[3]) : 0,
-        }
-    }
-
-    /**
-     * @return Whether <code>a</code> is less than, equal to, or greater than <code>b</code>.
-     * Expressed as -1, 0, or 1 respectively.
-     */
-    function compareVersions(a: Version, b: Version) : number {
-        if (a.major > b.major) {
-            return 1;
-        } else if (a.major < b.major) {
-            return -1;
-        } else if (a.minor > b.minor) {
-            return 1;
-        } else if (a.minor < b.minor) {
-            return -1;
-        } else if (a.patch > b.patch) {
-            return 1;
-        } else if (a.patch < b.patch) {
-            return -1;
-        }
-        return 0;
     }
 
     function recomputeSearchCache(query: string): void {
@@ -579,7 +543,7 @@ export interface VersionFilterData {
             fullRender();
         },
         updateVersionFilter: (data: VersionFilterData, rawVersions: string[]) => {
-            data.versions = rawVersions.map(version => parseVersion(version)!);
+            data.versions = rawVersions.map(version => parseVersionInString(version)!);
             versionFilter = data;
             fullRender();
         },
