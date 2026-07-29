@@ -1,6 +1,19 @@
 ---
 // Adapted from https://github.com/withastro/starlight/blob/f14eb0cd7baa0391d6124379f6c5df4b9ab7cc44/packages/starlight/components/Search.astro
 import { Icon } from '@astrojs/starlight/components';
+import {getCollection} from "astro:content";
+import {compareVersions, getVersionAsString, parseVersion} from "../../utils/utils.ts";
+
+const versions = (await getCollection('syntaxes'))
+    .map(element => {
+        if (element.id === 'syntaxes' || !isNaN(parseInt(element.id))) {
+            return parseVersion(element.data.source.version);
+        }
+        return parseVersion(element.id);
+    })
+    .sort((a, b) => compareVersions(a, b, true))
+    .map(getVersionAsString)
+versions[0] = versions[0] + ' (Latest)';
 ---
 
 <div id="header-search-group">
@@ -12,6 +25,13 @@ import { Icon } from '@astrojs/starlight/components';
             <kbd>{Astro.locals.t('search.ctrlKey')}</kbd>
             <kbd>K</kbd>
         </kbd>
+    </label>
+    <label>
+        <select id='syntax-version-selector' name='syntax-version-selector'>
+            {versions.map((version, index) => (
+                <option value={version} selected={version === Astro.params.id}>{version}</option>
+            ))}
+        </select>
     </label>
     <button id="toggle-filters" class="toggle-button">
         Toggle Filters
@@ -81,6 +101,15 @@ import { Icon } from '@astrojs/starlight/components';
 
     initSearch();
 
+    document.getElementById('syntax-version-selector')!.addEventListener('change', event => {
+        let option = event.target as HTMLSelectElement;
+        let version = '/syntaxes';
+        if (option.selectedIndex !== 0) { // 0 index is always the latest version
+            version += '/' + option.value;
+        }
+        window.location.pathname = version;
+    });
+
     document.documentElement.setAttribute('data-is-syntaxes', "");
     document.getElementById('toggle-filters')?.addEventListener('click', () => {
         // TODO probably need to do a rerender for virtual scrolling height recalculation
@@ -95,33 +124,6 @@ import { Icon } from '@astrojs/starlight/components';
 </script>
 
 <style>
-    @media (max-width: 50rem) {
-        .toggle-button {
-            display: none;
-        }
-    }
-    .toggle-button {
-        min-width: fit-content;
-        height: 2.5rem;
-        background-color: var(--sl-color-black);
-        border: 1px solid var(--sl-color-gray-5);
-        border-radius: 0.5rem;
-        cursor: pointer;
-        color: var(--sl-color-text);
-        transition: background-color 0.2s;
-    }
-    .toggle-button:hover {
-        background-color: var(--sl-color-gray-5);
-    }
-    @media (max-width: 71.99rem) { /* starlight switches to mobile TOC at 72rem */
-        #toggle-syntax-list {
-            display: none;
-        }
-    }
-    :global(#starlight__sidebar.collapsed, .right-sidebar-container.collapsed) {
-        display: none;
-    }
-
     #header-search-group {
         display: inline-flex;
         align-items: center;
@@ -187,5 +189,37 @@ import { Icon } from '@astrojs/starlight/components';
 
     kbd {
         font-family: var(--__sl-font);
+    }
+
+    #syntax-version-selector, .toggle-button {
+        height: 2.5rem;
+        background-color: var(--sl-color-black);
+        border: 1px solid var(--sl-color-gray-5);
+        border-radius: 0.5rem;
+        cursor: pointer;
+        color: var(--sl-color-text);
+        transition: background-color 0.2s;
+    }
+    #syntax-version-selector:hover, .toggle-button:hover {
+        background-color: var(--sl-color-gray-5);
+    }
+    #syntax-version-selector {
+        max-width: 22rem;
+    }
+    .toggle-button {
+        min-width: fit-content;
+    }
+    @media (max-width: 50rem) {
+        .toggle-button {
+            display: none;
+        }
+    }
+    @media (max-width: 71.99rem) { /* starlight switches to mobile TOC at 72rem */
+        #toggle-syntax-list {
+            display: none;
+        }
+    }
+    :global(#starlight__sidebar.collapsed, .right-sidebar-container.collapsed) {
+        display: none;
     }
 </style>
