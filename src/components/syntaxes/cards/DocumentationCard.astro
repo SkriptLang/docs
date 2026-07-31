@@ -196,6 +196,9 @@ const { Content } = await render(documentation as any);
 </style>
 
 <style is:global>
+    .left > .code-card {
+        max-height: 10lh;
+    }
     .right > :not(.show-all) {
         max-height: 10lh;
     }
