@@ -28,7 +28,7 @@ versions[0] = versions[0] + ' (Latest)';
     </label>
     <label>
         <select id='syntax-version-selector' name='syntax-version-selector'>
-            {versions.map((version, index) => (
+            {versions.map(version => (
                 <option value={version} selected={version === Astro.params.id}>{version}</option>
             ))}
         </select>
