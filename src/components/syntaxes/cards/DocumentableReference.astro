@@ -1,5 +1,5 @@
 ---
-import { getCollection } from "astro:content";
+import {getCollection, getEntry} from "astro:content";
 import DocumentableCard from "./DocumentableCard.astro";
 import { DocumentableType } from "../documentation";
 import { getPlural } from "../../../utils/utils";
@@ -7,12 +7,17 @@ import { getPlural } from "../../../utils/utils";
 interface Props {
     type: DocumentableType,
     id: string,
+    version?: string,
 }
 
-const { type, id }: Props = Astro.props;
+let { type, id, version = undefined }: Props = Astro.props;
+if (version === undefined) {
+    const latestRelease = await getEntry('githubReleaseBodies', 'Skript/latest')!;
+    version = latestRelease.data.tag_name;
+}
 
 const syntaxesCollection = await getCollection("syntaxes");
-const rawSyntaxes = syntaxesCollection.find(syntax => syntax.id === 'syntaxes')!.data;
+const rawSyntaxes = syntaxesCollection.find(syntax => syntax.id === version)!.data;
 const syntax = rawSyntaxes[getPlural(type.toLowerCase())][id];
 (syntax as any).type = type;
 
@@ -22,4 +27,12 @@ if (currentVersion.endsWith(".0")) {
 }
 ---
 
-<DocumentableCard defaultProps={{currentVersion: currentVersion}} documentation={syntax} />
+<div class="documentable-reference">
+    <DocumentableCard defaultProps={{currentVersion: currentVersion, showGitHubLink: false, showSyntaxesLink: true}} documentation={syntax} />
+</div>
+
+<style>
+    .documentable-reference {
+        margin: var(--sl-content-gap-y) 0 var(--sl-content-gap-y) 0;
+    }
+</style>

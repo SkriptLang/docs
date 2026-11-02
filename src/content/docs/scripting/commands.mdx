@@ -38,6 +38,11 @@ command /<command name> <arguments>:
         # The code to run goes here.
 ```
 
+import DocumentableReference from "../../../components/syntaxes/cards/DocumentableReference.astro";
+import {DocumentableType} from "../../../components/syntaxes/documentation.ts";
+
+<DocumentableReference type={DocumentableType.STRUCTURE} id="StructCommand"/>
+
 ## Command Name
 
 The command name is what comes immediately after `command`. It can consist of any characters you want, except for space. Additionally, the / in front of the command is optional. This means `command /broadcast` and `command broadcast` are the same. Here are a few examples:

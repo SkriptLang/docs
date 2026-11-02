@@ -15,7 +15,7 @@ interface Props {
 }
 
 const { documentation, defaultProps, ...rest }: Props = Astro.props;
-const { currentVersion, hide }: DocumentableCardProps = defaultProps;
+const { currentVersion, hide = false, showGitHubLink = true, showSyntaxesLink = false }: DocumentableCardProps = defaultProps;
 const isNew = documentation.since && documentation.since.join().includes(currentVersion);
 
 const { Content } = await render(documentation as any);
@@ -72,12 +72,20 @@ const { Content } = await render(documentation as any);
         )}
     </div>
     <div class="bottom">
-        {documentation.origin.class && (
+        {showGitHubLink && documentation.origin.class && (
                 <a href=`${repositorySources.get(documentation.origin.name)}/${documentation.origin.class.replaceAll('.', '/')}.java`
                    target="_blank"
                    class="external-link"
                 >
                     <Icon name="external"/> View on GitHub
+                </a>
+        )}
+        {showSyntaxesLink && (
+                <a href=`/syntaxes?search=%23${documentation.id}`
+                   target="_blank"
+                   class="external-link"
+                >
+                    <Icon name="external"/> View on Syntaxes Page
                 </a>
         )}
     </div>
@@ -107,7 +115,7 @@ const { Content } = await render(documentation as any);
         grid-gap: 0 1rem;
         grid-template-rows: auto 1fr;
 
-        margin: 0 0 2.5rem 0;
+        margin: 0;
         padding: 1rem;
         line-height: 1.5rem;
 
