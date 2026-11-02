@@ -33,9 +33,13 @@ const { defaultProps, structure }: Props = Astro.props;
 </SyntaxCard>
 
 <style is:global>
-    [data-syntax-type="Structure"] {
+    :root {
         /* Sky Blue */
-        --custom-badge-light: lightskyblue;
-        --custom-badge-dark: #00688B;
+        --color-documentable-structure-light: lightskyblue;
+        --color-documentable-structure-dark: #00688B;
+    }
+    [data-syntax-type="Structure"] {
+        --custom-badge-light: var(--color-documentable-structure-light);
+        --custom-badge-dark: var(--color-documentable-structure-dark);
     }
 </style>

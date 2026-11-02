@@ -25,9 +25,17 @@ const { defaultProps, expression }: Props = Astro.props;
 </SyntaxCard>
 
 <style is:global>
-    [data-syntax-type="Expression"] {
+    :root {
         /* Electric Purple */
-        --custom-badge-light: #BF00FF;
-        --custom-badge-dark: #4B0082;
+        --color-documentable-expression-light: #BF00FF;
+        --color-documentable-expression-dark: #4B0082;
+    }
+    [data-syntax-type="Expression"] {
+        --custom-badge-light: var(--color-documentable-expression-light);
+        --custom-badge-dark: var(--color-documentable-expression-dark);
+    }
+    [data-syntax-sub-type="Section Expression"] {
+        --custom-badge-light: color-mix(in oklab, var(--color-documentable-section-light), var(--color-documentable-expression-light));
+        --custom-badge-dark: color-mix(in oklab, var(--color-documentable-section-dark), var(--color-documentable-expression-dark));
     }
 </style>

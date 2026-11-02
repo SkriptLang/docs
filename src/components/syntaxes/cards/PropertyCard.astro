@@ -35,9 +35,13 @@ const { defaultProps, property }: Props = Astro.props;
 </DocumentationCard>
 
 <style is:global>
-    [data-syntax-type="Property"] {
+    :root {
         /* Pink */
-        --custom-badge-light: hotpink;
-        --custom-badge-dark: #8B0A50;
+        --color-documentable-property-light: hotpink;
+        --color-documentable-property-dark: #8B0A50;
+    }
+    [data-syntax-type="Property"] {
+        --custom-badge-light: var(--color-documentable-property-light);
+        --custom-badge-dark: var(--color-documentable-property-dark);
     }
 </style>

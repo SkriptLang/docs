@@ -33,9 +33,13 @@ const { defaultProps, experiment }: Props = Astro.props;
 </DocumentationCard>
 
 <style is:global>
-    [data-syntax-type="Experiment"] {
+    :root {
         /* Ember */
-        --custom-badge-light: #FF8C42;
-        --custom-badge-dark: #8B3103;
+        --color-documentable-experiment-light: #FF8C42;
+        --color-documentable-experiment-dark: #8B3103;
+    }
+    [data-syntax-type="Experiment"] {
+        --custom-badge-light: var(--color-documentable-experiment-light);
+        --custom-badge-dark: var(--color-documentable-experiment-dark);
     }
 </style>

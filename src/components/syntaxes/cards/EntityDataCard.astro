@@ -23,9 +23,13 @@ const { defaultProps, entityData, ...rest }: Props = Astro.props;
 </DocumentationCard>
 
 <style is:global>
-    [data-syntax-type="Entity Data"] {
+    :root {
         /* Eggplant */
-        --custom-badge-light: #DDA7E3;
-        --custom-badge-dark: #311432;
+        --color-documentable-entitydata-light: #DDA7E3;
+        --color-documentable-entitydata-dark: #311432;
+    }
+    [data-syntax-type="Entity Data"] {
+        --custom-badge-light: var(--color-documentable-entitydata-light);
+        --custom-badge-dark: var(--color-documentable-entitydata-dark);
     }
 </style>

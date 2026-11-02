@@ -39,9 +39,13 @@ const { defaultProps, event }: Props = Astro.props;
 </SyntaxCard>
 
 <style is:global>
-    [data-syntax-type="Event"] {
+    :root {
         /* Ecru */
-        --custom-badge-light: #C8A228;
-        --custom-badge-dark: #634E0A;
+        --color-documentable-event-light: #C8A228;
+        --color-documentable-event-dark: #634E0A;
+    }
+    [data-syntax-type="Event"] {
+        --custom-badge-light: var(--color-documentable-event-light);
+        --custom-badge-dark: var(--color-documentable-event-dark);
     }
 </style>

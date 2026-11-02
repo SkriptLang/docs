@@ -3,11 +3,13 @@
 // represent all syntax cards as virtual items and only display them when needed.
 
 import type {Version} from "../../utils/utils.ts";
+import type {DocumentableType, DocumentableSubType} from "./documentation.ts";
 
 export interface VirtualItem {
     element: HTMLElement; // actual html element to show/hide
     syntaxName: string;   // display name of syntax
-    syntaxType: string;   // type of syntax (for type filtering)
+    syntaxType: DocumentableType;   // type of syntax (for type filtering)
+    syntaxSubType?: DocumentableSubType; // subtype of syntax (for type filtering)
     syntaxId: string;     // id of syntax (for search filtering)
     sidebarElement: HTMLElement | null; // corresponding element in the sidebar
     originalIndex: number; // index to sort the items properly
@@ -26,6 +28,7 @@ export interface VersionFilterData {
     // -------------------
     import type { VirtualItem, VersionFilterData } from "./SyntaxDisplayManager.astro";
     import {parseVersionInString, compareVersions} from "../../utils/utils.ts";
+    import {type DocumentableType, type DocumentableSubType, includesSubType} from "./documentation.ts";
 
     // obtain container references
     const wrapper = document.getElementById('syntaxes-wrapper')!;
@@ -36,7 +39,8 @@ export interface VersionFilterData {
         const element = ele as HTMLElement;
 
         // get info + measure height
-        const syntaxType = element.dataset.syntaxType!;
+        const syntaxType = element.dataset.syntaxType as DocumentableType;
+        const syntaxSubType = element.dataset.syntaxSubType as DocumentableSubType | undefined;
         const syntaxId = element.dataset.syntaxId!;
         const syntaxName = element.dataset.syntaxName!;
         const sidebarElement = document.getElementById(`sidebar-${syntaxId}`);
@@ -45,6 +49,7 @@ export interface VersionFilterData {
             element: element,
             syntaxName,
             syntaxType,
+            syntaxSubType,
             syntaxId,
             sidebarElement,
             originalIndex: index
@@ -58,7 +63,7 @@ export interface VersionFilterData {
     // init filters
     let filteredItems: VirtualItem[] = allItems;
 
-    let typeFilter = new Set<string>();
+    let typeFilter = new Set<DocumentableType>();
     let versionFilter: VersionFilterData = {
         versions: [], range: 'strict', type: 'any',
     };
@@ -87,7 +92,19 @@ export interface VersionFilterData {
 
         // Type filter
         if (typeFilter.size !== 0) {
-            filtered = filtered.filter(item => typeFilter.has(item.syntaxType));
+            filtered = filtered.filter(item => {
+                if (typeFilter.has(item.syntaxType)) {
+                    return true;
+                }
+                if (item.syntaxSubType) {
+                    for (const type of typeFilter) {
+                        if (includesSubType(type, item.syntaxSubType)) {
+                            return true;
+                        }
+                    }
+                }
+                return false;
+            });
         }
 
         // Return type filter
@@ -538,7 +555,7 @@ export interface VersionFilterData {
             returnTypeFilter = type.toLowerCase();
             fullRender();
         },
-        updateTypeFilter: (types: Set<string>) => {
+        updateTypeFilter: (types: Set<DocumentableType>) => {
             typeFilter = types;
             fullRender();
         },

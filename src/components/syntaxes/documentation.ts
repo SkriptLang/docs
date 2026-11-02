@@ -17,8 +17,23 @@ export enum DocumentableType {
     EXPERIMENT = "Experiment",
 }
 
+export enum DocumentableSubType {
+    EFFECT_SECTION = "Effect Section",
+    SECTION_EXPRESSION = "Section Expression",
+}
+
+export function includesSubType(type: DocumentableType, subType: DocumentableSubType): boolean {
+    if (subType == DocumentableSubType.EFFECT_SECTION) {
+        return type == DocumentableType.SECTION || type == DocumentableType.EFFECT;
+    } else if (subType == DocumentableSubType.SECTION_EXPRESSION) {
+        return type == DocumentableType.EXPRESSION || type == DocumentableType.SECTION;
+    }
+    return false;
+}
+
 export interface Documentable {
     type: DocumentableType,
+    subType?: DocumentableSubType,
     id: string,
 }
 

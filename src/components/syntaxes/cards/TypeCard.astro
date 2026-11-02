@@ -36,9 +36,13 @@ const { defaultProps, type }: Props = Astro.props;
 </DocumentationCard>
 
 <style is:global>
-    [data-syntax-type="Type"] {
+    :root {
         /* Tomato */
-        --custom-badge-light: Tomato;
-        --custom-badge-dark: #8B2500;
+        --color-documentable-type-light: tomato;
+        --color-documentable-type-dark: #8B2500;
+    }
+    [data-syntax-type="Type"] {
+        --custom-badge-light: var(--color-documentable-type-light);
+        --custom-badge-dark: var(--color-documentable-type-dark);
     }
 </style>

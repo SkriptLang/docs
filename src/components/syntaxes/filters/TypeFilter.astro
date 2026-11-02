@@ -1,15 +1,16 @@
 ---
-import { DocumentableType } from '../documentation'
+import { DocumentableType } from '../documentation';
 ---
 
 <script>
-    import { getParam, setParam } from "../../../utils/utils";
+    import { getParam, setParam } from '../../../utils/utils';
+    import { DocumentableType } from '../documentation';
 
-    const expectedTypes = new Set<string>();
-    let updateTypeFilter: ((types: Set<string>) => void) | null = null;
+    const expectedTypes = new Set<DocumentableType>();
+    let updateTypeFilter: ((types: Set<DocumentableType>) => void) | null = null;
 
     function handleTypeFilterChange(input: HTMLInputElement) {
-        const type = input.dataset.filterKey!;
+        const type = input.dataset.filterKey as DocumentableType;
         
         if (input.checked) {
             expectedTypes.add(type);
@@ -36,12 +37,12 @@ import { DocumentableType } from '../documentation'
         // parse and initialize based on current URL param
         const typesParam = getParam('types');
         if (typesParam) {
-            typesParam.split(",").forEach(type => expectedTypes.add(type));
+            typesParam.split(",").forEach(type => expectedTypes.add(type as DocumentableType));
         }
 
         // setup input change functionality
         document.getElementById('type-filter-fieldset')!.querySelectorAll<HTMLInputElement>('input').forEach((element) => {
-            if (expectedTypes.has(element.dataset.filterKey!)) { // set default state
+            if (expectedTypes.has(element.dataset.filterKey as DocumentableType)) { // set default state
                 element.checked = true;
             }
             element.addEventListener('change', () => {

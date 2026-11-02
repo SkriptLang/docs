@@ -91,19 +91,31 @@ const patterns = syntax.patterns
 </DocumentationCard>
 
 <style is:global>
-    [data-syntax-type="Section"] {
+    :root {
         /* Salmon */
-        --custom-badge-light: lightsalmon;
-        --custom-badge-dark: #8B4513;
+        --color-documentable-section-light: lightsalmon;
+        --color-documentable-section-dark: #8B4513;
+        /* Emerald */
+        --color-documentable-effect-light: #50C878;
+        --color-documentable-effect-dark: #004B23;
+        /* Cyan */
+        --color-documentable-condition-light: #008B8B;
+        --color-documentable-condition-dark: #003131;
+    }
+    [data-syntax-type="Section"] {
+        --custom-badge-light: var(--color-documentable-section-light);
+        --custom-badge-dark: var(--color-documentable-section-dark);
+    }
+    [data-syntax-sub-type="Effect Section"] {
+        --custom-badge-light: color-mix(in oklab, var(--color-documentable-effect-light), var(--color-documentable-section-light));
+        --custom-badge-dark: color-mix(in oklab, var(--color-documentable-effect-dark), var(--color-documentable-section-dark));
     }
     [data-syntax-type="Effect"] {
-        /* Emerald */
-        --custom-badge-light: #50C878;
-        --custom-badge-dark: #004B23;
+        --custom-badge-light: var(--color-documentable-effect-light);
+        --custom-badge-dark: var(--color-documentable-effect-dark);
     }
     [data-syntax-type="Condition"] {
-        /* Cyan */
-        --custom-badge-light: #008B8B;
-        --custom-badge-dark: #003131;
+        --custom-badge-light: var(--color-documentable-condition-light);
+        --custom-badge-dark: var(--color-documentable-condition-dark);
     }
 </style>
