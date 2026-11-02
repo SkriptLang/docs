@@ -14,6 +14,9 @@ function syntaxesLoader(name: string, path: string) : Loader {
             await glob({
                 pattern: '*.json',
                 base: path,
+                generateId: ({ entry }) => {
+                    return entry.substring(0, entry.lastIndexOf('.'));
+                }
             }).load(context);
             for (const [_, entry] of context.store.entries()) {
                 await insertRendered(entry.data, context.renderMarkdown);

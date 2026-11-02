@@ -1,11 +1,12 @@
 ---
-import { getCollection } from "astro:content";
+import {getCollection, getEntry} from "astro:content";
 import StarlightPage from '@astrojs/starlight/components/StarlightPage.astro';
 import { Icon } from '@astrojs/starlight/components'
 import SyntaxDisplayManager from "../../components/syntaxes/SyntaxDisplayManager.astro";
 import {DocumentableType, type Documentation, type Type} from "../../components/syntaxes/documentation";
 import DocumentableCard from "../../components/syntaxes/cards/DocumentableCard.astro";
 import {getPlural} from "../../utils/utils.ts";
+import type {GetStaticPathsResult} from "astro";
 
 export const repositorySources = new Map([
     ["Skript", "https://github.com/SkriptLang/Skript/tree/master/src/main/java"],
@@ -18,16 +19,24 @@ export const repositorySources = new Map([
 
 export async function getStaticPaths() {
     const syntaxes = await getCollection("syntaxes");
-    return syntaxes.map(syntax => ({
-        params: { id: (syntax.id === 'syntaxes' ? undefined : syntax.id) },
+    let paths: GetStaticPathsResult = syntaxes.map(syntax => ({
+        params: { id: syntax.id },
         props: { rawSyntaxes: syntax.data as any}
     }));
+    const latestRelease = await getEntry('githubReleaseBodies', 'Skript/latest')!;
+    const latestSyntax = syntaxes.find(syntax => syntax.id === latestRelease.data.tag_name)!;
+    paths.push({
+        params: { id: undefined },
+        props: { rawSyntaxes: latestSyntax.data as any}
+    });
+    return paths;
 }
 
 interface Props {
     rawSyntaxes: any;
 }
 
+// @ts-expect-error - rawSyntaxes will be present in props
 const { rawSyntaxes }: Props = Astro.props;
 
 /*

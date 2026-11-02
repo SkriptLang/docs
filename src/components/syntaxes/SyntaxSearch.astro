@@ -6,7 +6,7 @@ import {compareVersions, getVersionAsString, parseVersion} from "../../utils/uti
 
 const versions = (await getCollection('syntaxes'))
     .map(element => {
-        if (element.id === 'syntaxes' || !isNaN(parseInt(element.id))) {
+        if (!isNaN(parseInt(element.id))) {
             return parseVersion(element.data.source.version);
         }
         return parseVersion(element.id);
