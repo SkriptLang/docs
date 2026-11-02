@@ -21,23 +21,24 @@ export async function getStaticPaths() {
     const syntaxes = await getCollection("syntaxes");
     let paths: GetStaticPathsResult = syntaxes.map(syntax => ({
         params: { id: syntax.id },
-        props: { rawSyntaxes: syntax.data as any}
+        props: { rawSyntaxes: syntax.data as any, realId: syntax.id }
     }));
     const latestRelease = await getEntry('githubReleaseBodies', 'Skript/latest')!;
     const latestSyntax = syntaxes.find(syntax => syntax.id === latestRelease.data.tag_name)!;
     paths.push({
         params: { id: undefined },
-        props: { rawSyntaxes: latestSyntax.data as any}
+        props: { rawSyntaxes: latestSyntax.data as any, realId: latestSyntax.id }
     });
     return paths;
 }
 
 interface Props {
     rawSyntaxes: any;
+    realId: string;
 }
 
 // @ts-expect-error - rawSyntaxes will be present in props
-const { rawSyntaxes }: Props = Astro.props;
+const { rawSyntaxes, realId }: Props = Astro.props;
 
 /*
  * Syntax Processing
@@ -103,7 +104,7 @@ const sidebarEntries = syntaxes.map(syntax => ({
 ---
 
 <StarlightPage
-        frontmatter={{ title: "", tableOfContents: true, pagefind: false, prev: false, next: false}}
+        frontmatter={{ title: "Skript Syntaxes", description: `Syntaxes for Skript ${realId}`, tableOfContents: true, pagefind: false, prev: false, next: false}}
         sidebar={sidebarEntries}
 >
     <!-- TODO a better way to accomplish this -->
