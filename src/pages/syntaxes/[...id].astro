@@ -97,6 +97,10 @@ const sidebarEntries = syntaxes.map(syntax => ({
         frontmatter={{ title: "", tableOfContents: true, pagefind: false, prev: false, next: false}}
         sidebar={sidebarEntries}
 >
+    <!-- TODO a better way to accomplish this -->
+    <script is:inline>
+        document.documentElement.setAttribute('data-is-syntaxes', '');
+    </script>
     <h1 id="syntaxes-no-results" style="display: none;">No results were found.</h1>
     <div id="syntaxes-wrapper">
         <div id="syntaxes-viewport">
@@ -119,29 +123,29 @@ const sidebarEntries = syntaxes.map(syntax => ({
 </StarlightPage>
 
 <style>
-    :global(.main-pane) {
+    :root[data-is-syntaxes] :global(.main-pane) {
         --sl-content-width: 100%;
     }
-    :global(.main-pane .content-panel:first-child) {
+    :root[data-is-syntaxes] :global(.main-pane .content-panel:first-child) {
         display: none;
     }
-    :global(.main-pane .content-panel:nth-child(2)) {
+    :root[data-is-syntaxes] :global(.main-pane .content-panel:nth-child(2)) {
         border-top: none;
         
     }
-    :global(.right-sidebar-container, .right-sidebar, .right-sidebar-panel) {
+    :root[data-is-syntaxes] :global(.right-sidebar-container, .right-sidebar, .right-sidebar-panel) {
         min-width: var(--sl-sidebar-width);
         width: var(--sl-sidebar-width);
         max-width: var(--sl-sidebar-width);
     }
-    :global(.right-sidebar-panel > *) { /* force higher max width for child element (another sidebar div) */
+    :root[data-is-syntaxes] :global(.right-sidebar-panel > *) { /* force higher max width for child element (another sidebar div) */
         max-width: 100%;
     }
-    :global(div.header) {
+    :root[data-is-syntaxes] :global(div.header) {
         grid-template-columns: minmax(0, calc(var(--sl-sidebar-width) - var(--sl-nav-pad-x) - var(--sl-nav-gap))) 1fr auto;
         justify-content: start;
     }
-    :global(.title-wrapper) { /* ensure title is not covered by search */
+    :root[data-is-syntaxes] :global(.title-wrapper) { /* ensure title is not covered by search */
         min-width: fit-content;
     }
 

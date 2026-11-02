@@ -112,13 +112,9 @@ versions[0] = versions[0] + ' (Latest)';
 
     document.documentElement.setAttribute('data-is-syntaxes', "");
     document.getElementById('toggle-filters')?.addEventListener('click', () => {
-        // TODO probably need to do a rerender for virtual scrolling height recalculation
-        document.getElementById('starlight__sidebar')!.classList.toggle('collapsed');
         document.documentElement.toggleAttribute('data-has-sidebar');
     });
     document.getElementById('toggle-syntax-list')?.addEventListener('click', () => {
-        // TODO probably need to do a rerender for virtual scrolling height recalculation
-        document.getElementsByClassName('right-sidebar-container')[0]!.classList.toggle('collapsed');
         document.documentElement.toggleAttribute('data-has-toc');
     });
 </script>
@@ -225,14 +221,14 @@ versions[0] = versions[0] + ' (Latest)';
     #toggle-filters {
         left: calc(var(--sl-sidebar-width) - 1px);
     }
-    :global(.page:has(#starlight__sidebar.collapsed) #toggle-filters) {
+    :root:not([data-has-sidebar]) #toggle-filters {
         left: 0;
         transform: scaleX(-1);
     }
     #toggle-syntax-list {
         right: calc(var(--sl-sidebar-width) - 1px);
     }
-    :global(.page:has(.right-sidebar-container.collapsed) #toggle-syntax-list) {
+    :root:not([data-has-toc]) #toggle-syntax-list {
         right: 0;
         transform: scaleX(-1);
     }
@@ -242,7 +238,7 @@ versions[0] = versions[0] + ' (Latest)';
         }
     }
     @media (min-width: 50.01rem) {
-        :global(#starlight__mobile-toc summary) {
+        :root[data-is-syntaxes] :global(#starlight__mobile-toc summary) {
             padding-left: calc(1rem + 25px);
         }
     }
@@ -251,7 +247,7 @@ versions[0] = versions[0] + ' (Latest)';
             display: none;
         }
     }
-    :global(#starlight__sidebar.collapsed, .right-sidebar-container.collapsed) {
+    :root:not([data-has-sidebar]) :global(#starlight__sidebar), :root:not([data-has-toc]) :global(.right-sidebar-container) {
         display: none;
     }
 </style>
