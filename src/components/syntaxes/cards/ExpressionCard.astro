@@ -13,7 +13,7 @@ const { defaultProps, expression }: Props = Astro.props;
 ---
 
 <SyntaxCard defaultProps={defaultProps} syntax={expression}
-            data-syntax-returns={expression.returnType.name}
+            data-syntax-returns={expression.returnType.name.toLowerCase()}
 >
     <Fragment slot="badges">
         <SyntaxBadge

@@ -12,6 +12,7 @@ import StructureCard from "./StructureCard.astro";
 import SyntaxCard from "./SyntaxCard.astro";
 
 export interface DocumentableCardProps {
+    allSyntaxes: Documentation[],
     currentVersion: string,
     hide?: boolean,
     showGitHubLink?: boolean,

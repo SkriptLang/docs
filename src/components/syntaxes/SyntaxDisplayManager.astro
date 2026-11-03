@@ -111,7 +111,7 @@ export interface VersionFilterData {
         if (returnTypeFilter.length > 0) {
             filtered = filtered.filter(item => {
                 if (item.element.dataset.syntaxReturns) {
-                    const candidate = (item.element.dataset.syntaxReturns as string).toLowerCase();
+                    const candidate = (item.element.dataset.syntaxReturns as string);
                     // TODO inheritance mapping?
                     return candidate.includes(returnTypeFilter);
                 }
@@ -262,7 +262,7 @@ export interface VersionFilterData {
         const keywords = element.dataset.syntaxKeywords?.split(',');
         if (keywords) {
             for (const keyword of keywords) {
-                if (searchLower.includes(keyword.toLowerCase())) {
+                if (searchLower.includes(keyword)) {
                     score += 100;
                 }
             }
@@ -292,12 +292,26 @@ export interface VersionFilterData {
             score += 25;
         }
 
+        // Weigh Property Keywords
+        // e.g., when searching "chunk", the "WXYZ coordinate" syntax should be matched even though it doesn't directly reference "chunk"
+        const propertyKeywords = element.dataset.syntaxPropertyKeywords?.split(',');
+        if (propertyKeywords) {
+            for (const keyword of propertyKeywords) {
+                if (searchLower === keyword) {
+                    score += 300;
+                    break;
+                }
+            }
+        }
+
         // if multiple words, add score from each word / 10
-        let words = searchLower.split(" ");
-        if (score == 0 && words.length > 1) {
-            words.forEach(word => {
-                score += scoreSearchMatch(item, word) / 10
-            })
+        if (score === 0) {
+            let words = searchLower.split(" ");
+            if (words.length > 1) {
+                words.forEach(word => {
+                    score += scoreSearchMatch(item, word) / 10
+                })
+            }
         }
 
         return score;

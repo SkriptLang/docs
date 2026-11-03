@@ -3229,9 +3229,7 @@
         "2.2-dev33"
       ],
       "requirements": [],
-      "keywords": [
-        ""
-      ],
+      "keywords": [],
       "deprecated": false,
       "patterns": [
         "[the] ((cooldown|wait) time|[wait] time of [the] (cooldown|wait) [(of|for) [the] [current] command])",

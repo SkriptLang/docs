@@ -27,7 +27,7 @@ const { Content } = await render(documentation as any);
          data-syntax-id={documentation.id}
          data-syntax-name={documentation.name}
          data-syntax-since={documentation.since}
-         data-syntax-keywords={documentation.keywords.length == 0 ? undefined : documentation.keywords}
+         data-syntax-keywords={documentation.keywords.length == 0 ? undefined : documentation.keywords.map(keyword => keyword.toLowerCase())}
          data-syntax-addon={documentation.origin.name}
          style={hide ? "display: none;" : ""}
          {...rest}

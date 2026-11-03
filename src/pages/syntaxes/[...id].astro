@@ -115,7 +115,7 @@ const sidebarEntries = syntaxes.map(syntax => ({
     <div id="syntaxes-wrapper">
         <div id="syntaxes-viewport">
             {syntaxes.map(syntax => (
-                <DocumentableCard defaultProps={{currentVersion: currentVersion, hide: true}} documentation={syntax}/>
+                <DocumentableCard defaultProps={{allSyntaxes: syntaxes, currentVersion: currentVersion, hide: true}} documentation={syntax}/>
             ))}
         </div>
     </div>
@@ -175,7 +175,9 @@ const sidebarEntries = syntaxes.map(syntax => ({
         right: 0;
         margin: 0;
         padding: 0;
-        gap: 2.5rem;
+    }
+    :global(#syntaxes-viewport > *) {
+        margin-bottom: 25px;
     }
 
     dialog {

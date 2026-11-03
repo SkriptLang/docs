@@ -1,5 +1,5 @@
 ---
-import { type Syntax } from '../documentation'
+import {type Property, type Syntax} from '../documentation'
 import CodeCard from "../../CodeCard.astro";
 import DocumentationCard from "./DocumentationCard.astro";
 import SyntaxBadge from "../SyntaxBadge.astro";
@@ -34,9 +34,16 @@ const patterns = syntax.patterns
             return '%' + types.join("/") + '%';
         });
     });
+
+let property;
+if (syntax.relatedProperty) {
+    property = defaultProps.allSyntaxes.find(s => s.id === syntax.relatedProperty!.id) as Property;
+}
 ---
 
-<DocumentationCard defaultProps={defaultProps} documentation={syntax} {...rest}>
+<DocumentationCard defaultProps={defaultProps} documentation={syntax} {...rest}
+                   data-syntax-property-keywords={property?.types.map(type => type.name.toLowerCase())}
+>
     <Fragment slot="header badges">
         {syntax.experimentData && syntax.experimentData.required.length > 0  && (
                 <Badge
@@ -53,11 +60,19 @@ const patterns = syntax.patterns
                         description="These are events that the syntax can be used in. The syntax cannot be used outside of these events."
                 />
         )}
-        {syntax.relatedProperty && (
+        {syntax.relatedProperty && property && (
                 <SyntaxBadge
                         badgeProps={{text: "Related Property", size: 'medium'}}
                         entries={[{text: syntax.relatedProperty.name, cardRef: syntax.relatedProperty.id}]}
                         description="This is a property that the syntax provides functionality for."
+                />
+                <SyntaxBadge
+                        badgeProps={{text: "Applicable Types", size: 'medium'}}
+                        entries={property.types
+                            .sort(((a, b) => a.name.localeCompare(b.name)))
+                            .map(type => ({text: type.name, cardRef: type.id}))
+                        }
+                        description="These are types that support this property syntax."
                 />
         )}
         {syntax.experimentData && syntax.experimentData.required.length > 0 && (
