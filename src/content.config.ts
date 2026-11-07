@@ -4,6 +4,7 @@ import {docsLoader, i18nLoader} from '@astrojs/starlight/loaders';
 import {docsSchema, i18nSchema} from '@astrojs/starlight/schema';
 import { autoSidebarLoader } from 'starlight-auto-sidebar/loader'
 import { autoSidebarSchema } from 'starlight-auto-sidebar/schema'
+import {asReferenceLink} from "./components/syntaxes/documentation.ts";
 
 // function for creating a loader for syntax files
 function syntaxesLoader(name: string, path: string) : Loader {
@@ -26,10 +27,15 @@ function syntaxesLoader(name: string, path: string) : Loader {
 }
 
 // utility function for recursively inserting rendered descriptions
+const DOCS_REF_PATTERN = /\[(.+?)]\(docs:.+?\/(.+?)\)/g
 async function insertRendered(object: any, renderMarkdown: any) {
     const children = Object.keys(object);
     if (children.some(child => child === 'description')) {
-        object.rendered = await renderMarkdown(object.description);
+        let description = object.description as string;
+        description = description.replace(DOCS_REF_PATTERN, (_, group1: string, group2: string) => {
+            return `<a class='docs-ref' href='${asReferenceLink(group2)}'>${group1}</a>`;
+        });
+        object.rendered = await renderMarkdown(description);
     } else {
         children.forEach(child => {
             const childObject = object[child];

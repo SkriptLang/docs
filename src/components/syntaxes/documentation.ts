@@ -198,3 +198,13 @@ export enum ExperimentLifeCycle {
     MAINSTREAM = "Mainstream",
     UNKNOWN = "Unknown",
 }
+
+/*
+ * Additional functions
+ */
+
+export function asReferenceLink(id: string): string {
+    const params = new URLSearchParams();
+    params.set('search', '#' + id);
+    return '?' + params;
+}

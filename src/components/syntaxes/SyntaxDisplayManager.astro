@@ -507,26 +507,24 @@ export interface VersionFilterData {
         if (!a) { // not a link
             return;
         }
-        const url = new URL(a.href);
-        const hash = url.hash.substring(1);
-        url.hash = ''; // remove hash from URL for comparison
-        const currentUrl = new URL(window.location.href);
-        currentUrl.hash = '';
-        if (currentUrl.href !== url.href) { // link to other resource, process as normal
-            return;
-        }
-        event.preventDefault();
-        if ((event.target.closest('.documentation-card') as HTMLElement)?.dataset.syntaxId === hash) { // copying link to card
+        if (a.classList.contains('docs-ref')) { // referencing another element
+            event.preventDefault();
+            const id = a.href.substring(a.href.lastIndexOf('?search=%23') + 11);
+            console.log(id);
+            // show card dialog
+            showSyntaxDialog(id);
+        } else if (a.classList.contains('sl-anchor-link')) { // copying a link to a syntax card
+            event.preventDefault();
+            const url = new URL(a.href);
+            const hash = url.hash.substring(1);
+            url.hash = '';
             url.search = '';
             url.searchParams.set('search', '#' + hash);
             url.hash = '';
             navigator.clipboard.writeText(url.href).then(() => {
                 // TODO some sort of popup notifying link copied
             });
-            return;
         }
-        // show card dialog
-        showSyntaxDialog(hash);
     });
 
     function showSyntaxDialog(syntaxId: string) {

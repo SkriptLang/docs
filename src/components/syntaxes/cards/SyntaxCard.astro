@@ -1,5 +1,5 @@
 ---
-import {type Property, type Syntax} from '../documentation'
+import {asReferenceLink, type Property, type Syntax} from '../documentation'
 import CodeCard from "../../CodeCard.astro";
 import DocumentationCard from "./DocumentationCard.astro";
 import SyntaxBadge from "../SyntaxBadge.astro";
@@ -26,7 +26,7 @@ const patterns = syntax.patterns
                         return type === entry.codename.singular || type === entry.codename.plural;
                     })?.id;
                     if (id) {
-                        return `\\[${type}](#${id})`;
+                        return `\\[${type}](${asReferenceLink(id)})`;
                     }
                     // could not resolve a link, skip this one
                     return type;

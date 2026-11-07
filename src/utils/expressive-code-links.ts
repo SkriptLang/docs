@@ -105,6 +105,7 @@ class LinkAnnotation extends ExpressiveCodeAnnotation {
                     {
                         href: this.href,
                         style: 'color: inherit',
+                        class: 'docs-ref', // TODO not always true?
                     },
                     ...node.children
                 )

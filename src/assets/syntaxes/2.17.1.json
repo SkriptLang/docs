@@ -3614,7 +3614,7 @@
       },
       "id": "ExprSentCommands",
       "name": "Sent Command List",
-      "description": "The commands that will be sent to the player in a <a href='#send_command_list'>send commands to player event</a>.\nModifications will affect what commands show up for the player to tab complete. They will not affect what commands the player can actually run.\nAdding new commands to the list is illegal behavior and will be ignored.",
+      "description": "The commands that will be sent to the player in a [send commands to player event](docs:Skript/EvtSendCommandList).\nModifications will affect what commands show up for the player to tab complete. They will not affect what commands the player can actually run.\nAdding new commands to the list is illegal behavior and will be ignored.",
       "examples": [
         "on send command list:\n\tset command list to command list where [input does not contain \":\"]\n\tremove \"help\" from command list"
       ],
