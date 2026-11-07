@@ -522,7 +522,10 @@ export interface VersionFilterData {
             url.searchParams.set('search', '#' + hash);
             url.hash = '';
             navigator.clipboard.writeText(url.href).then(() => {
-                // TODO some sort of popup notifying link copied
+                a.style.color = 'lime';
+                setTimeout(() => {
+                    a.style.color = '';
+                }, 1000);
             });
         }
     });
