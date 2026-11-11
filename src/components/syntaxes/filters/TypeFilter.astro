@@ -1,5 +1,6 @@
 ---
 import { DocumentableType } from '../documentation';
+import {DocumentableTypeMeta} from "../documentation.ts";
 ---
 
 <script>
@@ -69,7 +70,7 @@ import { DocumentableType } from '../documentation';
                    id={`type-filter-${type}`}
                    data-filter-key={type}
                />
-               {type}
+               {DocumentableTypeMeta[type].label}
            </label>
         </span>
     ))}

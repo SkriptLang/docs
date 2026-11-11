@@ -1,20 +1,55 @@
 export enum DocumentableType {
     // syntax
-    STRUCTURE = "Structure",
-    SECTION = "Section",
-    EFFECT = "Effect",
-    CONDITION = "Condition",
-    EXPRESSION = "Expression",
-    EVENT = "Event",
-    ENTITY_DATA = "Entity Data",
+    Structure = "structure",
+    Section = "section",
+    Effect = "effect",
+    Condition = "condition",
+    Expression = "expression",
+    Event = "event",
+    EntityData = "entity_data",
     // types
-    TYPE = "Type",
+    Type = "type",
     // properties
-    PROPERTY = "Property",
+    Property = "property",
     // functions
-    FUNCTION = "Function",
+    Function = "function",
     // experiments
-    EXPERIMENT = "Experiment",
+    Experiment = "experiment",
+}
+export const DocumentableTypeMeta: Record<DocumentableType, { label: string }> = {
+    [DocumentableType.Structure]: {
+        label: "Structure"
+    },
+    [DocumentableType.Section]: {
+        label: "Section"
+    },
+    [DocumentableType.Effect]: {
+        label: "Effect"
+    },
+    [DocumentableType.Condition]: {
+        label: "Condition"
+    },
+    [DocumentableType.Expression]: {
+        label: "Expression"
+    },
+    [DocumentableType.Event]: {
+        label: "Event"
+    },
+    [DocumentableType.EntityData]: {
+        label: "Entity Data"
+    },
+    [DocumentableType.Type]: {
+        label: "Type"
+    },
+    [DocumentableType.Property]: {
+        label: "Property"
+    },
+    [DocumentableType.Function]: {
+        label: "Function"
+    },
+    [DocumentableType.Experiment]: {
+        label: "Experiment"
+    },
 }
 
 export enum DocumentableSubType {
@@ -24,9 +59,9 @@ export enum DocumentableSubType {
 
 export function includesSubType(type: DocumentableType, subType: DocumentableSubType): boolean {
     if (subType == DocumentableSubType.EFFECT_SECTION) {
-        return type == DocumentableType.SECTION || type == DocumentableType.EFFECT;
+        return type == DocumentableType.Section || type == DocumentableType.Effect;
     } else if (subType == DocumentableSubType.SECTION_EXPRESSION) {
-        return type == DocumentableType.EXPRESSION || type == DocumentableType.SECTION;
+        return type == DocumentableType.Expression || type == DocumentableType.Section;
     }
     return false;
 }
@@ -99,9 +134,9 @@ export interface Structure extends Syntax {
     },
 }
 export enum StructureNodeType {
-    "SIMPLE" = "Simple",
-    "SECTION" = "Section",
-    "BOTH" = "Both",
+    SIMPLE = "Simple",
+    SECTION = "Section",
+    BOTH = "Both",
 }
 export interface StructureEntryData {
     key: string,

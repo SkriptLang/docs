@@ -54,7 +54,7 @@ function processRawEntries(entries: any, type: DocumentableType) : Documentation
 function processSyntaxJson(rawSyntaxes: any): Documentation[] {
     return Object.values(DocumentableType)
         .flatMap((type) => {
-            const key = getPlural(type.toLowerCase().replaceAll(" ", ""));
+            const key = getPlural(type.toLowerCase().replaceAll("_", ""));
             const rawEntries = rawSyntaxes[key];
             if (rawEntries) {
                 return processRawEntries(rawEntries, (type as DocumentableType));
@@ -85,7 +85,7 @@ if (currentVersion.endsWith(".0")) {
 Astro.locals.syntaxesData = {
     addons: addons,
     version: currentVersion,
-    types: syntaxes.filter(syntax => syntax.type === DocumentableType.TYPE)
+    types: syntaxes.filter(syntax => syntax.type === DocumentableType.Type)
         .map(syntax => ({
             id: syntax.id,
             name: syntax.name,

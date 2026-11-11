@@ -29,25 +29,25 @@ const { defaultProps, documentation }: Props = Astro.props;
 
 {(() => {
     switch (documentation.type) {
-        case DocumentableType.SECTION:
-        case DocumentableType.EFFECT:
-        case DocumentableType.CONDITION:
+        case DocumentableType.Section:
+        case DocumentableType.Effect:
+        case DocumentableType.Condition:
             return (<SyntaxCard defaultProps={defaultProps} syntax={documentation as any}/>);
-        case DocumentableType.STRUCTURE:
+        case DocumentableType.Structure:
             return (<StructureCard defaultProps={defaultProps} structure={documentation as any}/>);
-        case DocumentableType.EXPRESSION:
+        case DocumentableType.Expression:
             return (<ExpressionCard defaultProps={defaultProps} expression={documentation as any}/>);
-        case DocumentableType.EVENT:
+        case DocumentableType.Event:
             return (<EventCard defaultProps={defaultProps} event={documentation as any}/>);
-        case DocumentableType.ENTITY_DATA:
+        case DocumentableType.EntityData:
             return (<EntityDataCard defaultProps={defaultProps} entityData={documentation as any}/>);
-        case DocumentableType.TYPE:
+        case DocumentableType.Type:
             return (<TypeCard defaultProps={defaultProps} type={documentation as any}/>);
-        case DocumentableType.PROPERTY:
+        case DocumentableType.Property:
             return (<PropertyCard defaultProps={defaultProps} property={documentation as any}/>);
-        case DocumentableType.FUNCTION:
+        case DocumentableType.Function:
             return (<FunctionCard defaultProps={defaultProps} func={documentation as any}/>);
-        case DocumentableType.EXPERIMENT:
+        case DocumentableType.Experiment:
             return (<ExperimentCard defaultProps={defaultProps} experiment={documentation as any}/>);
         default:
             return (<DocumentationCard defaultProps={defaultProps} documentation={documentation}/>);
