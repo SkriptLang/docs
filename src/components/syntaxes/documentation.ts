@@ -53,14 +53,22 @@ export const DocumentableTypeMeta: Record<DocumentableType, { label: string }> =
 }
 
 export enum DocumentableSubType {
-    EFFECT_SECTION = "Effect Section",
-    SECTION_EXPRESSION = "Section Expression",
+    EffectSection = "effect_section",
+    SectionExpression = "section_expression",
+}
+export const DocumentableSubTypeMeta: Record<DocumentableSubType, { label: string }> = {
+    [DocumentableSubType.EffectSection]: {
+        label: "Effect Section"
+    },
+    [DocumentableSubType.SectionExpression]: {
+        label: "Section Expression"
+    },
 }
 
 export function includesSubType(type: DocumentableType, subType: DocumentableSubType): boolean {
-    if (subType == DocumentableSubType.EFFECT_SECTION) {
+    if (subType == DocumentableSubType.EffectSection) {
         return type == DocumentableType.Section || type == DocumentableType.Effect;
-    } else if (subType == DocumentableSubType.SECTION_EXPRESSION) {
+    } else if (subType == DocumentableSubType.SectionExpression) {
         return type == DocumentableType.Expression || type == DocumentableType.Section;
     }
     return false;
@@ -115,12 +123,32 @@ export interface Syntax extends Documentation {
 }
 
 export enum ChangeMode {
-    ADD = "Add",
-    SET = "Set",
-    REMOVE = "Remove",
-    REMOVE_ALL = "Remove All",
-    DELETE = "Delete",
-    RESET = "Reset",
+    Add = "ADD",
+    Set = "SET",
+    Remove = "REMOVE",
+    RemoveAll = "REMOVE_ALL",
+    Delete = "DELETE",
+    Reset = "RESET",
+}
+export const ChangeModeMeta: Record<ChangeMode, { label: string }> = {
+    [ChangeMode.Add]: {
+        label: "Add"
+    },
+    [ChangeMode.Set]: {
+        label: "Set"
+    },
+    [ChangeMode.Remove]: {
+        label: "Remove"
+    },
+    [ChangeMode.RemoveAll]: {
+        label: "Remove All"
+    },
+    [ChangeMode.Delete]: {
+        label: "Delete"
+    },
+    [ChangeMode.Reset]: {
+        label: "Reset"
+    },
 }
 
 export interface Expression extends Syntax {
@@ -128,15 +156,15 @@ export interface Expression extends Syntax {
 }
 
 export interface Structure extends Syntax {
-    nodeType: keyof typeof StructureNodeType,
+    nodeType: StructureNodeType,
     entries?: {
         [key: string]: StructureEntryData, // key is same as StructureEntryData.name
     },
 }
 export enum StructureNodeType {
-    SIMPLE = "Simple",
-    SECTION = "Section",
-    BOTH = "Both",
+    Simple = "SIMPLE",
+    Section = "SECTION",
+    Both = "BOTH",
 }
 export interface StructureEntryData {
     key: string,
@@ -151,14 +179,25 @@ export interface Event extends Syntax {
 export interface EventValue {
     type: DocumentableReference,
     plural: boolean,
-    time: keyof typeof EventValueTime,
+    time: EventValueTime,
     patterns: string[],
-    supportedChangeModes: (keyof typeof ChangeMode)[],
+    supportedChangeModes: ChangeMode[],
 }
 export enum EventValueTime {
-    PAST = "Past",
-    NOW = "Present",
-    FUTURE = "Future",
+    Past = "PAST",
+    Now = "NOW",
+    Future = "FUTURE",
+}
+export const EventValueTimeMeta: Record<EventValueTime, { label: string }> = {
+    [EventValueTime.Past]: {
+        label: "Past"
+    },
+    [EventValueTime.Now]: {
+        label: "Present"
+    },
+    [EventValueTime.Future]: {
+        label: "Future"
+    },
 }
 
 export interface EntityData extends Syntax {
@@ -222,16 +261,33 @@ export interface Parameter {
  */
 
 export interface Experiment extends Documentation {
-    phase: keyof typeof ExperimentLifeCycle,
+    phase: ExperimentLifeCycle,
     pattern: string,
 }
 
 export enum ExperimentLifeCycle {
-    STABLE = "Stable",
-    EXPERIMENTAL = "Experimental",
-    DEPRECATED = "Deprecated",
-    MAINSTREAM = "Mainstream",
-    UNKNOWN = "Unknown",
+    Stable = "STABLE",
+    Experimental = "EXPERIMENTAL",
+    Deprecated = "DEPRECATED",
+    Mainstream = "MAINSTREAM",
+    Unknown = "UNKNOWN",
+}
+export const ExperimentLifeCycleMeta: Record<ExperimentLifeCycle, { label: string }> = {
+    [ExperimentLifeCycle.Stable]: {
+        label: "Stable"
+    },
+    [ExperimentLifeCycle.Experimental]: {
+        label: "Experimental"
+    },
+    [ExperimentLifeCycle.Deprecated]: {
+        label: "Deprecated"
+    },
+    [ExperimentLifeCycle.Mainstream]: {
+        label: "Mainstream"
+    },
+    [ExperimentLifeCycle.Unknown]: {
+        label: "Unknown"
+    },
 }
 
 /*

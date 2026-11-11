@@ -7,7 +7,7 @@ import CodeCard from "../../CodeCard.astro";
 import SyntaxBadge from "../SyntaxBadge.astro";
 import type {DocumentableCardProps} from "./DocumentableCard.astro";
 import { repositorySources } from '../../../pages/syntaxes/[...id].astro';
-import {DocumentableTypeMeta} from "../documentation.ts";
+import {DocumentableSubTypeMeta, DocumentableTypeMeta} from "../documentation.ts";
 
 interface Props {
     defaultProps: DocumentableCardProps
@@ -36,7 +36,8 @@ const { Content } = await render(documentation as any);
     <div class="left">
         <AnchorHeading level='3' id={documentation.id}>
             {documentation.name + " "}
-            <Badge class="cb" size='large' text={documentation.subType ? documentation.subType : DocumentableTypeMeta[documentation.type].label}/>
+            <Badge class="cb" size='large'
+                   text={documentation.subType ? DocumentableSubTypeMeta[documentation.subType].label : DocumentableTypeMeta[documentation.type].label}/>
             {documentation.origin.name !== "Skript" && (
                     <Badge variant="caution" size='large' text={documentation.origin.name}/>
             )}
