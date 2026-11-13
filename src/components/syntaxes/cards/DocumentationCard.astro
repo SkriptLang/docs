@@ -126,6 +126,10 @@ const { Content } = await render(documentation as any);
         background-color: var(--sl-color-bg-nav);
         border-left: var(--custom-badge-light) 0.5em solid;
     }
+    :global(.documentation-card > * > pre,
+        .documentation-card > * > .expressive-code code, .documentation-card > * > .expressive-code pre) {
+        background-color: var(--sl-color-bg);
+    }
     .left, .right {
         display: flex;
         flex-direction: column;

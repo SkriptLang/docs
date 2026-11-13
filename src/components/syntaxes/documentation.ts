@@ -158,7 +158,7 @@ export interface Expression extends Syntax {
 export interface Structure extends Syntax {
     nodeType: StructureNodeType,
     entries?: {
-        [key: string]: StructureEntryData, // key is same as StructureEntryData.name
+        [key: string]: StructureEntryData, // key is same as StructureEntryData.key
     },
 }
 export enum StructureNodeType {
@@ -173,7 +173,7 @@ export interface StructureEntryData {
 }
 
 export interface Event extends Syntax {
-    cancellable: boolean,
+    cancellable?: boolean,
     eventValues: EventValue[],
 }
 export interface EventValue {

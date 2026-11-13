@@ -35,9 +35,9 @@ const { defaultProps, func }: Props = Astro.props;
                             }
                             if (parameter.modifiers.optional) {
                                 if (description.length !== 0) {
-                                    description += ", ";
+                                    description += ",";
                                 }
-                                description += "optional"
+                                description += " optional"
                             }
                         }
                         return (<SyntaxBadge

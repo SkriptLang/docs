@@ -61,9 +61,13 @@ const { badgeProps, entries, description, useOrganizedDisplay = true }: Props = 
         }
     }
     .card-ref {
-        grid-column: 1;
+        margin-right: 0.25rem;
     }
-    .card-ref-text {
+    .entry-grid-display > .card-ref {
+        grid-column: 1;
+        margin-right: 0;
+    }
+    .entry-grid-display > .card-ref-text {
         grid-column: 2;
     }
 </style>

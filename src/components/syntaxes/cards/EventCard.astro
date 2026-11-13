@@ -18,7 +18,7 @@ const { defaultProps, event }: Props = Astro.props;
     <Fragment slot="badges">
         <SyntaxBadge
                 badgeProps={{text: "Cancellable", size: 'medium'}}
-                entries={[{text: event.cancellable ? "Yes" : "No"}]}
+                entries={[{text: event.cancellable === undefined ? "Unknown" : (event.cancellable ? "Yes" : "No")}]}
                 description="Whether this event can be cancelled using the 'Cancel Event' effect."
         />
         {event.eventValues.length > 0 && (
