@@ -13,7 +13,9 @@ interface Props {
 const { defaultProps, func }: Props = Astro.props;
 ---
 
-<DocumentationCard defaultProps={defaultProps} documentation={func}>
+<DocumentationCard defaultProps={defaultProps} documentation={func}
+                   data-syntax-returns={func.returnType?.name.toLowerCase()}
+>
     <Fragment slot="badges">
         {func.returnType && (
                 <SyntaxBadge
