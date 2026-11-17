@@ -15,7 +15,7 @@ interface Props {
 const { defaultProps, syntax, ...rest }: Props = Astro.props;
 
 // Adapted from ClassInfo#isValidCodeName
-const patternRegex = /%([a-z0-9\-\\]+)%/g;
+const patternRegex = /%([a-z0-9\-/]+)%/g;
 const patterns = syntax.patterns
     .filter(pattern => pattern.trim().length !== 0)
     .map(pattern => {
