@@ -1,12 +1,16 @@
 {
-  "version": {
-    "major": 3,
-    "minor": 0
+  "generator": {
+    "version": {
+      "major": 3,
+      "minor": 0
+    }
   },
   "source": {
     "name": "skript-worldguard",
     "version": "1.0.1"
   },
+  "experiments": {},
+  "properties": {},
   "expressions": {
     "ExprMoveType": {
       "origin": {
@@ -35,7 +39,7 @@
         "[the] [worldguard] move[ment][ ]type"
       ],
       "returnType": {
-        "id": "TypeWorldguardMoveType",
+        "id": "TypeWorldguardmovetype",
         "name": "WorldGuard Move Type"
       }
     },
@@ -66,7 +70,7 @@
         "[the] [worldguard] region"
       ],
       "returnType": {
-        "id": "TypeRegion",
+        "id": "TypeWorldguardregion",
         "name": "Region"
       }
     },
@@ -94,60 +98,8 @@
         "[all [[of] the]|the] [worldguard] regions [(in|of) %worlds%]"
       ],
       "returnType": {
-        "id": "TypeRegion",
+        "id": "TypeWorldguardregion",
         "name": "Region"
-      }
-    },
-    "ExprRegionPriority": {
-      "origin": {
-        "name": "skript-worldguard",
-        "class": "org.skriptlang.skriptworldguard.elements.expressions.ExprRegionPriority"
-      },
-      "id": "ExprRegionPriority",
-      "name": "Region Priority",
-      "description": "An expression to obtain and change the priority of a region.\nWhen regions overlap, the priority is used to determine properties such as membership, ability to build, and flag values.",
-      "examples": [
-        "function get_highest_priority_region(location: location) returns worldguard region:\n\tset {_regions::*} to the regions at {_location}\n\tsort {_regions::*} in descending order by priority of input\n\treturn {_regions::1}"
-      ],
-      "since": [
-        "1.0"
-      ],
-      "requirements": [],
-      "keywords": [],
-      "deprecated": false,
-      "patterns": [
-        "[the] [region] priority of %worldguardregions%",
-        "%worldguardregions%'[s] [region] priority"
-      ],
-      "returnType": {
-        "id": "TypeNumber",
-        "name": "Number"
-      }
-    },
-    "ExprBlocksInRegion": {
-      "origin": {
-        "name": "skript-worldguard",
-        "class": "org.skriptlang.skriptworldguard.elements.expressions.ExprBlocksInRegion"
-      },
-      "id": "ExprBlocksInRegion",
-      "name": "Blocks of Region",
-      "description": "An expression that returns all of the blocks in the given regions.",
-      "examples": [
-        "command /fillregion <text> <material>:\n\ttrigger:\n\t\tset {_region} to the region text-argument in the player's world\n\t\tset the blocks of {_region} to material-argument"
-      ],
-      "since": [
-        "1.0"
-      ],
-      "requirements": [],
-      "keywords": [],
-      "deprecated": false,
-      "patterns": [
-        "[the] blocks of %worldguardregions%",
-        "%worldguardregions%'[s] blocks"
-      ],
-      "returnType": {
-        "id": "TypeBlock",
-        "name": "Block"
       }
     },
     "ExprRegionPoints": {
@@ -176,6 +128,32 @@
       "returnType": {
         "id": "TypeLocation",
         "name": "Location"
+      }
+    },
+    "ExprBlocksInRegion": {
+      "origin": {
+        "name": "skript-worldguard",
+        "class": "org.skriptlang.skriptworldguard.elements.expressions.ExprBlocksInRegion"
+      },
+      "id": "ExprBlocksInRegion",
+      "name": "Blocks of Region",
+      "description": "An expression that returns all of the blocks in the given regions.",
+      "examples": [
+        "command /fillregion <text> <material>:\n\ttrigger:\n\t\tset {_region} to the region text-argument in the player's world\n\t\tset the blocks of {_region} to material-argument"
+      ],
+      "since": [
+        "1.0"
+      ],
+      "requirements": [],
+      "keywords": [],
+      "deprecated": false,
+      "patterns": [
+        "[the] blocks of %worldguardregions%",
+        "%worldguardregions%'[s] blocks"
+      ],
+      "returnType": {
+        "id": "TypeBlock",
+        "name": "Block"
       }
     },
     "ExprRegionMembersOwners": {
@@ -207,6 +185,32 @@
         "name": "Object"
       }
     },
+    "ExprRegionPriority": {
+      "origin": {
+        "name": "skript-worldguard",
+        "class": "org.skriptlang.skriptworldguard.elements.expressions.ExprRegionPriority"
+      },
+      "id": "ExprRegionPriority",
+      "name": "Region Priority",
+      "description": "An expression to obtain and change the priority of a region.\nWhen regions overlap, the priority is used to determine properties such as membership, ability to build, and flag values.",
+      "examples": [
+        "function get_highest_priority_region(location: location) returns worldguard region:\n\tset {_regions::*} to the regions at {_location}\n\tsort {_regions::*} in descending order by priority of input\n\treturn {_regions::1}"
+      ],
+      "since": [
+        "1.0"
+      ],
+      "requirements": [],
+      "keywords": [],
+      "deprecated": false,
+      "patterns": [
+        "[the] [region] priority of %worldguardregions%",
+        "%worldguardregions%'[s] [region] priority"
+      ],
+      "returnType": {
+        "id": "TypeNumber",
+        "name": "Number"
+      }
+    },
     "ExprRegionParent": {
       "origin": {
         "name": "skript-worldguard",
@@ -231,7 +235,7 @@
         "all [[of] the] parent regions of %worldguardregions%"
       ],
       "returnType": {
-        "id": "TypeRegion",
+        "id": "TypeWorldguardregion",
         "name": "Region"
       }
     },
@@ -282,7 +286,7 @@
         "[the] regions %direction% %locations%"
       ],
       "returnType": {
-        "id": "TypeRegion",
+        "id": "TypeWorldguardregion",
         "name": "Region"
       }
     }
@@ -343,7 +347,7 @@
       "eventValues": [
         {
           "type": {
-            "id": "TypeRegion",
+            "id": "TypeWorldguardregion",
             "name": "Region"
           },
           "plural": false,
@@ -363,7 +367,7 @@
         },
         {
           "type": {
-            "id": "TypeWorldguardMoveType",
+            "id": "TypeWorldguardmovetype",
             "name": "WorldGuard Move Type"
           },
           "plural": false,
@@ -419,28 +423,6 @@
         "%worldguardregions% (isn't|is not|aren't|are not) (temporary|transient)"
       ]
     },
-    "CondIsValidRegionId": {
-      "origin": {
-        "name": "skript-worldguard",
-        "class": "org.skriptlang.skriptworldguard.elements.conditions.CondIsValidRegionId"
-      },
-      "id": "CondIsValidRegionId",
-      "name": "Is Valid Region ID",
-      "description": "A condition to test whether a string is a valid region ID.\nValid region IDs only contain letters, numbers, underscores, commas, single quotation marks, dashes, pluses, or forward slashes.",
-      "examples": [
-        "command /createregion <text>:\n\tif the text-argument is not a valid region id:\n\t\tmessage \"<red>'%text-argument%' is not a valid region ID\")\n\t# here is where the rest of the command would go :)"
-      ],
-      "since": [
-        "1.0"
-      ],
-      "requirements": [],
-      "keywords": [],
-      "deprecated": false,
-      "patterns": [
-        "%strings% (is|are) [a] valid [worldguard] region id",
-        "%strings% (isn't|is not|aren't|are not) [a] valid [worldguard] region id"
-      ]
-    },
     "CondIsRegionType": {
       "origin": {
         "name": "skript-worldguard",
@@ -461,6 +443,28 @@
       "patterns": [
         "%worldguardregions% (is|are) [a] (global|cuboid[s]|polygon[s|al]) [region[s]]",
         "%worldguardregions% (isn't|is not|aren't|are not) [a] (global|cuboid[s]|polygon[s|al]) [region[s]]"
+      ]
+    },
+    "CondIsValidRegionId": {
+      "origin": {
+        "name": "skript-worldguard",
+        "class": "org.skriptlang.skriptworldguard.elements.conditions.CondIsValidRegionId"
+      },
+      "id": "CondIsValidRegionId",
+      "name": "Is Valid Region ID",
+      "description": "A condition to test whether a string is a valid region ID.\nValid region IDs only contain letters, numbers, underscores, commas, single quotation marks, dashes, pluses, or forward slashes.",
+      "examples": [
+        "command /createregion <text>:\n\tif the text-argument is not a valid region id:\n\t\tmessage \"<red>'%text-argument%' is not a valid region ID\")\n\t# here is where the rest of the command would go :)"
+      ],
+      "since": [
+        "1.0"
+      ],
+      "requirements": [],
+      "keywords": [],
+      "deprecated": false,
+      "patterns": [
+        "%strings% (is|are) [a] valid [worldguard] region id",
+        "%strings% (isn't|is not|aren't|are not) [a] valid [worldguard] region id"
       ]
     },
     "CondIsParentRegion": {
@@ -512,11 +516,12 @@
   },
   "structures": {},
   "types": {
-    "TypeRegion": {
+    "TypeWorldguardregion": {
       "origin": {
-        "name": "skript-worldguard"
+        "name": "skript-worldguard",
+        "class": "org.skriptlang.skriptworldguard.SkriptWorldGuard"
       },
-      "id": "TypeRegion",
+      "id": "TypeWorldguardregion",
       "name": "Region",
       "description": "A WorldGuard region.",
       "examples": [
@@ -556,10 +561,36 @@
           "description": "The name (ID) of a region as text. Cannot be changed."
         }
       ]
+    },
+    "TypeWorldguardmovetype": {
+      "origin": {
+        "name": "skript-worldguard",
+        "class": "org.skriptlang.skriptworldguard.SkriptWorldGuard"
+      },
+      "id": "TypeWorldguardmovetype",
+      "name": "WorldGuard Move Type",
+      "description": "The move type in a WorldGuard enter/leave event.",
+      "examples": [
+        "on region enter:\n\tsend \"The move type is %the move type%\""
+      ],
+      "since": [
+        "1.0"
+      ],
+      "requirements": [
+        "WorldGuard 7"
+      ],
+      "keywords": [],
+      "deprecated": false,
+      "usage": [
+        "respawn, respawning, gliding, move, embarking, embark, teleport, teleporting, teleportation, riding, ride, non cancellable, cancellable, swimming, not cancellable, glide, moving, swim"
+      ],
+      "codename": {
+        "singular": "worldguardmovetype",
+        "plural": "worldguardmovetypes"
+      },
+      "properties": []
     }
   },
-  "experiments": {},
   "functions": {},
-  "properties": {},
   "entitydatas": {}
 }
