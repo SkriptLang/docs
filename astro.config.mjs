@@ -60,6 +60,9 @@ export default defineConfig({
             expressiveCode: {
                 tabWidth: 4,
                 styleOverrides: { borderRadius: '0.25rem' },
+                shiki: {
+                    engine: "javascript"
+                },
             },
         }),
     ],
