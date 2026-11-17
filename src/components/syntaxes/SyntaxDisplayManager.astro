@@ -500,7 +500,7 @@ export interface VersionFilterData {
     });
 
     document.addEventListener('click', event => {
-        if (!(event.target instanceof HTMLElement)) { // not a link
+        if (!(event.target instanceof Element)) { // not a link
             return;
         }
         const a = event.target.closest('a');
@@ -513,15 +513,9 @@ export interface VersionFilterData {
             console.log(id);
             // show card dialog
             showSyntaxDialog(id);
-        } else if (a.classList.contains('sl-anchor-link')) { // copying a link to a syntax card
+        } else if (a.classList.contains('heading-link')) { // copying a link to a syntax card
             event.preventDefault();
-            const url = new URL(a.href);
-            const hash = url.hash.substring(1);
-            url.hash = '';
-            url.search = '';
-            url.searchParams.set('search', '#' + hash);
-            url.hash = '';
-            navigator.clipboard.writeText(url.href).then(() => {
+            navigator.clipboard.writeText(a.href).then(() => {
                 a.style.color = 'lime';
                 setTimeout(() => {
                     a.style.color = '';
