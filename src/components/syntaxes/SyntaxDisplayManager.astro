@@ -6,7 +6,8 @@ import type {Version} from "../../utils/utils.ts";
 import type {DocumentableType, DocumentableSubType} from "./documentation.ts";
 
 export interface VirtualItem {
-    element: HTMLElement; // actual html element to show/hide
+    templateElement: HTMLElement; // the representation of this element within the template
+    liveElement?: HTMLElement; // the live representation of this element within the viewport
     syntaxName: string;   // display name of syntax
     syntaxType: DocumentableType;   // type of syntax (for type filtering)
     syntaxSubType?: DocumentableSubType; // subtype of syntax (for type filtering)
@@ -32,21 +33,22 @@ export interface VersionFilterData {
 
     // obtain container references
     const wrapper = document.getElementById('syntaxes-wrapper')!;
-    const viewport = document.getElementById('syntaxes-viewport')!;
+    const viewport = document.getElementById('syntaxes-viewport')!
+    const templates = document.getElementById('syntaxes-templates')!;
 
     // map all syntaxes into VirtualItems
-    const allItems: VirtualItem[] = Array.from(viewport.children).map((ele, index) => {
-        const element = ele as HTMLElement;
+    const allItems: VirtualItem[] = Array.from(templates.children).map((ele, index) => {
+        const templateElement = (ele as HTMLTemplateElement).content.firstChild as HTMLElement;
 
         // get info + measure height
-        const syntaxType = element.dataset.syntaxType as DocumentableType;
-        const syntaxSubType = element.dataset.syntaxSubType as DocumentableSubType | undefined;
-        const syntaxId = element.dataset.syntaxId!;
-        const syntaxName = element.dataset.syntaxName!;
+        const syntaxType = templateElement.dataset.syntaxType as DocumentableType;
+        const syntaxSubType = templateElement.dataset.syntaxSubType as DocumentableSubType | undefined;
+        const syntaxId = templateElement.dataset.syntaxId!;
+        const syntaxName = templateElement.dataset.syntaxName!;
         const sidebarElement = document.getElementById(`sidebar-${syntaxId}`);
 
-        return { 
-            element: element,
+        return {
+            templateElement: templateElement,
             syntaxName,
             syntaxType,
             syntaxSubType,
@@ -55,6 +57,11 @@ export interface VersionFilterData {
             originalIndex: index
         };
     });
+    {
+        // TODO wtf fix this somehow
+        const firstCodeBlock = allItems[0].templateElement.querySelector('.expressive-code')!;
+        document.head.append(firstCodeBlock.children[0], firstCodeBlock.children[1]);
+    }
 
     // ---------------
     // Filtering Logic
@@ -81,7 +88,7 @@ export interface VersionFilterData {
         // Addon filter
         if (addonFilter.size !== 0) {
             filtered = filtered.filter(item => {
-                const itemAddon = item.element.dataset.syntaxAddon;
+                const itemAddon = item.templateElement.dataset.syntaxAddon;
                 if (itemAddon) {
                     return addonFilter.has(itemAddon);
                 }
@@ -110,8 +117,8 @@ export interface VersionFilterData {
         // Return type filter
         if (returnTypeFilter.length > 0) {
             filtered = filtered.filter(item => {
-                if (item.element.dataset.syntaxReturns) {
-                    const candidate = (item.element.dataset.syntaxReturns as string);
+                if (item.templateElement.dataset.syntaxReturns) {
+                    const candidate = (item.templateElement.dataset.syntaxReturns as string);
                     // TODO inheritance mapping?
                     return candidate.includes(returnTypeFilter);
                 }
@@ -122,7 +129,7 @@ export interface VersionFilterData {
         // Version filter
         if (versionFilter.versions.length > 0) {
             filtered = filtered.filter(item => {
-                let since: string[] | undefined = item.element.dataset.syntaxSince?.split(",");
+                let since: string[] | undefined = item.templateElement.dataset.syntaxSince?.split(",");
                 if (!since) {
                     return false;
                 }
@@ -223,7 +230,7 @@ export interface VersionFilterData {
             return 0;
         }
         let score = 0;
-        const element = item.element;
+        const element = item.templateElement;
 
         // Handle exact ID lookup
         const id = item.syntaxId.toLowerCase();
@@ -358,7 +365,7 @@ export interface VersionFilterData {
         loadElements(index - nextIndexToLoad, false);
         // load more for padding
         loadElements(INITIAL_LOAD_AMOUNT);
-        filteredItems[index].element.scrollIntoView({
+        filteredItems[index].liveElement!.scrollIntoView({
             block: 'center',
             behavior: 'smooth',
         });
@@ -403,10 +410,12 @@ export interface VersionFilterData {
             }
         }
     }, { rootMargin: '-45% 0px -55% 0px' });
+    // this is used for observing the top/bottom elements of the page so that we can actually sync to those
+    // since they likely would not appear in the middle of the page
     const scrollEndObserver = new IntersectionObserver(entries => {
         for (const entry of entries) {
             if (entry.isIntersecting) {
-                const index = entry.target === filteredItems[0].element ? 0 : filteredItems.length - 1;
+                const index = entry.target === filteredItems[0].liveElement ? 0 : filteredItems.length - 1;
                 syncSidebarTo(filteredItems[index].syntaxId);
                 break;
             }
@@ -414,18 +423,24 @@ export interface VersionFilterData {
     }, { threshold: 0.95 });
 
     function loadElements(count: number, addToLoadObserver: boolean = true): void {
+        count = Math.min(count, filteredItems.length - nextIndexToLoad);
+        const fragments: DocumentFragment[] = new Array(count);
         for (let i = 0; i < count; i++) {
-            if (nextIndexToLoad === filteredItems.length) {
-                break;
-            }
-            const element = filteredItems[nextIndexToLoad].element;
-            element.style.display = '';
+            const fragment = filteredItems[nextIndexToLoad].templateElement.parentNode as DocumentFragment;
+            const liveFragment = fragment.cloneNode(true) as DocumentFragment;
+            fragments[i] = liveFragment;
+            const liveElement = liveFragment.firstElementChild as HTMLElement;
+            filteredItems[nextIndexToLoad].liveElement = liveElement;
             if (addToLoadObserver) {
-                loadObserver.observe(element);
+                loadObserver.observe(liveElement);
             }
-            scrollObserver.observe(element);
+            scrollObserver.observe(liveElement);
+            if (nextIndexToLoad === filteredItems.length - 1) {
+                scrollEndObserver.observe(liveElement!);
+            }
             nextIndexToLoad++;
         }
+        viewport.append(...fragments);
     }
 
     // runs the full render loop, filtering, calc positions, update sidebar, renderVisible, etc
@@ -438,18 +453,19 @@ export interface VersionFilterData {
         // get new filtered items
         const newFilteredItems = getFilteredItems();
 
-        // hide all currently visible elements
+        // remove all currently visible elements
         loadObserver.disconnect();
         scrollObserver.disconnect();
         scrollEndObserver.disconnect();
         for (let i = 0; i < nextIndexToLoad; i++) {
-            filteredItems[i].element.style.display = 'none';
+            filteredItems[i].liveElement!.remove();
+            filteredItems[i].liveElement = undefined;
         }
         filteredItems = newFilteredItems;
 
         // set ordering for new elements
         filteredItems.forEach((item, index) => {
-            item.element.style.order = index.toString();
+            item.templateElement.style.order = index.toString();
         });
 
         // now render
@@ -459,8 +475,7 @@ export interface VersionFilterData {
         // prepare sidebar
         updateSidebar();
         if (filteredItems.length > 1) {
-            scrollEndObserver.observe(filteredItems[0].element);
-            scrollEndObserver.observe(filteredItems[filteredItems.length - 1].element);
+            scrollEndObserver.observe(filteredItems[0].liveElement!);
         }
 
         // show message when no results found
@@ -525,12 +540,13 @@ export interface VersionFilterData {
     });
 
     function showSyntaxDialog(syntaxId: string) {
-        const cardElement = document.getElementById(`card-${syntaxId}`)!;
-        const dialogCardElement = cardElement.cloneNode(true) as HTMLElement;
-        dialogCardElement.id = '';
-        dialogCardElement.style.display = '';
-        dialogCardElement.style.margin = '0';
-        cardDialogFrame.replaceChildren(dialogCardElement);
+        const template = document.getElementById(`template-card-${syntaxId}`) as HTMLTemplateElement;
+        const fragment = template.content.cloneNode(true) as DocumentFragment;
+        // remove section ID
+        fragment.firstElementChild!.id = '';
+        // remove card heading ID
+        fragment.firstElementChild!.firstElementChild!.firstElementChild!.id = '';
+        cardDialogFrame.replaceChildren(fragment);
         cardDialog.showModal();
     }
 

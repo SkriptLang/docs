@@ -113,11 +113,14 @@ const sidebarEntries = syntaxes.map(syntax => ({
     </script>
     <h1 id="syntaxes-no-results" style="display: none;">No results were found.</h1>
     <div id="syntaxes-wrapper">
-        <div id="syntaxes-viewport">
+        <div id="syntaxes-templates" style="display: none;">
             {syntaxes.map(syntax => (
-                <DocumentableCard defaultProps={{allSyntaxes: syntaxes, currentVersion: currentVersion, hide: true}} documentation={syntax}/>
+                <template id=`template-card-${syntax.id}`>
+                    <DocumentableCard defaultProps={{allSyntaxes: syntaxes, currentVersion: currentVersion}} documentation={syntax}/>
+                </template>
             ))}
         </div>
+        <div id="syntaxes-viewport" />
     </div>
 
     <dialog id="syntaxes-card-dialog">
