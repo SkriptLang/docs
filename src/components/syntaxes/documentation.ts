@@ -180,6 +180,7 @@ export interface EventValue {
     type: DocumentableReference,
     plural: boolean,
     time: EventValueTime,
+    description: string,
     patterns: string[],
     supportedChangeModes: ChangeMode[],
 }

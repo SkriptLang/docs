@@ -1,10 +1,10 @@
 ---
-import { type Event } from '../documentation'
+import {type Event, type EventValue} from '../documentation'
 import SyntaxCard from "./SyntaxCard.astro";
 import SyntaxBadge from "../SyntaxBadge.astro";
 import type {DocumentableCardProps} from "./DocumentableCard.astro";
 import {changeSingular} from "../../../utils/utils.ts";
-import {ChangeMode, ChangeModeMeta, EventValueTime, EventValueTimeMeta} from "../documentation.ts";
+import {ChangeModeMeta, EventValueTime, EventValueTimeMeta} from "../documentation.ts";
 
 interface Props {
     defaultProps: DocumentableCardProps,
@@ -12,6 +12,24 @@ interface Props {
 }
 
 const { defaultProps, event }: Props = Astro.props;
+
+const anyEventValueHasDescription = event.eventValues.some(eventValue =>
+    eventValue.supportedChangeModes.length !== 0 || eventValue.description.length !== 0);
+function getDescription(eventValue: EventValue): string | undefined {
+    if (!anyEventValueHasDescription) {
+        return undefined;
+    }
+    let description = eventValue.description;
+    if (eventValue.supportedChangeModes.length !== 0) {
+        if (description.length !== 0 && !description.endsWith(".")) {
+            description += ".";
+        }
+        description += "Supports " + eventValue.supportedChangeModes
+            .map(mode => ChangeModeMeta[mode].label)
+            .join(", ");
+    }
+    return description.length === 0 ? " " : description;
+}
 ---
 
 <SyntaxCard defaultProps={defaultProps} syntax={event}>
@@ -30,8 +48,7 @@ const { defaultProps, event }: Props = Astro.props;
                                 text: (eventValue.time === EventValueTime.Now ? "" : `(${EventValueTimeMeta[eventValue.time].label}) `) +
                                     changeSingular(eventValue.type.name, eventValue.plural),
                                 cardRef: eventValue.type.id,
-                                cardRefText: eventValue.supportedChangeModes.length > 0 ? 'Supports ' +
-                                    eventValue.supportedChangeModes.map(mode => ChangeModeMeta[mode].label).join(', ') : undefined,
+                                cardRefText: getDescription(eventValue),
                             }))
                         }
                         description="These are values providing contextual information about the event."

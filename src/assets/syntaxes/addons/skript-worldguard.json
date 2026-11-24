@@ -352,6 +352,7 @@
           },
           "plural": false,
           "time": "NOW",
+          "description": "",
           "patterns": [],
           "supportedChangeModes": []
         },
@@ -362,6 +363,7 @@
           },
           "plural": false,
           "time": "NOW",
+          "description": "",
           "patterns": [],
           "supportedChangeModes": []
         },
@@ -372,6 +374,7 @@
           },
           "plural": false,
           "time": "NOW",
+          "description": "",
           "patterns": [],
           "supportedChangeModes": []
         }
