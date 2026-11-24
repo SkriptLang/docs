@@ -7,7 +7,7 @@
   },
   "source": {
     "name": "Skript",
-    "version": "2.17.1-nightly-973a6ae"
+    "version": "2.17.1-nightly-41f9cd3"
   },
   "expressions": {
     "ExprNow": {
@@ -33,6 +33,72 @@
       "returnType": {
         "id": "TypeDate",
         "name": "Date"
+      }
+    },
+    "ExprJoinMessage": {
+      "origin": {
+        "name": "Skript",
+        "class": "org.skriptlang.skript.bukkit.entity.player.elements.expressions.ExprJoinMessage",
+        "modules": [
+          "player",
+          "entity",
+          "bukkit"
+        ]
+      },
+      "id": "ExprJoinMessage",
+      "name": "Join Message",
+      "description": "The message sent to all online players when a player joins the server.",
+      "examples": [
+        "on first join:\n\tset the join message to \"Welcome %player% to our awesome server!\"",
+        "on join:\n\tplayer has played before\n\tset the join message to \"Welcome back, %player%!\""
+      ],
+      "since": [
+        "1.4.9"
+      ],
+      "requirements": [],
+      "keywords": [],
+      "deprecated": false,
+      "events": [
+        {
+          "id": "EvtJoin",
+          "name": "On Join"
+        },
+        {
+          "id": "EvtFirstJoin",
+          "name": "On First Join"
+        }
+      ],
+      "patterns": [
+        "[the] (join|log[ ]in)( |-)message"
+      ],
+      "returnType": {
+        "id": "TypeTextcomponent",
+        "name": "Text Component"
+      }
+    },
+    "ExprOfflinePlayers": {
+      "origin": {
+        "name": "Skript",
+        "class": "ch.njol.skript.expressions.ExprOfflinePlayers"
+      },
+      "id": "ExprOfflinePlayers",
+      "name": "Offline players",
+      "description": "All players that have ever joined the server. This includes the players currently online.",
+      "examples": [
+        "send \"Size of all players who have joined the server: %size of all offline players%\""
+      ],
+      "since": [
+        "2.2-dev35"
+      ],
+      "requirements": [],
+      "keywords": [],
+      "deprecated": false,
+      "patterns": [
+        "[all [[of] the]|the] offline[ ]players"
+      ],
+      "returnType": {
+        "id": "TypeOfflineplayer",
+        "name": "Offline Player"
       }
     },
     "ExprConsumedItem": {
@@ -70,56 +136,6 @@
           "name": "On Entity Shoot Bow"
         }
       ]
-    },
-    "ExprOfflinePlayers": {
-      "origin": {
-        "name": "Skript",
-        "class": "ch.njol.skript.expressions.ExprOfflinePlayers"
-      },
-      "id": "ExprOfflinePlayers",
-      "name": "Offline players",
-      "description": "All players that have ever joined the server. This includes the players currently online.",
-      "examples": [
-        "send \"Size of all players who have joined the server: %size of all offline players%\""
-      ],
-      "since": [
-        "2.2-dev35"
-      ],
-      "requirements": [],
-      "keywords": [],
-      "deprecated": false,
-      "patterns": [
-        "[all [[of] the]|the] offline[ ]players"
-      ],
-      "returnType": {
-        "id": "TypeOfflineplayer",
-        "name": "Offline Player"
-      }
-    },
-    "ExprWorlds": {
-      "origin": {
-        "name": "Skript",
-        "class": "ch.njol.skript.expressions.ExprWorlds"
-      },
-      "id": "ExprWorlds",
-      "name": "Worlds",
-      "description": "All worlds of the server, useful for looping.",
-      "examples": [
-        "loop all worlds:\n\tbroadcast \"You're in %loop-world%\" to loop-world"
-      ],
-      "since": [
-        "1.0"
-      ],
-      "requirements": [],
-      "keywords": [],
-      "deprecated": false,
-      "patterns": [
-        "[all [[of] the]|the] worlds"
-      ],
-      "returnType": {
-        "id": "TypeWorld",
-        "name": "World"
-      }
     },
     "ExprTamer": {
       "origin": {
@@ -234,35 +250,6 @@
       },
       "subType": "section_expression"
     },
-    "ExprLoot": {
-      "origin": {
-        "name": "Skript",
-        "class": "org.skriptlang.skript.bukkit.loottables.elements.expressions.ExprLoot",
-        "modules": [
-          "loot tables",
-          "bukkit"
-        ]
-      },
-      "id": "ExprLoot",
-      "name": "Loot",
-      "description": "The loot that will be generated in a 'loot generate' event.",
-      "examples": [
-        "on loot generate:\n\tchance of 10%\n\tadd 64 diamonds to loot\n\tsend \"You hit the jackpot!!\""
-      ],
-      "since": [
-        "2.7"
-      ],
-      "requirements": [],
-      "keywords": [],
-      "deprecated": false,
-      "patterns": [
-        "[the] loot"
-      ],
-      "returnType": {
-        "id": "TypeItemstack",
-        "name": "Item"
-      }
-    },
     "LitPi": {
       "origin": {
         "name": "Skript",
@@ -314,6 +301,35 @@
         "name": "Text"
       }
     },
+    "ExprLoot": {
+      "origin": {
+        "name": "Skript",
+        "class": "org.skriptlang.skript.bukkit.loottables.elements.expressions.ExprLoot",
+        "modules": [
+          "loot tables",
+          "bukkit"
+        ]
+      },
+      "id": "ExprLoot",
+      "name": "Loot",
+      "description": "The loot that will be generated in a 'loot generate' event.",
+      "examples": [
+        "on loot generate:\n\tchance of 10%\n\tadd 64 diamonds to loot\n\tsend \"You hit the jackpot!!\""
+      ],
+      "since": [
+        "2.7"
+      ],
+      "requirements": [],
+      "keywords": [],
+      "deprecated": false,
+      "patterns": [
+        "[the] loot"
+      ],
+      "returnType": {
+        "id": "TypeItemstack",
+        "name": "Item"
+      }
+    },
     "ExprAffectedEntities": {
       "origin": {
         "name": "Skript",
@@ -344,42 +360,6 @@
           "name": "On AoE Cloud Effect"
         }
       ]
-    },
-    "ExprKickMessage": {
-      "origin": {
-        "name": "Skript",
-        "class": "org.skriptlang.skript.bukkit.entity.player.elements.expressions.ExprKickMessage",
-        "modules": [
-          "player",
-          "entity",
-          "bukkit"
-        ]
-      },
-      "id": "ExprKickMessage",
-      "name": "Kick Message",
-      "description": "The message sent to all online players when a player is kicked from server.",
-      "examples": [
-        "on kick:\n\tset the kick message to \"%player% was booted from the server! They won't be missed...\""
-      ],
-      "since": [
-        "2.0 beta 9"
-      ],
-      "requirements": [],
-      "keywords": [],
-      "deprecated": false,
-      "events": [
-        {
-          "id": "EvtKick",
-          "name": "On Kick"
-        }
-      ],
-      "patterns": [
-        "[the] kick( |-)message"
-      ],
-      "returnType": {
-        "id": "TypeTextcomponent",
-        "name": "Text Component"
-      }
     },
     "ExprHanging": {
       "origin": {
@@ -478,41 +458,6 @@
         "name": "Living Entity"
       }
     },
-    "ExprDeathMessage": {
-      "origin": {
-        "name": "Skript",
-        "class": "org.skriptlang.skript.bukkit.entity.elements.expressions.ExprDeathMessage",
-        "modules": [
-          "entity",
-          "bukkit"
-        ]
-      },
-      "id": "ExprDeathMessage",
-      "name": "Death Message",
-      "description": "The message sent to all online players when a player dies.",
-      "examples": [
-        "on death of player:\n\tset the death message to \"%player% died!\""
-      ],
-      "since": [
-        "2.0"
-      ],
-      "requirements": [],
-      "keywords": [],
-      "deprecated": false,
-      "events": [
-        {
-          "id": "EvtDeath",
-          "name": "On Death"
-        }
-      ],
-      "patterns": [
-        "[the] death( |-)message"
-      ],
-      "returnType": {
-        "id": "TypeTextcomponent",
-        "name": "Text Component"
-      }
-    },
     "LitDoubleMaxValue": {
       "origin": {
         "name": "Skript",
@@ -567,6 +512,42 @@
       "returnType": {
         "id": "TypeNumber",
         "name": "Number"
+      }
+    },
+    "ExprQuitMessage": {
+      "origin": {
+        "name": "Skript",
+        "class": "org.skriptlang.skript.bukkit.entity.player.elements.expressions.ExprQuitMessage",
+        "modules": [
+          "player",
+          "entity",
+          "bukkit"
+        ]
+      },
+      "id": "ExprQuitMessage",
+      "name": "Quit Message",
+      "description": "The message sent to all online players when a player quits the server.",
+      "examples": [
+        "on quit:\n\tif {vanish::%player's uuid%} is set:\n\t\tclear the quit message\n\telse:\n\t\tset the quit message to \"%player% left this server... they will be missed!\""
+      ],
+      "since": [
+        "1.4.9"
+      ],
+      "requirements": [],
+      "keywords": [],
+      "deprecated": false,
+      "events": [
+        {
+          "id": "EvtQuit",
+          "name": "On Quit"
+        }
+      ],
+      "patterns": [
+        "[the] (quit|leave|log[ ]out)( |-)message"
+      ],
+      "returnType": {
+        "id": "TypeTextcomponent",
+        "name": "Text Component"
       }
     },
     "ExprParseError": {
@@ -652,47 +633,6 @@
         "name": "Location"
       }
     },
-    "ExprJoinMessage": {
-      "origin": {
-        "name": "Skript",
-        "class": "org.skriptlang.skript.bukkit.entity.player.elements.expressions.ExprJoinMessage",
-        "modules": [
-          "player",
-          "entity",
-          "bukkit"
-        ]
-      },
-      "id": "ExprJoinMessage",
-      "name": "Join Message",
-      "description": "The message sent to all online players when a player joins the server.",
-      "examples": [
-        "on first join:\n\tset the join message to \"Welcome %player% to our awesome server!\"",
-        "on join:\n\tplayer has played before\n\tset the join message to \"Welcome back, %player%!\""
-      ],
-      "since": [
-        "1.4.9"
-      ],
-      "requirements": [],
-      "keywords": [],
-      "deprecated": false,
-      "events": [
-        {
-          "id": "EvtJoin",
-          "name": "On Join"
-        },
-        {
-          "id": "EvtFirstJoin",
-          "name": "On First Join"
-        }
-      ],
-      "patterns": [
-        "[the] (join|log[ ]in)( |-)message"
-      ],
-      "returnType": {
-        "id": "TypeTextcomponent",
-        "name": "Text Component"
-      }
-    },
     "LitIntMaxValue": {
       "origin": {
         "name": "Skript",
@@ -716,6 +656,37 @@
       "returnType": {
         "id": "TypeNumber",
         "name": "Number"
+      }
+    },
+    "ExprAppliedEffect": {
+      "origin": {
+        "name": "Skript",
+        "class": "ch.njol.skript.expressions.ExprAppliedEffect"
+      },
+      "id": "ExprAppliedEffect",
+      "name": "Applied Beacon Effect",
+      "description": "The type of effect applied by a beacon.",
+      "examples": [
+        "on beacon effect:\n\tif the applied effect is primary beacon effect:\n\t\tbroadcast \"Is Primary\"\n\telse if applied effect = secondary effect:\n\t\tbroadcast \"Is Secondary\""
+      ],
+      "since": [
+        "2.10"
+      ],
+      "requirements": [],
+      "keywords": [],
+      "deprecated": false,
+      "events": [
+        {
+          "id": "EvtBeaconEffect",
+          "name": "On Beacon Effect"
+        }
+      ],
+      "patterns": [
+        "[the] applied [beacon] effect"
+      ],
+      "returnType": {
+        "id": "TypePotioneffecttype",
+        "name": "Potion Effect Type"
       }
     },
     "ExprExperience": {
@@ -970,31 +941,6 @@
         }
       ]
     },
-    "ExprRandomUUID": {
-      "origin": {
-        "name": "Skript",
-        "class": "ch.njol.skript.expressions.ExprRandomUUID"
-      },
-      "id": "ExprRandomUUID",
-      "name": "Random UUID",
-      "description": "Returns a random UUID.",
-      "examples": [
-        "set {_uuid} to random uuid"
-      ],
-      "since": [
-        "2.5.1, 2.11 (return UUIDs)"
-      ],
-      "requirements": [],
-      "keywords": [],
-      "deprecated": false,
-      "patterns": [
-        "[a] random uuid"
-      ],
-      "returnType": {
-        "id": "TypeUuid",
-        "name": "UUID"
-      }
-    },
     "ExprSentCommands": {
       "origin": {
         "name": "Skript",
@@ -1225,71 +1171,40 @@
         "name": "Object"
       }
     },
-    "ExprQuitMessage": {
+    "ExprOnScreenKickMessage": {
       "origin": {
         "name": "Skript",
-        "class": "org.skriptlang.skript.bukkit.entity.player.elements.expressions.ExprQuitMessage",
+        "class": "org.skriptlang.skript.bukkit.entity.player.elements.expressions.ExprOnScreenKickMessage",
         "modules": [
           "player",
           "entity",
           "bukkit"
         ]
       },
-      "id": "ExprQuitMessage",
-      "name": "Quit Message",
-      "description": "The message sent to all online players when a player quits the server.",
+      "id": "ExprOnScreenKickMessage",
+      "name": "On-Screen Kick Message",
+      "description": "The kick message that is displayed on a player's screen when they are kicked.",
       "examples": [
-        "on quit:\n\tif {vanish::%player's uuid%} is set:\n\t\tclear the quit message\n\telse:\n\t\tset the quit message to \"%player% left this server... they will be missed!\""
+        "on kick:\n\tset the on-screen kick message to \"You've been booted!\""
       ],
       "since": [
-        "1.4.9"
+        "2.12"
       ],
       "requirements": [],
       "keywords": [],
       "deprecated": false,
       "events": [
         {
-          "id": "EvtQuit",
-          "name": "On Quit"
+          "id": "EvtKick",
+          "name": "On Kick"
         }
       ],
       "patterns": [
-        "[the] (quit|leave|log[ ]out)( |-)message"
+        "[the] on-screen kick message"
       ],
       "returnType": {
         "id": "TypeTextcomponent",
         "name": "Text Component"
-      }
-    },
-    "ExprAppliedEffect": {
-      "origin": {
-        "name": "Skript",
-        "class": "ch.njol.skript.expressions.ExprAppliedEffect"
-      },
-      "id": "ExprAppliedEffect",
-      "name": "Applied Beacon Effect",
-      "description": "The type of effect applied by a beacon.",
-      "examples": [
-        "on beacon effect:\n\tif the applied effect is primary beacon effect:\n\t\tbroadcast \"Is Primary\"\n\telse if applied effect = secondary effect:\n\t\tbroadcast \"Is Secondary\""
-      ],
-      "since": [
-        "2.10"
-      ],
-      "requirements": [],
-      "keywords": [],
-      "deprecated": false,
-      "events": [
-        {
-          "id": "EvtBeaconEffect",
-          "name": "On Beacon Effect"
-        }
-      ],
-      "patterns": [
-        "[the] applied [beacon] effect"
-      ],
-      "returnType": {
-        "id": "TypePotioneffecttype",
-        "name": "Potion Effect Type"
       }
     },
     "ExprTagsOfType": {
@@ -1387,6 +1302,43 @@
       "returnType": {
         "id": "TypeString",
         "name": "Text"
+      }
+    },
+    "ExprMOTD": {
+      "origin": {
+        "name": "Skript",
+        "class": "org.skriptlang.skript.bukkit.misc.elements.expressions.ExprMOTD",
+        "modules": [
+          "misc",
+          "bukkit"
+        ]
+      },
+      "id": "ExprMOTD",
+      "name": "Message of the Day",
+      "description": "The message of the day in the server list.\nThis can be changed in a <a href='#server_list_ping'>server list ping</a> event only.\nUse 'default MOTD' to obtain the default MOTD set through the server configuration. This cannot be changed.",
+      "examples": [
+        "on server ling ping:\n\tset the motd to \"<red>Join our server today!\""
+      ],
+      "since": [
+        "2.3"
+      ],
+      "requirements": [],
+      "keywords": [
+        "MOTD"
+      ],
+      "deprecated": false,
+      "events": [
+        {
+          "id": "EvtServerListPing",
+          "name": "On Server List Ping"
+        }
+      ],
+      "patterns": [
+        "[the] [default|shown|displayed] (motd|message of [the] day)"
+      ],
+      "returnType": {
+        "id": "TypeTextcomponent",
+        "name": "Text Component"
       }
     },
     "ExprCommand": {
@@ -1525,6 +1477,77 @@
         }
       ]
     },
+    "ExprChatMessage": {
+      "origin": {
+        "name": "Skript",
+        "class": "org.skriptlang.skript.bukkit.entity.player.elements.expressions.ExprChatMessage",
+        "modules": [
+          "player",
+          "entity",
+          "bukkit"
+        ]
+      },
+      "id": "ExprChatMessage",
+      "name": "Chat Message",
+      "description": "The chat message in a chat event.",
+      "examples": [
+        "on chat:\n\tplayer has permission \"admin\"\n\tset the message to \"<light red>%message%\""
+      ],
+      "since": [
+        "1.4.6, 2.15 (support for reset)"
+      ],
+      "requirements": [],
+      "keywords": [],
+      "deprecated": false,
+      "events": [
+        {
+          "id": "EvtChat",
+          "name": "On Chat"
+        }
+      ],
+      "patterns": [
+        "[the] [chat( |-)]message"
+      ],
+      "returnType": {
+        "id": "TypeTextcomponent",
+        "name": "Text Component"
+      }
+    },
+    "ExprUnknownCommandMessage": {
+      "origin": {
+        "name": "Skript",
+        "class": "org.skriptlang.skript.bukkit.command.elements.expressions.ExprUnknownCommandMessage",
+        "modules": [
+          "command",
+          "bukkit"
+        ]
+      },
+      "id": "ExprUnknownCommandMessage",
+      "name": "Unknown Command Message",
+      "description": "The message sent to a player when executing an unknown command.",
+      "examples": [
+        "\ton unknown command execution:\n\t\tadd 1 to {-command_fails::%player%}\n\t\twait 30 seconds:\n\t\t\tremove 1 from {-command_fails::%player%}\n\t\tif {-command_fails::%player%} is greater than or equal to 5:\n\t\t\tpush the player upwards\n\t\t\tset the unknown command message to \"<red>You are executing too many unknown commands too fast!\""
+      ],
+      "since": [
+        "2.17"
+      ],
+      "requirements": [],
+      "keywords": [],
+      "deprecated": false,
+      "events": [
+        {
+          "id": "EvtUnknownCommandExecution",
+          "name": "On Unknown Command Execution"
+        }
+      ],
+      "patterns": [
+        "[the] (unknown|non-existent) command message"
+      ],
+      "returnType": {
+        "id": "TypeTextcomponent",
+        "name": "Text Component"
+      }
+    },
     "ExprWhitelist": {
       "origin": {
         "name": "Skript",
@@ -1641,6 +1664,31 @@
       "returnType": {
         "id": "TypeUnleashreason",
         "name": "Unleash Reason"
+      }
+    },
+    "ExprRandomUUID": {
+      "origin": {
+        "name": "Skript",
+        "class": "ch.njol.skript.expressions.ExprRandomUUID"
+      },
+      "id": "ExprRandomUUID",
+      "name": "Random UUID",
+      "description": "Returns a random UUID.",
+      "examples": [
+        "set {_uuid} to random uuid"
+      ],
+      "since": [
+        "2.5.1, 2.11 (return UUIDs)"
+      ],
+      "requirements": [],
+      "keywords": [],
+      "deprecated": false,
+      "patterns": [
+        "[a] random uuid"
+      ],
+      "returnType": {
+        "id": "TypeUuid",
+        "name": "UUID"
       }
     },
     "ExprVersionString": {
@@ -1910,6 +1958,76 @@
         "name": "Player"
       }
     },
+    "ExprEnchantmentHint": {
+      "origin": {
+        "name": "Skript",
+        "class": "org.skriptlang.skript.bukkit.enchantments.elements.expressions.ExprEnchantmentHint",
+        "modules": [
+          "enchantment",
+          "bukkit"
+        ]
+      },
+      "id": "ExprEnchantmentHint",
+      "name": "Enchantment Hint",
+      "description": "The enchantment hint in an enchant event.\nThis is the enchantment that was shown to the player when they hovered over the enchantment offer that they eventually selected.",
+      "examples": [
+        "on enchant:\n\tsend \"You got at least %the enchantment hint%!\""
+      ],
+      "since": [
+        "2.16"
+      ],
+      "requirements": [],
+      "keywords": [],
+      "deprecated": false,
+      "events": [
+        {
+          "id": "EvtEnchant",
+          "name": "On Enchant"
+        }
+      ],
+      "patterns": [
+        "[the] enchant[ment] hint"
+      ],
+      "returnType": {
+        "id": "TypeEnchantment",
+        "name": "Enchantment"
+      }
+    },
+    "ExprBroadcastMessage": {
+      "origin": {
+        "name": "Skript",
+        "class": "org.skriptlang.skript.bukkit.misc.elements.expressions.ExprBroadcastMessage",
+        "modules": [
+          "misc",
+          "bukkit"
+        ]
+      },
+      "id": "ExprBroadcastMessage",
+      "name": "Broadcast Message",
+      "description": "The message broadcasted in a broadcast event.",
+      "examples": [
+        "on broadcast:\n\tset broadcast message to \"<light green>[BROADCAST] %broadcast message%\""
+      ],
+      "since": [
+        "2.10"
+      ],
+      "requirements": [],
+      "keywords": [],
+      "deprecated": false,
+      "events": [
+        {
+          "id": "EvtBroadcast",
+          "name": "On Broadcast"
+        }
+      ],
+      "patterns": [
+        "[the] broadcast(-|[ed] )message"
+      ],
+      "returnType": {
+        "id": "TypeTextcomponent",
+        "name": "Text Component"
+      }
+    },
     "ExprScripts": {
       "origin": {
         "name": "Skript",
@@ -1944,42 +2062,6 @@
       "returnType": {
         "id": "TypeScript",
         "name": "Script"
-      }
-    },
-    "ExprOnScreenKickMessage": {
-      "origin": {
-        "name": "Skript",
-        "class": "org.skriptlang.skript.bukkit.entity.player.elements.expressions.ExprOnScreenKickMessage",
-        "modules": [
-          "player",
-          "entity",
-          "bukkit"
-        ]
-      },
-      "id": "ExprOnScreenKickMessage",
-      "name": "On-Screen Kick Message",
-      "description": "The kick message that is displayed on a player's screen when they are kicked.",
-      "examples": [
-        "on kick:\n\tset the on-screen kick message to \"You've been booted!\""
-      ],
-      "since": [
-        "2.12"
-      ],
-      "requirements": [],
-      "keywords": [],
-      "deprecated": false,
-      "events": [
-        {
-          "id": "EvtKick",
-          "name": "On Kick"
-        }
-      ],
-      "patterns": [
-        "[the] on-screen kick message"
-      ],
-      "returnType": {
-        "id": "TypeTextcomponent",
-        "name": "Text Component"
       }
     },
     "LitNewLine": {
@@ -2035,43 +2117,6 @@
       "returnType": {
         "id": "TypeNumber",
         "name": "Number"
-      }
-    },
-    "ExprMOTD": {
-      "origin": {
-        "name": "Skript",
-        "class": "org.skriptlang.skript.bukkit.misc.elements.expressions.ExprMOTD",
-        "modules": [
-          "misc",
-          "bukkit"
-        ]
-      },
-      "id": "ExprMOTD",
-      "name": "Message of the Day",
-      "description": "The message of the day in the server list.\nThis can be changed in a <a href='#server_list_ping'>server list ping</a> event only.\nUse 'default MOTD' to obtain the default MOTD set through the server configuration. This cannot be changed.",
-      "examples": [
-        "on server ling ping:\n\tset the motd to \"<red>Join our server today!\""
-      ],
-      "since": [
-        "2.3"
-      ],
-      "requirements": [],
-      "keywords": [
-        "MOTD"
-      ],
-      "deprecated": false,
-      "events": [
-        {
-          "id": "EvtServerListPing",
-          "name": "On Server List Ping"
-        }
-      ],
-      "patterns": [
-        "[the] [default|shown|displayed] (motd|message of [the] day)"
-      ],
-      "returnType": {
-        "id": "TypeTextcomponent",
-        "name": "Text Component"
       }
     },
     "ExprRespawnLocation": {
@@ -2276,24 +2321,24 @@
         "name": "Item Type"
       }
     },
-    "ExprChatMessage": {
+    "ExprChatFormat": {
       "origin": {
         "name": "Skript",
-        "class": "org.skriptlang.skript.bukkit.entity.player.elements.expressions.ExprChatMessage",
+        "class": "org.skriptlang.skript.bukkit.entity.player.elements.expressions.ExprChatFormat",
         "modules": [
           "player",
           "entity",
           "bukkit"
         ]
       },
-      "id": "ExprChatMessage",
-      "name": "Chat Message",
-      "description": "The chat message in a chat event.",
+      "id": "ExprChatFormat",
+      "name": "Chat Format",
+      "description": "Can be used to modify the chat format.\nThe sender of a message is represented by player.\nThe message is represented by message.",
       "examples": [
-        "on chat:\n\tplayer has permission \"admin\"\n\tset the message to \"<light red>%message%\""
+        "set the chat format to \"<yellow>%player%<light gray>: <green>%message%\""
       ],
       "since": [
-        "1.4.6, 2.15 (support for reset)"
+        "2.2-dev31"
       ],
       "requirements": [],
       "keywords": [],
@@ -2305,42 +2350,7 @@
         }
       ],
       "patterns": [
-        "[the] [chat( |-)]message"
-      ],
-      "returnType": {
-        "id": "TypeTextcomponent",
-        "name": "Text Component"
-      }
-    },
-    "ExprUnknownCommandMessage": {
-      "origin": {
-        "name": "Skript",
-        "class": "org.skriptlang.skript.bukkit.command.elements.expressions.ExprUnknownCommandMessage",
-        "modules": [
-          "command",
-          "bukkit"
-        ]
-      },
-      "id": "ExprUnknownCommandMessage",
-      "name": "Unknown Command Message",
-      "description": "The message sent to a player when executing an unknown command.",
-      "examples": [
-        "\ton unknown command execution:\n\t\tadd 1 to {-command_fails::%player%}\n\t\twait 30 seconds:\n\t\t\tremove 1 from {-command_fails::%player%}\n\t\tif {-command_fails::%player%} is greater than or equal to 5:\n\t\t\tpush the player upwards\n\t\t\tset the unknown command message to \"<red>You are executing too many unknown commands too fast!\""
-      ],
-      "since": [
-        "2.17"
-      ],
-      "requirements": [],
-      "keywords": [],
-      "deprecated": false,
-      "events": [
-        {
-          "id": "EvtUnknownCommandExecution",
-          "name": "On Unknown Command Execution"
-        }
-      ],
-      "patterns": [
-        "[the] (unknown|non-existent) command message"
+        "[the] (message|chat) format[ting]"
       ],
       "returnType": {
         "id": "TypeTextcomponent",
@@ -2574,41 +2584,6 @@
         }
       ]
     },
-    "ExprBrewingResults": {
-      "origin": {
-        "name": "Skript",
-        "class": "org.skriptlang.skript.bukkit.brewing.elements.expressions.ExprBrewingResults",
-        "modules": [
-          "brewing",
-          "bukkit"
-        ]
-      },
-      "id": "ExprBrewingResults",
-      "name": "Brewing Results",
-      "description": "The resulting items in an 'on brew complete' event.",
-      "examples": [
-        "on brew complete:\n\tset {_results::*} to the brewing results"
-      ],
-      "since": [
-        "2.13"
-      ],
-      "requirements": [],
-      "keywords": [],
-      "deprecated": false,
-      "events": [
-        {
-          "id": "EvtBrewingComplete",
-          "name": "On Brewing Complete"
-        }
-      ],
-      "patterns": [
-        "[the] brewing results"
-      ],
-      "returnType": {
-        "id": "TypeItemstack",
-        "name": "Item"
-      }
-    },
     "ExprPickedItem": {
       "origin": {
         "name": "Skript",
@@ -2744,6 +2719,41 @@
         "name": "Entity"
       }
     },
+    "ExprBrewingResults": {
+      "origin": {
+        "name": "Skript",
+        "class": "org.skriptlang.skript.bukkit.brewing.elements.expressions.ExprBrewingResults",
+        "modules": [
+          "brewing",
+          "bukkit"
+        ]
+      },
+      "id": "ExprBrewingResults",
+      "name": "Brewing Results",
+      "description": "The resulting items in an 'on brew complete' event.",
+      "examples": [
+        "on brew complete:\n\tset {_results::*} to the brewing results"
+      ],
+      "since": [
+        "2.13"
+      ],
+      "requirements": [],
+      "keywords": [],
+      "deprecated": false,
+      "events": [
+        {
+          "id": "EvtBrewingComplete",
+          "name": "On Brewing Complete"
+        }
+      ],
+      "patterns": [
+        "[the] brewing results"
+      ],
+      "returnType": {
+        "id": "TypeItemstack",
+        "name": "Item"
+      }
+    },
     "ExprVectorRandom": {
       "origin": {
         "name": "Skript",
@@ -2805,37 +2815,6 @@
         "name": "Audience"
       }
     },
-    "ExprReadiedArrow": {
-      "origin": {
-        "name": "Skript",
-        "class": "ch.njol.skript.expressions.ExprReadiedArrow"
-      },
-      "id": "ExprReadiedArrow",
-      "name": "Readied Arrow/Bow",
-      "description": "The bow or arrow in a <a href='#ready_arrow'>Ready Arrow event</a>.",
-      "examples": [
-        "on player ready arrow:\n\tselected bow's name is \"Spectral Bow\"\n\tif selected arrow is not a spectral arrow:\n\t\tcancel event"
-      ],
-      "since": [
-        "2.8.0"
-      ],
-      "requirements": [],
-      "keywords": [],
-      "deprecated": false,
-      "events": [
-        {
-          "id": "EvtReadyArrow",
-          "name": "On Ready Arrow"
-        }
-      ],
-      "patterns": [
-        "[the] (readied|selected|drawn) (arrow|bow)"
-      ],
-      "returnType": {
-        "id": "TypeItemstack",
-        "name": "Item"
-      }
-    },
     "ExprSecCreateWorldBorder": {
       "origin": {
         "name": "Skript",
@@ -2866,41 +2845,6 @@
         "name": "World Border"
       },
       "subType": "section_expression"
-    },
-    "ExprBroadcastMessage": {
-      "origin": {
-        "name": "Skript",
-        "class": "org.skriptlang.skript.bukkit.misc.elements.expressions.ExprBroadcastMessage",
-        "modules": [
-          "misc",
-          "bukkit"
-        ]
-      },
-      "id": "ExprBroadcastMessage",
-      "name": "Broadcast Message",
-      "description": "The message broadcasted in a broadcast event.",
-      "examples": [
-        "on broadcast:\n\tset broadcast message to \"<light green>[BROADCAST] %broadcast message%\""
-      ],
-      "since": [
-        "2.10"
-      ],
-      "requirements": [],
-      "keywords": [],
-      "deprecated": false,
-      "events": [
-        {
-          "id": "EvtBroadcast",
-          "name": "On Broadcast"
-        }
-      ],
-      "patterns": [
-        "[the] broadcast(-|[ed] )message"
-      ],
-      "returnType": {
-        "id": "TypeTextcomponent",
-        "name": "Text Component"
-      }
     },
     "ExprFertilizedBlocks": {
       "origin": {
@@ -2933,6 +2877,37 @@
       "returnType": {
         "id": "TypeBlock",
         "name": "Block"
+      }
+    },
+    "ExprReadiedArrow": {
+      "origin": {
+        "name": "Skript",
+        "class": "ch.njol.skript.expressions.ExprReadiedArrow"
+      },
+      "id": "ExprReadiedArrow",
+      "name": "Readied Arrow/Bow",
+      "description": "The bow or arrow in a <a href='#ready_arrow'>Ready Arrow event</a>.",
+      "examples": [
+        "on player ready arrow:\n\tselected bow's name is \"Spectral Bow\"\n\tif selected arrow is not a spectral arrow:\n\t\tcancel event"
+      ],
+      "since": [
+        "2.8.0"
+      ],
+      "requirements": [],
+      "keywords": [],
+      "deprecated": false,
+      "events": [
+        {
+          "id": "EvtReadyArrow",
+          "name": "On Ready Arrow"
+        }
+      ],
+      "patterns": [
+        "[the] (readied|selected|drawn) (arrow|bow)"
+      ],
+      "returnType": {
+        "id": "TypeItemstack",
+        "name": "Item"
       }
     },
     "ExprReducedValue": {
@@ -2987,6 +2962,42 @@
       "returnType": {
         "id": "TypeNumber",
         "name": "Number"
+      }
+    },
+    "ExprKickMessage": {
+      "origin": {
+        "name": "Skript",
+        "class": "org.skriptlang.skript.bukkit.entity.player.elements.expressions.ExprKickMessage",
+        "modules": [
+          "player",
+          "entity",
+          "bukkit"
+        ]
+      },
+      "id": "ExprKickMessage",
+      "name": "Kick Message",
+      "description": "The message sent to all online players when a player is kicked from server.",
+      "examples": [
+        "on kick:\n\tset the kick message to \"%player% was booted from the server! They won't be missed...\""
+      ],
+      "since": [
+        "2.0 beta 9"
+      ],
+      "requirements": [],
+      "keywords": [],
+      "deprecated": false,
+      "events": [
+        {
+          "id": "EvtKick",
+          "name": "On Kick"
+        }
+      ],
+      "patterns": [
+        "[the] kick( |-)message"
+      ],
+      "returnType": {
+        "id": "TypeTextcomponent",
+        "name": "Text Component"
       }
     },
     "LitLongMaxValue": {
@@ -3102,6 +3113,66 @@
         "name": "Text"
       }
     },
+    "ExprDeathMessage": {
+      "origin": {
+        "name": "Skript",
+        "class": "org.skriptlang.skript.bukkit.entity.elements.expressions.ExprDeathMessage",
+        "modules": [
+          "entity",
+          "bukkit"
+        ]
+      },
+      "id": "ExprDeathMessage",
+      "name": "Death Message",
+      "description": "The message sent to all online players when a player dies.",
+      "examples": [
+        "on death of player:\n\tset the death message to \"%player% died!\""
+      ],
+      "since": [
+        "2.0"
+      ],
+      "requirements": [],
+      "keywords": [],
+      "deprecated": false,
+      "events": [
+        {
+          "id": "EvtDeath",
+          "name": "On Death"
+        }
+      ],
+      "patterns": [
+        "[the] death( |-)message"
+      ],
+      "returnType": {
+        "id": "TypeTextcomponent",
+        "name": "Text Component"
+      }
+    },
+    "ExprWorlds": {
+      "origin": {
+        "name": "Skript",
+        "class": "ch.njol.skript.expressions.ExprWorlds"
+      },
+      "id": "ExprWorlds",
+      "name": "Worlds",
+      "description": "All worlds of the server, useful for looping.",
+      "examples": [
+        "loop all worlds:\n\tbroadcast \"You're in %loop-world%\" to loop-world"
+      ],
+      "since": [
+        "1.0"
+      ],
+      "requirements": [],
+      "keywords": [],
+      "deprecated": false,
+      "patterns": [
+        "[all [[of] the]|the] worlds"
+      ],
+      "returnType": {
+        "id": "TypeWorld",
+        "name": "World"
+      }
+    },
     "LitFloatMaxValue": {
       "origin": {
         "name": "Skript",
@@ -3125,41 +3196,6 @@
       "returnType": {
         "id": "TypeNumber",
         "name": "Number"
-      }
-    },
-    "ExprEnchantmentHint": {
-      "origin": {
-        "name": "Skript",
-        "class": "org.skriptlang.skript.bukkit.enchantments.elements.expressions.ExprEnchantmentHint",
-        "modules": [
-          "enchantment",
-          "bukkit"
-        ]
-      },
-      "id": "ExprEnchantmentHint",
-      "name": "Enchantment Hint",
-      "description": "The enchantment hint in an enchant event.\nThis is the enchantment that was shown to the player when they hovered over the enchantment offer that they eventually selected.",
-      "examples": [
-        "on enchant:\n\tsend \"You got at least %the enchantment hint%!\""
-      ],
-      "since": [
-        "2.16"
-      ],
-      "requirements": [],
-      "keywords": [],
-      "deprecated": false,
-      "events": [
-        {
-          "id": "EvtEnchant",
-          "name": "On Enchant"
-        }
-      ],
-      "patterns": [
-        "[the] enchant[ment] hint"
-      ],
-      "returnType": {
-        "id": "TypeEnchantment",
-        "name": "Enchantment"
       }
     },
     "ExprBarterDrops": {
@@ -3192,42 +3228,6 @@
           "name": "On Piglin Barter"
         }
       ]
-    },
-    "ExprChatFormat": {
-      "origin": {
-        "name": "Skript",
-        "class": "org.skriptlang.skript.bukkit.entity.player.elements.expressions.ExprChatFormat",
-        "modules": [
-          "player",
-          "entity",
-          "bukkit"
-        ]
-      },
-      "id": "ExprChatFormat",
-      "name": "Chat Format",
-      "description": "Can be used to modify the chat format.\nThe sender of a message is represented by player.\nThe message is represented by message.",
-      "examples": [
-        "set the chat format to \"<yellow>%player%<light gray>: <green>%message%\""
-      ],
-      "since": [
-        "2.2-dev31"
-      ],
-      "requirements": [],
-      "keywords": [],
-      "deprecated": false,
-      "events": [
-        {
-          "id": "EvtChat",
-          "name": "On Chat"
-        }
-      ],
-      "patterns": [
-        "[the] (message|chat) format[ting]"
-      ],
-      "returnType": {
-        "id": "TypeTextcomponent",
-        "name": "Text Component"
-      }
     },
     "ExprHoverList": {
       "origin": {
@@ -3552,6 +3552,32 @@
         "name": "Enchantment Offer"
       }
     },
+    "ExprWorldFromName": {
+      "origin": {
+        "name": "Skript",
+        "class": "ch.njol.skript.expressions.ExprWorldFromName"
+      },
+      "id": "ExprWorldFromName",
+      "name": "World from Name",
+      "description": "Returns the world from a string.",
+      "examples": [
+        "world named {game::world-name}",
+        "the world \"world\""
+      ],
+      "since": [
+        "2.6.1"
+      ],
+      "requirements": [],
+      "keywords": [],
+      "deprecated": false,
+      "patterns": [
+        "[the] world [named|with name] %string%"
+      ],
+      "returnType": {
+        "id": "TypeWorld",
+        "name": "World"
+      }
+    },
     "ExprTimes": {
       "origin": {
         "name": "Skript",
@@ -3610,32 +3636,6 @@
       "returnType": {
         "id": "TypeEntity",
         "name": "Entity"
-      }
-    },
-    "ExprWorldFromName": {
-      "origin": {
-        "name": "Skript",
-        "class": "ch.njol.skript.expressions.ExprWorldFromName"
-      },
-      "id": "ExprWorldFromName",
-      "name": "World from Name",
-      "description": "Returns the world from a string.",
-      "examples": [
-        "world named {game::world-name}",
-        "the world \"world\""
-      ],
-      "since": [
-        "2.6.1"
-      ],
-      "requirements": [],
-      "keywords": [],
-      "deprecated": false,
-      "patterns": [
-        "[the] world [named|with name] %string%"
-      ],
-      "returnType": {
-        "id": "TypeWorld",
-        "name": "World"
       }
     },
     "ExprShooter": {
@@ -3740,6 +3740,31 @@
       "returnType": {
         "id": "TypeVector",
         "name": "Vector"
+      }
+    },
+    "ExprItem": {
+      "origin": {
+        "name": "Skript",
+        "class": "ch.njol.skript.expressions.ExprItem"
+      },
+      "id": "ExprItem",
+      "name": "Item",
+      "description": "The item involved in an event, e.g. in a drop, dispense, pickup or craft event.",
+      "examples": [
+        "on dispense:\n\titem is a clock\n\tset the time to 6:00"
+      ],
+      "since": [
+        "unknown (before 2.1)"
+      ],
+      "requirements": [],
+      "keywords": [],
+      "deprecated": false,
+      "patterns": [
+        "[the] item"
+      ],
+      "returnType": {
+        "id": "TypeItemstack",
+        "name": "Item"
       }
     },
     "ExprFishingHookEntity": {
@@ -4336,31 +4361,6 @@
         "name": "Projectile"
       }
     },
-    "ExprItem": {
-      "origin": {
-        "name": "Skript",
-        "class": "ch.njol.skript.expressions.ExprItem"
-      },
-      "id": "ExprItem",
-      "name": "Item",
-      "description": "The item involved in an event, e.g. in a drop, dispense, pickup or craft event.",
-      "examples": [
-        "on dispense:\n\titem is a clock\n\tset the time to 6:00"
-      ],
-      "since": [
-        "unknown (before 2.1)"
-      ],
-      "requirements": [],
-      "keywords": [],
-      "deprecated": false,
-      "patterns": [
-        "[the] item"
-      ],
-      "returnType": {
-        "id": "TypeItemstack",
-        "name": "Item"
-      }
-    },
     "ExprExplodedBlocks": {
       "origin": {
         "name": "Skript",
@@ -4419,6 +4419,37 @@
       "returnType": {
         "id": "TypeString",
         "name": "Text"
+      }
+    },
+    "ExprCommandSuggestions": {
+      "origin": {
+        "name": "Skript",
+        "class": "org.skriptlang.skript.bukkit.command.elements.expressions.ExprCommandSuggestions",
+        "modules": [
+          "command",
+          "bukkit"
+        ]
+      },
+      "id": "ExprCommandSuggestions",
+      "name": "Script Command Suggestions",
+      "description": "Usable in a script command's \"suggestions\" entry.\nAllows modifying the suggestions displayed while a command is being typed.",
+      "examples": [
+        "command /menu <text> <text>:\n\tsuggestions:\n\t\tif arg-1 is not set:\n\t\t\tset arg-1's suggestions to \"Appetizers\", \"Entrees\", and \"Desserts\"\n\t\telse if arg-1 is \"Appetizers\":\n\t\t\tset arg-2's suggestions to \"Salads\", \"Breads\", and \"Fried Delights\"\n\t\telse if arg-1 is \"Entrees\":\n\t\t\tset arg-2's suggestions to \"Pastas\", \"Handhelds\", and \"Pizzas\"\n\t\telse if arg-1 is \"Desserts\":\n\t\t\tset arg-2's suggestions to \"Cakes\", \"Ice Creams\", and \"Pies\"\n\ttrigger:\n\t\tsend \"Yum!\"",
+        "command /home:\n\tsubcommand set <name: text>:\n\t\ttrigger:\n\t\t\tset {homes::%player%::%{_name}%} to the player's location\n\tsubcommand <name: text>:\n\t\tsuggestions:\n\t\t\tloop {homes::%player%::*}:\n\t\t\t\tadd formatted \"<ttp:'Location: %loop-value%'>%loop-index%\" to the suggestions for the text argument\n\t\ttrigger:\n\t\t\tteleport the player to {homes::%player%::%{_name}%}"
+      ],
+      "since": [
+        "2.17"
+      ],
+      "requirements": [],
+      "keywords": [],
+      "deprecated": false,
+      "patterns": [
+        "[the] [command] (suggestions|tab completions) (of|for) %objects%",
+        "%objects%'[s] [command] (suggestions|tab completions)"
+      ],
+      "returnType": {
+        "id": "TypeTextcomponent",
+        "name": "Text Component"
       }
     },
     "ExprShuffledList": {
@@ -4573,37 +4604,6 @@
       "returnType": {
         "id": "TypeMinecrafttag",
         "name": "Minecraft Tag"
-      }
-    },
-    "ExprCommandSuggestions": {
-      "origin": {
-        "name": "Skript",
-        "class": "org.skriptlang.skript.bukkit.command.elements.expressions.ExprCommandSuggestions",
-        "modules": [
-          "command",
-          "bukkit"
-        ]
-      },
-      "id": "ExprCommandSuggestions",
-      "name": "Script Command Suggestions",
-      "description": "Usable in a script command's \"suggestions\" entry.\nAllows modifying the suggestions displayed while a command is being typed.",
-      "examples": [
-        "command /menu <text> <text>:\n\tsuggestions:\n\t\tif arg-1 is not set:\n\t\t\tset arg-1's suggestions to \"Appetizers\", \"Entrees\", and \"Desserts\"\n\t\telse if arg-1 is \"Appetizers\":\n\t\t\tset arg-2's suggestions to \"Salads\", \"Breads\", and \"Fried Delights\"\n\t\telse if arg-1 is \"Entrees\":\n\t\t\tset arg-2's suggestions to \"Pastas\", \"Handhelds\", and \"Pizzas\"\n\t\telse if arg-1 is \"Desserts\":\n\t\t\tset arg-2's suggestions to \"Cakes\", \"Ice Creams\", and \"Pies\"\n\ttrigger:\n\t\tsend \"Yum!\"",
-        "command /home:\n\tsubcommand set <name: text>:\n\t\ttrigger:\n\t\t\tset {homes::%player%::%{_name}%} to the player's location\n\tsubcommand <name: text>:\n\t\tsuggestions:\n\t\t\tloop {homes::%player%::*}:\n\t\t\t\tadd formatted \"<ttp:'Location: %loop-value%'>%loop-index%\" to the suggestions for the text argument\n\t\ttrigger:\n\t\t\tteleport the player to {homes::%player%::%{_name}%}"
-      ],
-      "since": [
-        "2.17"
-      ],
-      "requirements": [],
-      "keywords": [],
-      "deprecated": false,
-      "patterns": [
-        "[the] [command] (suggestions|tab completions) (of|for) %objects%",
-        "%objects%'[s] [command] (suggestions|tab completions)"
-      ],
-      "returnType": {
-        "id": "TypeTextcomponent",
-        "name": "Text Component"
       }
     },
     "ExprPlain": {
@@ -5854,6 +5854,35 @@
         "name": "Object"
       }
     },
+    "ExprResolvedComponent": {
+      "origin": {
+        "name": "Skript",
+        "class": "org.skriptlang.skript.bukkit.text.elements.expressions.ExprResolvedComponent",
+        "modules": [
+          "text",
+          "bukkit"
+        ]
+      },
+      "id": "ExprResolvedComponent",
+      "name": "Resolve Text Component",
+      "description": "Resolves a component with the context of a command sender or other entity.\nCertain kinds of components, such as NBT components, Score components, and Selector components, are required to be resolved to display a proper output.\nNote that the option to bypass required permissions only applies for players.",
+      "examples": [
+        "send formatted \"Hello <selector:@e[limit=5]>, I'm <selector:@s>!\" resolved for player"
+      ],
+      "since": [
+        "2.16"
+      ],
+      "requirements": [],
+      "keywords": [],
+      "deprecated": false,
+      "patterns": [
+        "%textcomponents% resolved for %commandsender% [(bypassing|ignoring) required permissions]"
+      ],
+      "returnType": {
+        "id": "TypeTextcomponent",
+        "name": "Text Component"
+      }
+    },
     "ExprLootItems": {
       "origin": {
         "name": "Skript",
@@ -6135,35 +6164,6 @@
       "returnType": {
         "id": "TypeItemtype",
         "name": "Item Type"
-      }
-    },
-    "ExprResolvedComponent": {
-      "origin": {
-        "name": "Skript",
-        "class": "org.skriptlang.skript.bukkit.text.elements.expressions.ExprResolvedComponent",
-        "modules": [
-          "text",
-          "bukkit"
-        ]
-      },
-      "id": "ExprResolvedComponent",
-      "name": "Resolve Text Component",
-      "description": "Resolves a component with the context of a command sender or other entity.\nCertain kinds of components, such as NBT components, Score components, and Selector components, are required to be resolved to display a proper output.\nNote that the option to bypass required permissions only applies for players.",
-      "examples": [
-        "send formatted \"Hello <selector:@e[limit=5]>, I'm <selector:@s>!\" resolved for player"
-      ],
-      "since": [
-        "2.16"
-      ],
-      "requirements": [],
-      "keywords": [],
-      "deprecated": false,
-      "patterns": [
-        "%textcomponents% resolved for %commandsender% [(bypassing|ignoring) required permissions]"
-      ],
-      "returnType": {
-        "id": "TypeTextcomponent",
-        "name": "Text Component"
       }
     },
     "ExprBreakSpeed": {
@@ -6512,34 +6512,6 @@
         "name": "Object"
       }
     },
-    "ExprFireworkEffect": {
-      "origin": {
-        "name": "Skript",
-        "class": "ch.njol.skript.expressions.ExprFireworkEffect"
-      },
-      "id": "ExprFireworkEffect",
-      "name": "Firework Effect",
-      "description": "Represents a 'firework effect' which can be used in the <a href='#EffFireworkLaunch'>launch firework</a> effect.",
-      "examples": [
-        "launch flickering trailing burst firework colored blue and green at player",
-        "launch trailing flickering star colored purple, yellow, blue, green and red fading to pink at target entity",
-        "launch ball large colored red, purple and white fading to light green and black at player's location with duration 1"
-      ],
-      "since": [
-        "2.4"
-      ],
-      "requirements": [],
-      "keywords": [],
-      "deprecated": false,
-      "patterns": [
-        "(|flickering|trailing|flickering trailing|trailing flickering) %fireworktype% [firework [effect]] colo[u]red %colors%",
-        "(|flickering|trailing|flickering trailing|trailing flickering) %fireworktype% [firework [effect]] colo[u]red %colors% fad(e|ing) [to] %colors%"
-      ],
-      "returnType": {
-        "id": "TypeFireworkeffect",
-        "name": "Firework Effect"
-      }
-    },
     "ExprWithYawPitch": {
       "origin": {
         "name": "Skript",
@@ -6751,6 +6723,34 @@
         "name": "Number"
       }
     },
+    "ExprFireworkEffect": {
+      "origin": {
+        "name": "Skript",
+        "class": "ch.njol.skript.expressions.ExprFireworkEffect"
+      },
+      "id": "ExprFireworkEffect",
+      "name": "Firework Effect",
+      "description": "Represents a 'firework effect' which can be used in the <a href='#EffFireworkLaunch'>launch firework</a> effect.",
+      "examples": [
+        "launch flickering trailing burst firework colored blue and green at player",
+        "launch trailing flickering star colored purple, yellow, blue, green and red fading to pink at target entity",
+        "launch ball large colored red, purple and white fading to light green and black at player's location with duration 1"
+      ],
+      "since": [
+        "2.4"
+      ],
+      "requirements": [],
+      "keywords": [],
+      "deprecated": false,
+      "patterns": [
+        "(|flickering|trailing|flickering trailing|trailing flickering) %fireworktype% [firework [effect]] colo[u]red %colors%",
+        "(|flickering|trailing|flickering trailing|trailing flickering) %fireworktype% [firework [effect]] colo[u]red %colors% fad(e|ing) [to] %colors%"
+      ],
+      "returnType": {
+        "id": "TypeFireworkeffect",
+        "name": "Firework Effect"
+      }
+    },
     "ExprSubstring": {
       "origin": {
         "name": "Skript",
@@ -6811,34 +6811,6 @@
       "returnType": {
         "id": "TypeItemtype",
         "name": "Item Type"
-      }
-    },
-    "ExprChunk": {
-      "origin": {
-        "name": "Skript",
-        "class": "ch.njol.skript.expressions.ExprChunk"
-      },
-      "id": "ExprChunk",
-      "name": "Chunk",
-      "description": "Returns the <a href='#chunk'>chunk</a> of a block, location or entity is in, or a list of the loaded chunks of a world.",
-      "examples": [
-        "add the chunk at the player to {protected chunks::*}",
-        "set {_chunks::*} to the loaded chunks of the player's world"
-      ],
-      "since": [
-        "2.0, 2.8.0 (loaded chunks)"
-      ],
-      "requirements": [],
-      "keywords": [],
-      "deprecated": false,
-      "patterns": [
-        "[all [[of] the]|the] chunk[s] (of|%directions%) %locations%",
-        "%locations%'[s] chunk[s]",
-        "[all [[of] the]|the] loaded chunks (of|in) %worlds%"
-      ],
-      "returnType": {
-        "id": "TypeChunk",
-        "name": "Chunk"
       }
     },
     "ExprLocation-2": {
@@ -6954,6 +6926,34 @@
       "returnType": {
         "id": "TypeBlock",
         "name": "Block"
+      }
+    },
+    "ExprChunk": {
+      "origin": {
+        "name": "Skript",
+        "class": "ch.njol.skript.expressions.ExprChunk"
+      },
+      "id": "ExprChunk",
+      "name": "Chunk",
+      "description": "Returns the <a href='#chunk'>chunk</a> of a block, location or entity is in, or a list of the loaded chunks of a world.",
+      "examples": [
+        "add the chunk at the player to {protected chunks::*}",
+        "set {_chunks::*} to the loaded chunks of the player's world"
+      ],
+      "since": [
+        "2.0, 2.8.0 (loaded chunks)"
+      ],
+      "requirements": [],
+      "keywords": [],
+      "deprecated": false,
+      "patterns": [
+        "[all [[of] the]|the] chunk[s] (of|%directions%) %locations%",
+        "%locations%'[s] chunk[s]",
+        "[all [[of] the]|the] loaded chunks (of|in) %worlds%"
+      ],
+      "returnType": {
+        "id": "TypeChunk",
+        "name": "Chunk"
       }
     },
     "ExprBlocks": {
@@ -7344,6 +7344,33 @@
       "returnType": {
         "id": "TypeVector",
         "name": "Vector"
+      }
+    },
+    "ExprItemThrower": {
+      "origin": {
+        "name": "Skript",
+        "class": "ch.njol.skript.expressions.ExprItemThrower"
+      },
+      "id": "ExprItemThrower",
+      "name": "Dropped Item Thrower",
+      "description": "The uuid of the entity or player that threw/dropped the dropped item.",
+      "examples": [
+        "set the uuid of the dropped item thrower of {_dropped item} to player\nif the uuid of the dropped item thrower of {_dropped item} is uuid of player:",
+        "clear the item thrower of {_dropped item}"
+      ],
+      "since": [
+        "2.11"
+      ],
+      "requirements": [],
+      "keywords": [],
+      "deprecated": false,
+      "patterns": [
+        "[the] uuid of [the] [dropped] item thrower [of %entities%]",
+        "[the] [dropped] item thrower's uuid [of %entities%]"
+      ],
+      "returnType": {
+        "id": "TypeUuid",
+        "name": "UUID"
       }
     },
     "ExprVectorSquaredLength": {
@@ -7904,6 +7931,37 @@
         "name": "Text"
       }
     },
+    "ExprBookTitle": {
+      "origin": {
+        "name": "Skript",
+        "class": "org.skriptlang.skript.bukkit.item.book.elements.expressions.ExprBookTitle",
+        "modules": [
+          "book",
+          "item",
+          "bukkit"
+        ]
+      },
+      "id": "ExprBookTitle",
+      "name": "Book Title",
+      "description": "The title of a book.",
+      "examples": [
+        "on book sign:\n\tmessage \"You finished your book titled %title of event-item%\""
+      ],
+      "since": [
+        "2.2-dev31"
+      ],
+      "requirements": [],
+      "keywords": [],
+      "deprecated": true,
+      "patterns": [
+        "[the] book (name|title) of %itemtypes%",
+        "%itemtypes%'[s] book (name|title)"
+      ],
+      "returnType": {
+        "id": "TypeTextcomponent",
+        "name": "Text Component"
+      }
+    },
     "ExprCarryingBlockData": {
       "origin": {
         "name": "Skript",
@@ -7932,6 +7990,32 @@
       "returnType": {
         "id": "TypeBlockdata",
         "name": "Block Data"
+      }
+    },
+    "ExprItemOwner": {
+      "origin": {
+        "name": "Skript",
+        "class": "ch.njol.skript.expressions.ExprItemOwner"
+      },
+      "id": "ExprItemOwner",
+      "name": "Dropped Item Owner",
+      "description": "The uuid of the owner of the dropped item.\nSetting the owner of a dropped item means only that entity or player can pick it up.\nDropping an item does not automatically make the entity or player the owner.",
+      "examples": [
+        "\tset the uuid of the dropped item owner of last dropped item to player\n\tif the uuid of the dropped item owner of last dropped item is uuid of player:"
+      ],
+      "since": [
+        "2.11"
+      ],
+      "requirements": [],
+      "keywords": [],
+      "deprecated": false,
+      "patterns": [
+        "[the] uuid of [the] [dropped] item owner [of %entities%]",
+        "[the] [dropped] item owner's uuid [of %entities%]"
+      ],
+      "returnType": {
+        "id": "TypeUuid",
+        "name": "UUID"
       }
     },
     "ExprFoodExhaustion": {
@@ -7964,6 +8048,37 @@
         "name": "Number"
       }
     },
+    "ExprBookAuthor": {
+      "origin": {
+        "name": "Skript",
+        "class": "org.skriptlang.skript.bukkit.item.book.elements.expressions.ExprBookAuthor",
+        "modules": [
+          "book",
+          "item",
+          "bukkit"
+        ]
+      },
+      "id": "ExprBookAuthor",
+      "name": "Book Author",
+      "description": "The author of a book.",
+      "examples": [
+        "on book sign:\n\tbroadcast \"A new book has been created by %author of event-item%\""
+      ],
+      "since": [
+        "2.2-dev31"
+      ],
+      "requirements": [],
+      "keywords": [],
+      "deprecated": false,
+      "patterns": [
+        "[the] [book] (author|writer|publisher) of %itemtypes%",
+        "%itemtypes%'[s] [book] (author|writer|publisher)"
+      ],
+      "returnType": {
+        "id": "TypeTextcomponent",
+        "name": "Text Component"
+      }
+    },
     "ExprMinecartFlyingVelocity": {
       "origin": {
         "name": "Skript",
@@ -7988,6 +8103,35 @@
       "returnType": {
         "id": "TypeVector",
         "name": "Vector"
+      }
+    },
+    "ExprVillagerProfession": {
+      "origin": {
+        "name": "Skript",
+        "class": "ch.njol.skript.expressions.ExprVillagerProfession"
+      },
+      "id": "ExprVillagerProfession",
+      "name": "Villager Profession",
+      "description": "Represents the profession of a villager/zombie villager.",
+      "examples": [
+        "set {_p} to villager profession of event-entity",
+        "villager profession of event-entity = nitwit profession",
+        "set villager profession of {_villager} to librarian profession",
+        "delete villager profession of event-entity"
+      ],
+      "since": [
+        "2.10"
+      ],
+      "requirements": [],
+      "keywords": [],
+      "deprecated": false,
+      "patterns": [
+        "[the] villager profession of %livingentities%",
+        "%livingentities%'[s] villager profession"
+      ],
+      "returnType": {
+        "id": "TypeVillagerprofession",
+        "name": "Villager Profession"
       }
     },
     "ExprMaxMinecartSpeed": {
@@ -8047,36 +8191,6 @@
       "returnType": {
         "id": "TypeTimespan",
         "name": "Timespan"
-      }
-    },
-    "ExprTextOf": {
-      "origin": {
-        "name": "Skript",
-        "class": "org.skriptlang.skript.bukkit.misc.elements.expressions.ExprTextOf",
-        "modules": [
-          "misc",
-          "bukkit"
-        ]
-      },
-      "id": "ExprTextOf",
-      "name": "Text Of",
-      "description": "Returns or changes the <a href='#string'>text/string</a> of <a href='#display'>displays</a>.\nNote that currently you can only use Skript chat codes when running Paper.",
-      "examples": [
-        "set text of the last spawned text display to \"example\""
-      ],
-      "since": [
-        "2.10"
-      ],
-      "requirements": [],
-      "keywords": [],
-      "deprecated": false,
-      "patterns": [
-        "[the] text[s] of %displays%",
-        "%displays%'[s] text[s]"
-      ],
-      "returnType": {
-        "id": "TypeTextcomponent",
-        "name": "Text Component"
       }
     },
     "ExprInventoryInfo": {
@@ -8541,35 +8655,6 @@
         "name": "Location"
       }
     },
-    "ExprBrushableItem": {
-      "origin": {
-        "name": "Skript",
-        "class": "ch.njol.skript.expressions.ExprBrushableItem"
-      },
-      "id": "ExprBrushableItem",
-      "name": "Buried Item",
-      "description": "Represents the item that is uncovered when dusting.\nThe only blocks that can currently be \"dusted\" are Suspicious Gravel and Suspicious Sand.",
-      "examples": [
-        "send target block's brushable item",
-        "set {_gravel}'s brushable item to emerald"
-      ],
-      "since": [
-        "2.12"
-      ],
-      "requirements": [
-        "Minecraft 1.20+"
-      ],
-      "keywords": [],
-      "deprecated": false,
-      "patterns": [
-        "[the] (brushable|buried) item of %blocks%",
-        "%blocks%'[s] (brushable|buried) item"
-      ],
-      "returnType": {
-        "id": "TypeItemstack",
-        "name": "Item"
-      }
-    },
     "ExprMiddleOfLocation": {
       "origin": {
         "name": "Skript",
@@ -8775,6 +8860,35 @@
       "returnType": {
         "id": "TypeObject",
         "name": "Object"
+      }
+    },
+    "ExprBrushableItem": {
+      "origin": {
+        "name": "Skript",
+        "class": "ch.njol.skript.expressions.ExprBrushableItem"
+      },
+      "id": "ExprBrushableItem",
+      "name": "Buried Item",
+      "description": "Represents the item that is uncovered when dusting.\nThe only blocks that can currently be \"dusted\" are Suspicious Gravel and Suspicious Sand.",
+      "examples": [
+        "send target block's brushable item",
+        "set {_gravel}'s brushable item to emerald"
+      ],
+      "since": [
+        "2.12"
+      ],
+      "requirements": [
+        "Minecraft 1.20+"
+      ],
+      "keywords": [],
+      "deprecated": false,
+      "patterns": [
+        "[the] (brushable|buried) item of %blocks%",
+        "%blocks%'[s] (brushable|buried) item"
+      ],
+      "returnType": {
+        "id": "TypeItemstack",
+        "name": "Item"
       }
     },
     "ExprItemWithEnchantmentGlint": {
@@ -9457,37 +9571,6 @@
         "name": "Item Type"
       }
     },
-    "ExprBookTitle": {
-      "origin": {
-        "name": "Skript",
-        "class": "org.skriptlang.skript.bukkit.item.book.elements.expressions.ExprBookTitle",
-        "modules": [
-          "book",
-          "item",
-          "bukkit"
-        ]
-      },
-      "id": "ExprBookTitle",
-      "name": "Book Title",
-      "description": "The title of a book.",
-      "examples": [
-        "on book sign:\n\tmessage \"You finished your book titled %title of event-item%\""
-      ],
-      "since": [
-        "2.2-dev31"
-      ],
-      "requirements": [],
-      "keywords": [],
-      "deprecated": true,
-      "patterns": [
-        "[the] book (name|title) of %itemtypes%",
-        "%itemtypes%'[s] book (name|title)"
-      ],
-      "returnType": {
-        "id": "TypeTextcomponent",
-        "name": "Text Component"
-      }
-    },
     "ExprSeed": {
       "origin": {
         "name": "Skript",
@@ -9538,37 +9621,6 @@
       "returnType": {
         "id": "TypeInventory",
         "name": "Inventory"
-      }
-    },
-    "ExprBookAuthor": {
-      "origin": {
-        "name": "Skript",
-        "class": "org.skriptlang.skript.bukkit.item.book.elements.expressions.ExprBookAuthor",
-        "modules": [
-          "book",
-          "item",
-          "bukkit"
-        ]
-      },
-      "id": "ExprBookAuthor",
-      "name": "Book Author",
-      "description": "The author of a book.",
-      "examples": [
-        "on book sign:\n\tbroadcast \"A new book has been created by %author of event-item%\""
-      ],
-      "since": [
-        "2.2-dev31"
-      ],
-      "requirements": [],
-      "keywords": [],
-      "deprecated": false,
-      "patterns": [
-        "[the] [book] (author|writer|publisher) of %itemtypes%",
-        "%itemtypes%'[s] [book] (author|writer|publisher)"
-      ],
-      "returnType": {
-        "id": "TypeTextcomponent",
-        "name": "Text Component"
       }
     },
     "ExprClientViewDistance": {
@@ -10236,37 +10288,6 @@
         "name": "Number"
       }
     },
-    "ExprDisplayTransformationRotation": {
-      "origin": {
-        "name": "Skript",
-        "class": "org.skriptlang.skript.bukkit.entity.displays.elements.expressions.ExprDisplayTransformationRotation",
-        "modules": [
-          "displays",
-          "entity",
-          "bukkit"
-        ]
-      },
-      "id": "ExprDisplayTransformationRotation",
-      "name": "Display Transformation Rotation",
-      "description": "Returns or changes the transformation rotation of <a href='#display'>displays</a>.\nThe left rotation is applied first, with the right rotation then being applied based on the rotated axis.",
-      "examples": [
-        "set left transformation rotation of last spawned block display to quaternion(1, 0, 0, 0) # reset block display"
-      ],
-      "since": [
-        "2.10"
-      ],
-      "requirements": [],
-      "keywords": [],
-      "deprecated": false,
-      "patterns": [
-        "[the] (left|right) [transformation] rotation [of %displays%]",
-        "%displays%'[s] (left|right) [transformation] rotation"
-      ],
-      "returnType": {
-        "id": "TypeQuaternion",
-        "name": "Quaternion"
-      }
-    },
     "ExprHumidity": {
       "origin": {
         "name": "Skript",
@@ -10389,6 +10410,40 @@
       "returnType": {
         "id": "TypeObject",
         "name": "Object"
+      }
+    },
+    "ExprPlayerListName": {
+      "origin": {
+        "name": "Skript",
+        "class": "org.skriptlang.skript.bukkit.entity.player.elements.expressions.ExprPlayerListName",
+        "modules": [
+          "player",
+          "entity",
+          "bukkit"
+        ]
+      },
+      "id": "ExprPlayerListName",
+      "name": "Player List Name",
+      "description": "The name of a player in the player list in the tab menu.",
+      "examples": [
+        "on join:\n\tplayer has permission \"name.red\"\n\tset the player's tab list name to \"<red>%player's name%\""
+      ],
+      "since": [
+        "Before 2.1"
+      ],
+      "requirements": [],
+      "keywords": [
+        "tablist",
+        "tab list"
+      ],
+      "deprecated": false,
+      "patterns": [
+        "[the] (player|tab)[ ]list name[s] of %players%",
+        "%players%'[s] (player|tab)[ ]list name[s]"
+      ],
+      "returnType": {
+        "id": "TypeTextcomponent",
+        "name": "Text Component"
       }
     },
     "ExprLootContextLuck": {
@@ -10628,6 +10683,42 @@
         "name": "Offline Player"
       }
     },
+    "ExprPlayerListHeaderFooter": {
+      "origin": {
+        "name": "Skript",
+        "class": "org.skriptlang.skript.bukkit.entity.player.elements.expressions.ExprPlayerListHeaderFooter",
+        "modules": [
+          "player",
+          "entity",
+          "bukkit"
+        ]
+      },
+      "id": "ExprPlayerListHeaderFooter",
+      "name": "Player List Header and Footer",
+      "description": "The message above and below the player list in the tab menu.",
+      "examples": [
+        "set all players' tab list header to \"Welcome to the Server!\"",
+        "send \"%the player's tab list header%\" to player",
+        "reset all players' tab list header"
+      ],
+      "since": [
+        "2.4"
+      ],
+      "requirements": [],
+      "keywords": [
+        "tablist",
+        "tab list"
+      ],
+      "deprecated": false,
+      "patterns": [
+        "[the] (player|tab)[ ]list (header|footer) [text|message] of %players%",
+        "%players%'[s] (player|tab)[ ]list (header|footer) [text|message]"
+      ],
+      "returnType": {
+        "id": "TypeTextcomponent",
+        "name": "Text Component"
+      }
+    },
     "ExprMaxDurability": {
       "origin": {
         "name": "Skript",
@@ -10826,32 +10917,6 @@
       "returnType": {
         "id": "TypeLoottable",
         "name": "Loot Table"
-      }
-    },
-    "ExprExactItem": {
-      "origin": {
-        "name": "Skript",
-        "class": "ch.njol.skript.expressions.ExprExactItem"
-      },
-      "id": "ExprExactItem",
-      "name": "Exact Item",
-      "description": "Get an exact item representation of a block, carrying over any data. For example, using this expression on a chest block with items stored inside will return a chest item with the exact same items in its inventory as the chest block.",
-      "examples": [
-        "set {_item} to exact item of block at location(0, 0, 0)"
-      ],
-      "since": [
-        "2.12"
-      ],
-      "requirements": [],
-      "keywords": [],
-      "deprecated": false,
-      "patterns": [
-        "[the] exact item[s] of %blocks%",
-        "%blocks%'[s] exact item[s]"
-      ],
-      "returnType": {
-        "id": "TypeItemstack",
-        "name": "Item"
       }
     },
     "PropExprProgress": {
@@ -11080,6 +11145,32 @@
       "returnType": {
         "id": "TypeLivingentity",
         "name": "Living Entity"
+      }
+    },
+    "ExprExactItem": {
+      "origin": {
+        "name": "Skript",
+        "class": "ch.njol.skript.expressions.ExprExactItem"
+      },
+      "id": "ExprExactItem",
+      "name": "Exact Item",
+      "description": "Get an exact item representation of a block, carrying over any data. For example, using this expression on a chest block with items stored inside will return a chest item with the exact same items in its inventory as the chest block.",
+      "examples": [
+        "set {_item} to exact item of block at location(0, 0, 0)"
+      ],
+      "since": [
+        "2.12"
+      ],
+      "requirements": [],
+      "keywords": [],
+      "deprecated": false,
+      "patterns": [
+        "[the] exact item[s] of %blocks%",
+        "%blocks%'[s] exact item[s]"
+      ],
+      "returnType": {
+        "id": "TypeItemstack",
+        "name": "Item"
       }
     },
     "ExprEquipCompEntities": {
@@ -11388,6 +11479,34 @@
       "returnType": {
         "id": "TypeBillboard",
         "name": "Display Billboard"
+      }
+    },
+    "ExprVillagerType": {
+      "origin": {
+        "name": "Skript",
+        "class": "ch.njol.skript.expressions.ExprVillagerType"
+      },
+      "id": "ExprVillagerType",
+      "name": "Villager Type",
+      "description": "Represents the type of a villager/zombie villager. This usually represents the biome the villager is from.",
+      "examples": [
+        "set {_type} to villager type of {_villager}",
+        "villager type of {_villager} = plains",
+        "set villager type of event-entity to plains"
+      ],
+      "since": [
+        "2.10"
+      ],
+      "requirements": [],
+      "keywords": [],
+      "deprecated": false,
+      "patterns": [
+        "[the] villager type of %livingentities%",
+        "%livingentities%'[s] villager type"
+      ],
+      "returnType": {
+        "id": "TypeVillagertype",
+        "name": "Villager Type"
       }
     },
     "ExprDirectEntity": {
@@ -11741,6 +11860,46 @@
         "name": "Text"
       }
     },
+    "ExprBeaconEffects": {
+      "origin": {
+        "name": "Skript",
+        "class": "ch.njol.skript.expressions.ExprBeaconEffects"
+      },
+      "id": "ExprBeaconEffects",
+      "name": "Beacon Effects",
+      "description": "The active effects of a beacon.\nThe secondary effect can be set to anything, but the icon in the GUI will not display correctly.\nThe secondary effect can only be set when the beacon is at max tier.\nThe primary and secondary effect can not be the same, primary will always retain the potion type and secondary will be cleared.",
+      "examples": [
+        "set primary beacon effect of {_block} to haste\nset secondary effect of {_block} to resistance"
+      ],
+      "since": [
+        "2.10"
+      ],
+      "requirements": [],
+      "keywords": [],
+      "deprecated": false,
+      "events": [
+        {
+          "id": "EvtBeaconEffect",
+          "name": "On Beacon Effect"
+        },
+        {
+          "id": "EvtBeaconToggle",
+          "name": "On Beacon Toggle"
+        },
+        {
+          "id": "EvtBeaconChangeEffect",
+          "name": "On Beacon Change Effect"
+        }
+      ],
+      "patterns": [
+        "[the] (primary|secondary) [beacon] effect [of %blocks%]",
+        "%blocks%'[s] (primary|secondary) [beacon] effect"
+      ],
+      "returnType": {
+        "id": "TypePotioneffecttype",
+        "name": "Potion Effect Type"
+      }
+    },
     "ExprBossBarFromEntity": {
       "origin": {
         "name": "Skript",
@@ -11929,33 +12088,6 @@
       "returnType": {
         "id": "TypeNumber",
         "name": "Number"
-      }
-    },
-    "ExprUUID": {
-      "origin": {
-        "name": "Skript",
-        "class": "ch.njol.skript.expressions.ExprUUID"
-      },
-      "id": "ExprUUID",
-      "name": "UUID",
-      "description": "The UUID of a player, entity or world.",
-      "examples": [
-        "# prevents people from joining the server if they use the name of a player\n# who has played on this server at least once since this script has been added\non login:\n\tif {uuid::%name of player%} exists:\n\t\t{uuid::%name of player%} is not uuid of player\n\t\tkick player due to \"Someone with your name has played on this server before\"\n\telse:\n\t\tset {uuid::%name of player%} to uuid of player",
-        "command /what-is-my-uuid:\n\ttrigger:\n\t\tset {_uuid} to uuid of player\n\t\tsend \"Your UUID is '%string within {_uuid}%'\""
-      ],
-      "since": [
-        "2.1.2, 2.2 (offline players' uuids), 2.2-dev24 (other entities' uuids)"
-      ],
-      "requirements": [],
-      "keywords": [],
-      "deprecated": false,
-      "patterns": [
-        "[the] uuid[s] of %offlineplayers/worlds/entities%",
-        "%offlineplayers/worlds/entities%'[s] uuid[s]"
-      ],
-      "returnType": {
-        "id": "TypeUuid",
-        "name": "UUID"
       }
     },
     "ExprTimeSince": {
@@ -12215,40 +12347,6 @@
         "name": "Text"
       }
     },
-    "ExprPlayerListName": {
-      "origin": {
-        "name": "Skript",
-        "class": "org.skriptlang.skript.bukkit.entity.player.elements.expressions.ExprPlayerListName",
-        "modules": [
-          "player",
-          "entity",
-          "bukkit"
-        ]
-      },
-      "id": "ExprPlayerListName",
-      "name": "Player List Name",
-      "description": "The name of a player in the player list in the tab menu.",
-      "examples": [
-        "on join:\n\tplayer has permission \"name.red\"\n\tset the player's tab list name to \"<red>%player's name%\""
-      ],
-      "since": [
-        "Before 2.1"
-      ],
-      "requirements": [],
-      "keywords": [
-        "tablist",
-        "tab list"
-      ],
-      "deprecated": false,
-      "patterns": [
-        "[the] (player|tab)[ ]list name[s] of %players%",
-        "%players%'[s] (player|tab)[ ]list name[s]"
-      ],
-      "returnType": {
-        "id": "TypeTextcomponent",
-        "name": "Text Component"
-      }
-    },
     "ExprTimePlayed": {
       "origin": {
         "name": "Skript",
@@ -12434,42 +12532,6 @@
         "name": "Number"
       }
     },
-    "ExprPlayerListHeaderFooter": {
-      "origin": {
-        "name": "Skript",
-        "class": "org.skriptlang.skript.bukkit.entity.player.elements.expressions.ExprPlayerListHeaderFooter",
-        "modules": [
-          "player",
-          "entity",
-          "bukkit"
-        ]
-      },
-      "id": "ExprPlayerListHeaderFooter",
-      "name": "Player List Header and Footer",
-      "description": "The message above and below the player list in the tab menu.",
-      "examples": [
-        "set all players' tab list header to \"Welcome to the Server!\"",
-        "send \"%the player's tab list header%\" to player",
-        "reset all players' tab list header"
-      ],
-      "since": [
-        "2.4"
-      ],
-      "requirements": [],
-      "keywords": [
-        "tablist",
-        "tab list"
-      ],
-      "deprecated": false,
-      "patterns": [
-        "[the] (player|tab)[ ]list (header|footer) [text|message] of %players%",
-        "%players%'[s] (player|tab)[ ]list (header|footer) [text|message]"
-      ],
-      "returnType": {
-        "id": "TypeTextcomponent",
-        "name": "Text Component"
-      }
-    },
     "ExprCursorSlot": {
       "origin": {
         "name": "Skript",
@@ -12547,6 +12609,66 @@
       "returnType": {
         "id": "TypeObject",
         "name": "Object"
+      }
+    },
+    "ExprDisplayTransformationRotation": {
+      "origin": {
+        "name": "Skript",
+        "class": "org.skriptlang.skript.bukkit.entity.displays.elements.expressions.ExprDisplayTransformationRotation",
+        "modules": [
+          "displays",
+          "entity",
+          "bukkit"
+        ]
+      },
+      "id": "ExprDisplayTransformationRotation",
+      "name": "Display Transformation Rotation",
+      "description": "Returns or changes the transformation rotation of <a href='#display'>displays</a>.\nThe left rotation is applied first, with the right rotation then being applied based on the rotated axis.",
+      "examples": [
+        "set left transformation rotation of last spawned block display to quaternion(1, 0, 0, 0) # reset block display"
+      ],
+      "since": [
+        "2.10"
+      ],
+      "requirements": [],
+      "keywords": [],
+      "deprecated": false,
+      "patterns": [
+        "[the] (left|right) [transformation] rotation [of %displays%]",
+        "%displays%'[s] (left|right) [transformation] rotation"
+      ],
+      "returnType": {
+        "id": "TypeQuaternion",
+        "name": "Quaternion"
+      }
+    },
+    "ExprWorld": {
+      "origin": {
+        "name": "Skript",
+        "class": "ch.njol.skript.expressions.ExprWorld"
+      },
+      "id": "ExprWorld",
+      "name": "World",
+      "description": "The world the event occurred in.",
+      "examples": [
+        "world is \"world_nether\"",
+        "teleport the player to the world's spawn",
+        "set the weather in the player's world to rain",
+        "set {_world} to world of event-chunk"
+      ],
+      "since": [
+        "1.0"
+      ],
+      "requirements": [],
+      "keywords": [],
+      "deprecated": false,
+      "patterns": [
+        "[the] world [of %locations/entities/chunk%]",
+        "%locations/entities/chunk%'[s] world"
+      ],
+      "returnType": {
+        "id": "TypeWorld",
+        "name": "World"
       }
     },
     "ExprGlidingState": {
@@ -13045,46 +13167,6 @@
         "name": "Direction"
       }
     },
-    "ExprBeaconEffects": {
-      "origin": {
-        "name": "Skript",
-        "class": "ch.njol.skript.expressions.ExprBeaconEffects"
-      },
-      "id": "ExprBeaconEffects",
-      "name": "Beacon Effects",
-      "description": "The active effects of a beacon.\nThe secondary effect can be set to anything, but the icon in the GUI will not display correctly.\nThe secondary effect can only be set when the beacon is at max tier.\nThe primary and secondary effect can not be the same, primary will always retain the potion type and secondary will be cleared.",
-      "examples": [
-        "set primary beacon effect of {_block} to haste\nset secondary effect of {_block} to resistance"
-      ],
-      "since": [
-        "2.10"
-      ],
-      "requirements": [],
-      "keywords": [],
-      "deprecated": false,
-      "events": [
-        {
-          "id": "EvtBeaconEffect",
-          "name": "On Beacon Effect"
-        },
-        {
-          "id": "EvtBeaconToggle",
-          "name": "On Beacon Toggle"
-        },
-        {
-          "id": "EvtBeaconChangeEffect",
-          "name": "On Beacon Change Effect"
-        }
-      ],
-      "patterns": [
-        "[the] (primary|secondary) [beacon] effect [of %blocks%]",
-        "%blocks%'[s] (primary|secondary) [beacon] effect"
-      ],
-      "returnType": {
-        "id": "TypePotioneffecttype",
-        "name": "Potion Effect Type"
-      }
-    },
     "ExprCausingEntity": {
       "origin": {
         "name": "Skript",
@@ -13147,33 +13229,6 @@
         "name": "Number"
       }
     },
-    "ExprItemThrower": {
-      "origin": {
-        "name": "Skript",
-        "class": "ch.njol.skript.expressions.ExprItemThrower"
-      },
-      "id": "ExprItemThrower",
-      "name": "Dropped Item Thrower",
-      "description": "The uuid of the entity or player that threw/dropped the dropped item.",
-      "examples": [
-        "set the uuid of the dropped item thrower of {_dropped item} to player\nif the uuid of the dropped item thrower of {_dropped item} is uuid of player:",
-        "clear the item thrower of {_dropped item}"
-      ],
-      "since": [
-        "2.11"
-      ],
-      "requirements": [],
-      "keywords": [],
-      "deprecated": false,
-      "patterns": [
-        "[the] uuid of [the] [dropped] item thrower [of %entities%]",
-        "[the] [dropped] item thrower's uuid [of %entities%]"
-      ],
-      "returnType": {
-        "id": "TypeUuid",
-        "name": "UUID"
-      }
-    },
     "ExprVectorFromDirection": {
       "origin": {
         "name": "Skript",
@@ -13228,35 +13283,6 @@
       "returnType": {
         "id": "TypeDifficulty",
         "name": "Difficulty"
-      }
-    },
-    "ExprWorld": {
-      "origin": {
-        "name": "Skript",
-        "class": "ch.njol.skript.expressions.ExprWorld"
-      },
-      "id": "ExprWorld",
-      "name": "World",
-      "description": "The world the event occurred in.",
-      "examples": [
-        "world is \"world_nether\"",
-        "teleport the player to the world's spawn",
-        "set the weather in the player's world to rain",
-        "set {_world} to world of event-chunk"
-      ],
-      "since": [
-        "1.0"
-      ],
-      "requirements": [],
-      "keywords": [],
-      "deprecated": false,
-      "patterns": [
-        "[the] world [of %locations/entities/chunk%]",
-        "%locations/entities/chunk%'[s] world"
-      ],
-      "returnType": {
-        "id": "TypeWorld",
-        "name": "World"
       }
     },
     "ExprDisplayTransformationScaleTranslation": {
@@ -13432,6 +13458,33 @@
       "returnType": {
         "id": "TypeTimespan",
         "name": "Timespan"
+      }
+    },
+    "ExprUUID": {
+      "origin": {
+        "name": "Skript",
+        "class": "ch.njol.skript.expressions.ExprUUID"
+      },
+      "id": "ExprUUID",
+      "name": "UUID",
+      "description": "The UUID of a player, entity or world.",
+      "examples": [
+        "# prevents people from joining the server if they use the name of a player\n# who has played on this server at least once since this script has been added\non login:\n\tif {uuid::%name of player%} exists:\n\t\t{uuid::%name of player%} is not uuid of player\n\t\tkick player due to \"Someone with your name has played on this server before\"\n\telse:\n\t\tset {uuid::%name of player%} to uuid of player",
+        "command /what-is-my-uuid:\n\ttrigger:\n\t\tset {_uuid} to uuid of player\n\t\tsend \"Your UUID is '%string within {_uuid}%'\""
+      ],
+      "since": [
+        "2.1.2, 2.2 (offline players' uuids), 2.2-dev24 (other entities' uuids)"
+      ],
+      "requirements": [],
+      "keywords": [],
+      "deprecated": false,
+      "patterns": [
+        "[the] uuid[s] of %offlineplayers/worlds/entities%",
+        "%offlineplayers/worlds/entities%'[s] uuid[s]"
+      ],
+      "returnType": {
+        "id": "TypeUuid",
+        "name": "UUID"
       }
     },
     "ExprMinMaxEnchantmentLevel": {
@@ -13779,85 +13832,30 @@
         "name": "Object"
       }
     },
-    "ExprVillagerProfession": {
+    "ExprWorldEnvironment": {
       "origin": {
         "name": "Skript",
-        "class": "ch.njol.skript.expressions.ExprVillagerProfession"
+        "class": "ch.njol.skript.expressions.ExprWorldEnvironment"
       },
-      "id": "ExprVillagerProfession",
-      "name": "Villager Profession",
-      "description": "Represents the profession of a villager/zombie villager.",
+      "id": "ExprWorldEnvironment",
+      "name": "World Environment",
+      "description": "The environment of a world",
       "examples": [
-        "set {_p} to villager profession of event-entity",
-        "villager profession of event-entity = nitwit profession",
-        "set villager profession of {_villager} to librarian profession",
-        "delete villager profession of event-entity"
+        "if environment of player's world is nether:\n\tapply fire resistance to player for 10 minutes"
       ],
       "since": [
-        "2.10"
+        "2.7"
       ],
       "requirements": [],
       "keywords": [],
       "deprecated": false,
       "patterns": [
-        "[the] villager profession of %livingentities%",
-        "%livingentities%'[s] villager profession"
+        "[the] [world] environment of %worlds%",
+        "%worlds%'[s] [world] environment"
       ],
       "returnType": {
-        "id": "TypeVillagerprofession",
-        "name": "Villager Profession"
-      }
-    },
-    "ExprItemOwner": {
-      "origin": {
-        "name": "Skript",
-        "class": "ch.njol.skript.expressions.ExprItemOwner"
-      },
-      "id": "ExprItemOwner",
-      "name": "Dropped Item Owner",
-      "description": "The uuid of the owner of the dropped item.\nSetting the owner of a dropped item means only that entity or player can pick it up.\nDropping an item does not automatically make the entity or player the owner.",
-      "examples": [
-        "\tset the uuid of the dropped item owner of last dropped item to player\n\tif the uuid of the dropped item owner of last dropped item is uuid of player:"
-      ],
-      "since": [
-        "2.11"
-      ],
-      "requirements": [],
-      "keywords": [],
-      "deprecated": false,
-      "patterns": [
-        "[the] uuid of [the] [dropped] item owner [of %entities%]",
-        "[the] [dropped] item owner's uuid [of %entities%]"
-      ],
-      "returnType": {
-        "id": "TypeUuid",
-        "name": "UUID"
-      }
-    },
-    "ExprActiveItem": {
-      "origin": {
-        "name": "Skript",
-        "class": "ch.njol.skript.expressions.ExprActiveItem"
-      },
-      "id": "ExprActiveItem",
-      "name": "Active Item",
-      "description": "Returns the item the entities are currently using (ie: the food they're eating, the bow they're drawing back, etc.). This cannot be changed. If an entity is not using any item, this will return null.",
-      "examples": [
-        "on damage of player:\n\tif victim's active tool is a bow:\n\t\tinterrupt player's active item use"
-      ],
-      "since": [
-        "2.8.0"
-      ],
-      "requirements": [],
-      "keywords": [],
-      "deprecated": false,
-      "patterns": [
-        "[the] (raised|active) (tool|item|weapon) of %livingentities%",
-        "%livingentities%'[s] (raised|active) (tool|item|weapon)"
-      ],
-      "returnType": {
-        "id": "TypeItemstack",
-        "name": "Item"
+        "id": "TypeEnvironment",
+        "name": "World Environment"
       }
     },
     "ExprLastDamage": {
@@ -13910,6 +13908,37 @@
       "returnType": {
         "id": "TypeVector",
         "name": "Vector"
+      }
+    },
+    "ExprDamageType": {
+      "origin": {
+        "name": "Skript",
+        "class": "org.skriptlang.skript.bukkit.damagesource.elements.expressions.ExprDamageType",
+        "modules": [
+          "damage source",
+          "bukkit"
+        ]
+      },
+      "id": "ExprDamageType",
+      "name": "Damage Source - Damage Type",
+      "description": "The type of damage of a damage source.\nAttributes of a damage source cannot be changed once created, only while within the 'custom damage source' section.",
+      "examples": [
+        "set {_source} to a custom damage source:\n\tset the damage type to magic\n\tset the causing entity to {_player}\n\tset the direct entity to {_arrow}\n\tset the damage location to location(0, 0, 10)\ndamage all players by 5 using {_source}",
+        "on death:\n\tset {_type} to the damage type of event-damage source"
+      ],
+      "since": [
+        "2.12"
+      ],
+      "requirements": [],
+      "keywords": [],
+      "deprecated": false,
+      "patterns": [
+        "[the] damage type [of %damagesources%]",
+        "%damagesources%'[s] damage type"
+      ],
+      "returnType": {
+        "id": "TypeDamagetype",
+        "name": "Damage Type"
       }
     },
     "ExprBeehiveFlower": {
@@ -14057,6 +14086,36 @@
         "name": "Number"
       }
     },
+    "ExprTextOf": {
+      "origin": {
+        "name": "Skript",
+        "class": "org.skriptlang.skript.bukkit.misc.elements.expressions.ExprTextOf",
+        "modules": [
+          "misc",
+          "bukkit"
+        ]
+      },
+      "id": "ExprTextOf",
+      "name": "Text Of",
+      "description": "Returns or changes the <a href='#string'>text/string</a> of <a href='#display'>displays</a>.\nNote that currently you can only use Skript chat codes when running Paper.",
+      "examples": [
+        "set text of the last spawned text display to \"example\""
+      ],
+      "since": [
+        "2.10"
+      ],
+      "requirements": [],
+      "keywords": [],
+      "deprecated": false,
+      "patterns": [
+        "[the] text[s] of %displays%",
+        "%displays%'[s] text[s]"
+      ],
+      "returnType": {
+        "id": "TypeTextcomponent",
+        "name": "Text Component"
+      }
+    },
     "ExprBalance": {
       "origin": {
         "name": "Skript",
@@ -14086,6 +14145,32 @@
       "returnType": {
         "id": "TypeMoney",
         "name": "Money"
+      }
+    },
+    "ExprActiveItem": {
+      "origin": {
+        "name": "Skript",
+        "class": "ch.njol.skript.expressions.ExprActiveItem"
+      },
+      "id": "ExprActiveItem",
+      "name": "Active Item",
+      "description": "Returns the item the entities are currently using (ie: the food they're eating, the bow they're drawing back, etc.). This cannot be changed. If an entity is not using any item, this will return null.",
+      "examples": [
+        "on damage of player:\n\tif victim's active tool is a bow:\n\t\tinterrupt player's active item use"
+      ],
+      "since": [
+        "2.8.0"
+      ],
+      "requirements": [],
+      "keywords": [],
+      "deprecated": false,
+      "patterns": [
+        "[the] (raised|active) (tool|item|weapon) of %livingentities%",
+        "%livingentities%'[s] (raised|active) (tool|item|weapon)"
+      ],
+      "returnType": {
+        "id": "TypeItemstack",
+        "name": "Item"
       }
     },
     "ExprTextDisplayOpacity": {
@@ -14289,37 +14374,6 @@
         "name": "Text"
       }
     },
-    "ExprDamageType": {
-      "origin": {
-        "name": "Skript",
-        "class": "org.skriptlang.skript.bukkit.damagesource.elements.expressions.ExprDamageType",
-        "modules": [
-          "damage source",
-          "bukkit"
-        ]
-      },
-      "id": "ExprDamageType",
-      "name": "Damage Source - Damage Type",
-      "description": "The type of damage of a damage source.\nAttributes of a damage source cannot be changed once created, only while within the 'custom damage source' section.",
-      "examples": [
-        "set {_source} to a custom damage source:\n\tset the damage type to magic\n\tset the causing entity to {_player}\n\tset the direct entity to {_arrow}\n\tset the damage location to location(0, 0, 10)\ndamage all players by 5 using {_source}",
-        "on death:\n\tset {_type} to the damage type of event-damage source"
-      ],
-      "since": [
-        "2.12"
-      ],
-      "requirements": [],
-      "keywords": [],
-      "deprecated": false,
-      "patterns": [
-        "[the] damage type [of %damagesources%]",
-        "%damagesources%'[s] damage type"
-      ],
-      "returnType": {
-        "id": "TypeDamagetype",
-        "name": "Damage Type"
-      }
-    },
     "ExprMoonPhase": {
       "origin": {
         "name": "Skript",
@@ -14483,34 +14537,6 @@
       "returnType": {
         "id": "TypeNumber",
         "name": "Number"
-      }
-    },
-    "ExprVillagerType": {
-      "origin": {
-        "name": "Skript",
-        "class": "ch.njol.skript.expressions.ExprVillagerType"
-      },
-      "id": "ExprVillagerType",
-      "name": "Villager Type",
-      "description": "Represents the type of a villager/zombie villager. This usually represents the biome the villager is from.",
-      "examples": [
-        "set {_type} to villager type of {_villager}",
-        "villager type of {_villager} = plains",
-        "set villager type of event-entity to plains"
-      ],
-      "since": [
-        "2.10"
-      ],
-      "requirements": [],
-      "keywords": [],
-      "deprecated": false,
-      "patterns": [
-        "[the] villager type of %livingentities%",
-        "%livingentities%'[s] villager type"
-      ],
-      "returnType": {
-        "id": "TypeVillagertype",
-        "name": "Villager Type"
       }
     },
     "ExprAltitude": {
@@ -14682,32 +14708,6 @@
       "returnType": {
         "id": "TypeTime",
         "name": "Time"
-      }
-    },
-    "ExprWorldEnvironment": {
-      "origin": {
-        "name": "Skript",
-        "class": "ch.njol.skript.expressions.ExprWorldEnvironment"
-      },
-      "id": "ExprWorldEnvironment",
-      "name": "World Environment",
-      "description": "The environment of a world",
-      "examples": [
-        "if environment of player's world is nether:\n\tapply fire resistance to player for 10 minutes"
-      ],
-      "since": [
-        "2.7"
-      ],
-      "requirements": [],
-      "keywords": [],
-      "deprecated": false,
-      "patterns": [
-        "[the] [world] environment of %worlds%",
-        "%worlds%'[s] [world] environment"
-      ],
-      "returnType": {
-        "id": "TypeEnvironment",
-        "name": "World Environment"
       }
     },
     "ExprLastResourcePackResponse": {
@@ -14902,40 +14902,6 @@
       "returnType": {
         "id": "TypeNumber",
         "name": "Number"
-      }
-    },
-    "ExprBookPages": {
-      "origin": {
-        "name": "Skript",
-        "class": "org.skriptlang.skript.bukkit.item.book.elements.expressions.ExprBookPages",
-        "modules": [
-          "book",
-          "item",
-          "bukkit"
-        ]
-      },
-      "id": "ExprBookPages",
-      "name": "Book Pages",
-      "description": "The pages of a book (Supports Skript's chat format)\nNote: In order to modify the pages of a new written book, you must have the title and author\nof the book set. Skript will do this for you, but if you want your own, please set those values.",
-      "examples": [
-        "on book sign:\n\tif the number of pages of event-item is greater than 1:\n\t\tmessage \"The second page of the authored book is: %page 2 of event-item%\"",
-        "set page 1 of the player's held item to \"This page was written with Skript!\""
-      ],
-      "since": [
-        "2.2-dev31, 2.7 (changers)"
-      ],
-      "requirements": [],
-      "keywords": [],
-      "deprecated": false,
-      "patterns": [
-        "[all [[of] the]|the] [book] (pages|content) of %itemtypes%",
-        "%itemtypes%'[s] [book] (pages|content)",
-        "[book] page %number% of %itemtypes%",
-        "%itemtypes%'[s] [book] page %number%"
-      ],
-      "returnType": {
-        "id": "TypeTextcomponent",
-        "name": "Text Component"
       }
     },
     "ExprPotionEffect": {
@@ -15146,6 +15112,40 @@
         "name": "Slot"
       }
     },
+    "ExprLore": {
+      "origin": {
+        "name": "Skript",
+        "class": "org.skriptlang.skript.bukkit.item.elements.ExprLore",
+        "modules": [
+          "item",
+          "bukkit"
+        ]
+      },
+      "id": "ExprLore",
+      "name": "Lore",
+      "description": "Returns the lore of an item.",
+      "examples": [
+        "set the 1st line of the item's lore to \"<orange>Excalibur 2.0\""
+      ],
+      "since": [
+        "2.1"
+      ],
+      "requirements": [],
+      "keywords": [],
+      "deprecated": false,
+      "patterns": [
+        "[the] lore of %itemtype%",
+        "%itemtype%'[s] lore",
+        "[the] line %number% of [the] lore of %itemtype%",
+        "[the] line %number% of %itemtype%'[s] lore",
+        "[the] %number%(st|nd|rd|th) line of [the] lore of %itemtype%",
+        "[the] %number%(st|nd|rd|th) line of %itemtype%'[s] lore"
+      ],
+      "returnType": {
+        "id": "TypeTextcomponent",
+        "name": "Text Component"
+      }
+    },
     "ExprMetadata": {
       "origin": {
         "name": "Skript",
@@ -15201,40 +15201,6 @@
         "name": "Slot"
       }
     },
-    "ExprLore": {
-      "origin": {
-        "name": "Skript",
-        "class": "org.skriptlang.skript.bukkit.item.elements.ExprLore",
-        "modules": [
-          "item",
-          "bukkit"
-        ]
-      },
-      "id": "ExprLore",
-      "name": "Lore",
-      "description": "Returns the lore of an item.",
-      "examples": [
-        "set the 1st line of the item's lore to \"<orange>Excalibur 2.0\""
-      ],
-      "since": [
-        "2.1"
-      ],
-      "requirements": [],
-      "keywords": [],
-      "deprecated": false,
-      "patterns": [
-        "[the] lore of %itemtype%",
-        "%itemtype%'[s] lore",
-        "[the] line %number% of [the] lore of %itemtype%",
-        "[the] line %number% of %itemtype%'[s] lore",
-        "[the] %number%(st|nd|rd|th) line of [the] lore of %itemtype%",
-        "[the] %number%(st|nd|rd|th) line of %itemtype%'[s] lore"
-      ],
-      "returnType": {
-        "id": "TypeTextcomponent",
-        "name": "Text Component"
-      }
-    },
     "ExprItemWithLore": {
       "origin": {
         "name": "Skript",
@@ -15262,6 +15228,40 @@
       "returnType": {
         "id": "TypeItemtype",
         "name": "Item Type"
+      }
+    },
+    "ExprSignText": {
+      "origin": {
+        "name": "Skript",
+        "class": "org.skriptlang.skript.bukkit.block.sign.elements.expressions.ExprSignText",
+        "modules": [
+          "sign",
+          "block",
+          "bukkit"
+        ]
+      },
+      "id": "ExprSignText",
+      "name": "Sign Text",
+      "description": "A line of text on a sign. Can be changed, but note that there is a 16 character limit per line. If a sign side is not specified, the front side will be used by default, unless in a sign change event and a block is not explicitly specified.",
+      "examples": [
+        "on right click:\n\tclicked block is tagged as \"minecraft:all_signs\"\n\tif line 2 of the clicked block is \"[Heal]\":\n\t\theal the player",
+        "on sign change:\n\tany of the lines contain \"bad word\"\n\tcancel the event\n\tsend \"<red>You may not write profanity on signs!\" to the player"
+      ],
+      "since": [
+        "1.3",
+        "2.17 (sign side support)"
+      ],
+      "requirements": [],
+      "keywords": [],
+      "deprecated": false,
+      "patterns": [
+        "line %number% [of [the] (front|back) [side]] [of %block%]",
+        "[the] (1st|first|2nd|second|3rd|third|4th|fourth) line [of [the] (front|back) [side]] [of %block%]",
+        "[all [[of] the]|the] lines [of [the] (front|back) [side]] [of %block%]"
+      ],
+      "returnType": {
+        "id": "TypeTextcomponent",
+        "name": "Text Component"
       }
     },
     "ExprNode": {
@@ -15360,34 +15360,34 @@
         "name": "Object"
       }
     },
-    "ExprSignText": {
+    "ExprBookPages": {
       "origin": {
         "name": "Skript",
-        "class": "org.skriptlang.skript.bukkit.block.sign.elements.expressions.ExprSignText",
+        "class": "org.skriptlang.skript.bukkit.item.book.elements.expressions.ExprBookPages",
         "modules": [
-          "sign",
-          "block",
+          "book",
+          "item",
           "bukkit"
         ]
       },
-      "id": "ExprSignText",
-      "name": "Sign Text",
-      "description": "A line of text on a sign. Can be changed, but note that there is a 16 character limit per line. If a sign side is not specified, the front side will be used by default, unless in a sign change event and a block is not explicitly specified.",
+      "id": "ExprBookPages",
+      "name": "Book Pages",
+      "description": "The pages of a book (Supports Skript's chat format)\nNote: In order to modify the pages of a new written book, you must have the title and author\nof the book set. Skript will do this for you, but if you want your own, please set those values.",
       "examples": [
-        "on right click:\n\tclicked block is tagged as \"minecraft:all_signs\"\n\tif line 2 of the clicked block is \"[Heal]\":\n\t\theal the player",
-        "on sign change:\n\tany of the lines contain \"bad word\"\n\tcancel the event\n\tsend \"<red>You may not write profanity on signs!\" to the player"
+        "on book sign:\n\tif the number of pages of event-item is greater than 1:\n\t\tmessage \"The second page of the authored book is: %page 2 of event-item%\"",
+        "set page 1 of the player's held item to \"This page was written with Skript!\""
       ],
       "since": [
-        "1.3",
-        "2.17 (sign side support)"
+        "2.2-dev31, 2.7 (changers)"
       ],
       "requirements": [],
       "keywords": [],
       "deprecated": false,
       "patterns": [
-        "line %number% [of [the] (front|back) [side]] [of %block%]",
-        "[the] (1st|first|2nd|second|3rd|third|4th|fourth) line [of [the] (front|back) [side]] [of %block%]",
-        "[all [[of] the]|the] lines [of [the] (front|back) [side]] [of %block%]"
+        "[all [[of] the]|the] [book] (pages|content) of %itemtypes%",
+        "%itemtypes%'[s] [book] (pages|content)",
+        "[book] page %number% of %itemtypes%",
+        "%itemtypes%'[s] [book] page %number%"
       ],
       "returnType": {
         "id": "TypeTextcomponent",
@@ -15522,32 +15522,6 @@
         "name": "Object"
       }
     },
-    "ExprBiome": {
-      "origin": {
-        "name": "Skript",
-        "class": "ch.njol.skript.expressions.ExprBiome"
-      },
-      "id": "ExprBiome",
-      "name": "Biome",
-      "description": "The biome at a certain location. Please note that biomes are only defined for x/z-columns\n(i.e. the <a href='#ExprAltitude'>altitude</a> (y-coordinate) doesn't matter), up until Minecraft 1.15.x.\nAs of Minecraft 1.16, biomes are now 3D (per block vs column).",
-      "examples": [
-        "# damage player in deserts constantly\nevery real minute:\n\tloop all players:\n\t\tbiome at loop-player is desert\n\t\tdamage the loop-player by 1"
-      ],
-      "since": [
-        "1.4.4, 2.6.1 (3D biomes)"
-      ],
-      "requirements": [],
-      "keywords": [],
-      "deprecated": false,
-      "patterns": [
-        "[the] biome [(of|%direction%) %locations%]",
-        "%locations%'[s] biome"
-      ],
-      "returnType": {
-        "id": "TypeBiome",
-        "name": "Biome"
-      }
-    },
     "ExprRegionsAt": {
       "origin": {
         "name": "Skript",
@@ -15573,6 +15547,32 @@
       "returnType": {
         "id": "TypeRegion",
         "name": "Region"
+      }
+    },
+    "ExprBiome": {
+      "origin": {
+        "name": "Skript",
+        "class": "ch.njol.skript.expressions.ExprBiome"
+      },
+      "id": "ExprBiome",
+      "name": "Biome",
+      "description": "The biome at a certain location. Please note that biomes are only defined for x/z-columns\n(i.e. the <a href='#ExprAltitude'>altitude</a> (y-coordinate) doesn't matter), up until Minecraft 1.15.x.\nAs of Minecraft 1.16, biomes are now 3D (per block vs column).",
+      "examples": [
+        "# damage player in deserts constantly\nevery real minute:\n\tloop all players:\n\t\tbiome at loop-player is desert\n\t\tdamage the loop-player by 1"
+      ],
+      "since": [
+        "1.4.4, 2.6.1 (3D biomes)"
+      ],
+      "requirements": [],
+      "keywords": [],
+      "deprecated": false,
+      "patterns": [
+        "[the] biome [(of|%direction%) %locations%]",
+        "%locations%'[s] biome"
+      ],
+      "returnType": {
+        "id": "TypeBiome",
+        "name": "Biome"
       }
     },
     "ExprLightLevel": {
@@ -20120,6 +20120,7 @@
           },
           "plural": false,
           "time": "PAST",
+          "description": "",
           "patterns": [],
           "supportedChangeModes": []
         },
@@ -20130,6 +20131,7 @@
           },
           "plural": false,
           "time": "NOW",
+          "description": "",
           "patterns": [],
           "supportedChangeModes": []
         },
@@ -20140,6 +20142,7 @@
           },
           "plural": false,
           "time": "NOW",
+          "description": "",
           "patterns": [],
           "supportedChangeModes": []
         },
@@ -20150,6 +20153,7 @@
           },
           "plural": false,
           "time": "NOW",
+          "description": "",
           "patterns": [],
           "supportedChangeModes": []
         }
@@ -20227,6 +20231,7 @@
           },
           "plural": false,
           "time": "NOW",
+          "description": "",
           "patterns": [],
           "supportedChangeModes": []
         },
@@ -20237,6 +20242,7 @@
           },
           "plural": false,
           "time": "NOW",
+          "description": "",
           "patterns": [],
           "supportedChangeModes": []
         },
@@ -20247,6 +20253,7 @@
           },
           "plural": false,
           "time": "NOW",
+          "description": "",
           "patterns": [],
           "supportedChangeModes": []
         }
@@ -20285,6 +20292,7 @@
           },
           "plural": false,
           "time": "PAST",
+          "description": "",
           "patterns": [],
           "supportedChangeModes": []
         },
@@ -20295,6 +20303,7 @@
           },
           "plural": false,
           "time": "NOW",
+          "description": "",
           "patterns": [],
           "supportedChangeModes": []
         },
@@ -20305,6 +20314,7 @@
           },
           "plural": false,
           "time": "NOW",
+          "description": "",
           "patterns": [],
           "supportedChangeModes": []
         },
@@ -20315,6 +20325,7 @@
           },
           "plural": false,
           "time": "NOW",
+          "description": "",
           "patterns": [],
           "supportedChangeModes": []
         }
@@ -20354,6 +20365,7 @@
           },
           "plural": false,
           "time": "NOW",
+          "description": "",
           "patterns": [],
           "supportedChangeModes": []
         },
@@ -20364,6 +20376,7 @@
           },
           "plural": false,
           "time": "NOW",
+          "description": "",
           "patterns": [],
           "supportedChangeModes": []
         }
@@ -20404,6 +20417,7 @@
           },
           "plural": false,
           "time": "NOW",
+          "description": "",
           "patterns": [],
           "supportedChangeModes": []
         },
@@ -20414,6 +20428,7 @@
           },
           "plural": true,
           "time": "NOW",
+          "description": "",
           "patterns": [],
           "supportedChangeModes": []
         }
@@ -20452,6 +20467,7 @@
           },
           "plural": false,
           "time": "NOW",
+          "description": "",
           "patterns": [
             "target location"
           ],
@@ -20464,6 +20480,7 @@
           },
           "plural": false,
           "time": "NOW",
+          "description": "",
           "patterns": [
             "target entity"
           ],
@@ -20476,6 +20493,7 @@
           },
           "plural": false,
           "time": "NOW",
+          "description": "",
           "patterns": [],
           "supportedChangeModes": []
         }
@@ -20514,6 +20532,7 @@
           },
           "plural": false,
           "time": "NOW",
+          "description": "The thing that tried to execute the command.",
           "patterns": [],
           "supportedChangeModes": []
         },
@@ -20524,6 +20543,7 @@
           },
           "plural": false,
           "time": "NOW",
+          "description": "If the attempted command was from a block, the block itself.",
           "patterns": [],
           "supportedChangeModes": []
         },
@@ -20534,6 +20554,7 @@
           },
           "plural": false,
           "time": "NOW",
+          "description": "The location where the attempted command execution occurred.",
           "patterns": [],
           "supportedChangeModes": []
         },
@@ -20544,6 +20565,7 @@
           },
           "plural": false,
           "time": "NOW",
+          "description": "The world that the attempted command execution occurred in.",
           "patterns": [],
           "supportedChangeModes": []
         }
@@ -20609,6 +20631,7 @@
           },
           "plural": false,
           "time": "PAST",
+          "description": "",
           "patterns": [],
           "supportedChangeModes": []
         },
@@ -20619,6 +20642,7 @@
           },
           "plural": false,
           "time": "NOW",
+          "description": "",
           "patterns": [],
           "supportedChangeModes": []
         },
@@ -20629,6 +20653,7 @@
           },
           "plural": false,
           "time": "NOW",
+          "description": "",
           "patterns": [],
           "supportedChangeModes": []
         }
@@ -20667,6 +20692,7 @@
           },
           "plural": false,
           "time": "NOW",
+          "description": "",
           "patterns": [],
           "supportedChangeModes": []
         },
@@ -20677,6 +20703,7 @@
           },
           "plural": false,
           "time": "NOW",
+          "description": "",
           "patterns": [],
           "supportedChangeModes": []
         },
@@ -20687,6 +20714,7 @@
           },
           "plural": false,
           "time": "NOW",
+          "description": "",
           "patterns": [],
           "supportedChangeModes": []
         },
@@ -20697,6 +20725,7 @@
           },
           "plural": false,
           "time": "NOW",
+          "description": "",
           "patterns": [],
           "supportedChangeModes": []
         }
@@ -20731,6 +20760,7 @@
           },
           "plural": false,
           "time": "NOW",
+          "description": "",
           "patterns": [],
           "supportedChangeModes": []
         }
@@ -20765,6 +20795,7 @@
           },
           "plural": false,
           "time": "NOW",
+          "description": "",
           "patterns": [],
           "supportedChangeModes": []
         },
@@ -20775,6 +20806,7 @@
           },
           "plural": false,
           "time": "NOW",
+          "description": "",
           "patterns": [],
           "supportedChangeModes": []
         }
@@ -20857,6 +20889,7 @@
           },
           "plural": false,
           "time": "NOW",
+          "description": "",
           "patterns": [],
           "supportedChangeModes": []
         },
@@ -20867,6 +20900,7 @@
           },
           "plural": false,
           "time": "NOW",
+          "description": "",
           "patterns": [],
           "supportedChangeModes": []
         },
@@ -20877,6 +20911,7 @@
           },
           "plural": false,
           "time": "NOW",
+          "description": "",
           "patterns": [],
           "supportedChangeModes": []
         }
@@ -20912,6 +20947,7 @@
           },
           "plural": false,
           "time": "NOW",
+          "description": "",
           "patterns": [],
           "supportedChangeModes": []
         },
@@ -20922,6 +20958,7 @@
           },
           "plural": false,
           "time": "FUTURE",
+          "description": "",
           "patterns": [],
           "supportedChangeModes": []
         }
@@ -20956,6 +20993,7 @@
           },
           "plural": false,
           "time": "NOW",
+          "description": "",
           "patterns": [],
           "supportedChangeModes": []
         },
@@ -20966,6 +21004,7 @@
           },
           "plural": false,
           "time": "NOW",
+          "description": "",
           "patterns": [],
           "supportedChangeModes": []
         }
@@ -21025,6 +21064,7 @@
           },
           "plural": false,
           "time": "NOW",
+          "description": "",
           "patterns": [],
           "supportedChangeModes": []
         },
@@ -21035,6 +21075,7 @@
           },
           "plural": true,
           "time": "NOW",
+          "description": "",
           "patterns": [],
           "supportedChangeModes": []
         }
@@ -21092,6 +21133,7 @@
           },
           "plural": false,
           "time": "NOW",
+          "description": "",
           "patterns": [],
           "supportedChangeModes": []
         },
@@ -21102,6 +21144,7 @@
           },
           "plural": false,
           "time": "NOW",
+          "description": "",
           "patterns": [],
           "supportedChangeModes": []
         }
@@ -21136,6 +21179,7 @@
           },
           "plural": false,
           "time": "PAST",
+          "description": "",
           "patterns": [],
           "supportedChangeModes": []
         },
@@ -21146,6 +21190,7 @@
           },
           "plural": false,
           "time": "NOW",
+          "description": "",
           "patterns": [],
           "supportedChangeModes": []
         }
@@ -21180,6 +21225,7 @@
           },
           "plural": false,
           "time": "NOW",
+          "description": "",
           "patterns": [],
           "supportedChangeModes": []
         }
@@ -21214,6 +21260,7 @@
           },
           "plural": false,
           "time": "PAST",
+          "description": "",
           "patterns": [],
           "supportedChangeModes": []
         },
@@ -21224,6 +21271,7 @@
           },
           "plural": false,
           "time": "NOW",
+          "description": "",
           "patterns": [],
           "supportedChangeModes": []
         },
@@ -21234,6 +21282,7 @@
           },
           "plural": false,
           "time": "NOW",
+          "description": "",
           "patterns": [],
           "supportedChangeModes": []
         },
@@ -21244,6 +21293,7 @@
           },
           "plural": false,
           "time": "NOW",
+          "description": "",
           "patterns": [],
           "supportedChangeModes": []
         },
@@ -21254,6 +21304,7 @@
           },
           "plural": true,
           "time": "NOW",
+          "description": "",
           "patterns": [],
           "supportedChangeModes": []
         },
@@ -21264,6 +21315,7 @@
           },
           "plural": true,
           "time": "NOW",
+          "description": "",
           "patterns": [],
           "supportedChangeModes": []
         },
@@ -21274,6 +21326,7 @@
           },
           "plural": false,
           "time": "NOW",
+          "description": "",
           "patterns": [],
           "supportedChangeModes": []
         },
@@ -21284,6 +21337,7 @@
           },
           "plural": true,
           "time": "NOW",
+          "description": "",
           "patterns": [],
           "supportedChangeModes": []
         }
@@ -21318,6 +21372,7 @@
           },
           "plural": false,
           "time": "NOW",
+          "description": "",
           "patterns": [],
           "supportedChangeModes": []
         }
@@ -21352,6 +21407,7 @@
           },
           "plural": false,
           "time": "PAST",
+          "description": "",
           "patterns": [],
           "supportedChangeModes": []
         },
@@ -21362,6 +21418,7 @@
           },
           "plural": true,
           "time": "PAST",
+          "description": "",
           "patterns": [],
           "supportedChangeModes": []
         },
@@ -21372,6 +21429,7 @@
           },
           "plural": false,
           "time": "NOW",
+          "description": "",
           "patterns": [],
           "supportedChangeModes": []
         },
@@ -21382,6 +21440,7 @@
           },
           "plural": true,
           "time": "NOW",
+          "description": "",
           "patterns": [],
           "supportedChangeModes": []
         }
@@ -21511,6 +21570,7 @@
           },
           "plural": false,
           "time": "NOW",
+          "description": "",
           "patterns": [],
           "supportedChangeModes": []
         },
@@ -21521,6 +21581,7 @@
           },
           "plural": false,
           "time": "NOW",
+          "description": "",
           "patterns": [],
           "supportedChangeModes": []
         },
@@ -21531,6 +21592,7 @@
           },
           "plural": false,
           "time": "NOW",
+          "description": "",
           "patterns": [],
           "supportedChangeModes": []
         }
@@ -21565,6 +21627,7 @@
           },
           "plural": false,
           "time": "PAST",
+          "description": "",
           "patterns": [],
           "supportedChangeModes": [
             "SET"
@@ -21577,6 +21640,7 @@
           },
           "plural": false,
           "time": "PAST",
+          "description": "",
           "patterns": [],
           "supportedChangeModes": []
         },
@@ -21587,6 +21651,7 @@
           },
           "plural": false,
           "time": "PAST",
+          "description": "",
           "patterns": [],
           "supportedChangeModes": []
         },
@@ -21597,6 +21662,7 @@
           },
           "plural": false,
           "time": "NOW",
+          "description": "",
           "patterns": [],
           "supportedChangeModes": [
             "SET"
@@ -21609,6 +21675,7 @@
           },
           "plural": false,
           "time": "NOW",
+          "description": "",
           "patterns": [],
           "supportedChangeModes": []
         },
@@ -21619,6 +21686,7 @@
           },
           "plural": false,
           "time": "NOW",
+          "description": "",
           "patterns": [],
           "supportedChangeModes": []
         },
@@ -21629,6 +21697,7 @@
           },
           "plural": false,
           "time": "NOW",
+          "description": "",
           "patterns": [],
           "supportedChangeModes": []
         },
@@ -21639,6 +21708,7 @@
           },
           "plural": false,
           "time": "NOW",
+          "description": "",
           "patterns": [],
           "supportedChangeModes": []
         }
@@ -21696,6 +21766,7 @@
           },
           "plural": false,
           "time": "PAST",
+          "description": "",
           "patterns": [],
           "supportedChangeModes": []
         },
@@ -21706,6 +21777,7 @@
           },
           "plural": true,
           "time": "PAST",
+          "description": "",
           "patterns": [],
           "supportedChangeModes": []
         },
@@ -21716,6 +21788,7 @@
           },
           "plural": false,
           "time": "NOW",
+          "description": "",
           "patterns": [],
           "supportedChangeModes": []
         },
@@ -21726,6 +21799,7 @@
           },
           "plural": true,
           "time": "NOW",
+          "description": "",
           "patterns": [],
           "supportedChangeModes": []
         }
@@ -21760,6 +21834,7 @@
           },
           "plural": false,
           "time": "PAST",
+          "description": "",
           "patterns": [],
           "supportedChangeModes": []
         },
@@ -21770,6 +21845,7 @@
           },
           "plural": false,
           "time": "NOW",
+          "description": "",
           "patterns": [],
           "supportedChangeModes": []
         },
@@ -21780,6 +21856,7 @@
           },
           "plural": false,
           "time": "NOW",
+          "description": "",
           "patterns": [],
           "supportedChangeModes": [
             "SET"
@@ -21818,6 +21895,7 @@
           },
           "plural": false,
           "time": "NOW",
+          "description": "",
           "patterns": [],
           "supportedChangeModes": [
             "SET"
@@ -21900,6 +21978,7 @@
           },
           "plural": true,
           "time": "NOW",
+          "description": "",
           "patterns": [],
           "supportedChangeModes": []
         },
@@ -21910,6 +21989,7 @@
           },
           "plural": false,
           "time": "NOW",
+          "description": "",
           "patterns": [],
           "supportedChangeModes": []
         }
@@ -21991,6 +22071,7 @@
           },
           "plural": false,
           "time": "NOW",
+          "description": "",
           "patterns": [],
           "supportedChangeModes": []
         },
@@ -22001,6 +22082,7 @@
           },
           "plural": false,
           "time": "NOW",
+          "description": "",
           "patterns": [],
           "supportedChangeModes": []
         }
@@ -22035,6 +22117,7 @@
           },
           "plural": false,
           "time": "PAST",
+          "description": "",
           "patterns": [],
           "supportedChangeModes": []
         }
@@ -22070,6 +22153,7 @@
           },
           "plural": false,
           "time": "NOW",
+          "description": "",
           "patterns": [],
           "supportedChangeModes": []
         }
@@ -22104,6 +22188,7 @@
           },
           "plural": false,
           "time": "NOW",
+          "description": "",
           "patterns": [],
           "supportedChangeModes": []
         }
@@ -22185,6 +22270,7 @@
           },
           "plural": false,
           "time": "NOW",
+          "description": "",
           "patterns": [],
           "supportedChangeModes": []
         },
@@ -22195,6 +22281,7 @@
           },
           "plural": false,
           "time": "NOW",
+          "description": "",
           "patterns": [],
           "supportedChangeModes": []
         }
@@ -22278,6 +22365,7 @@
           },
           "plural": false,
           "time": "NOW",
+          "description": "",
           "patterns": [],
           "supportedChangeModes": []
         }
@@ -22313,6 +22401,7 @@
           },
           "plural": false,
           "time": "NOW",
+          "description": "",
           "patterns": [],
           "supportedChangeModes": []
         }
@@ -22370,6 +22459,7 @@
           },
           "plural": false,
           "time": "NOW",
+          "description": "",
           "patterns": [],
           "supportedChangeModes": []
         },
@@ -22380,6 +22470,7 @@
           },
           "plural": false,
           "time": "NOW",
+          "description": "",
           "patterns": [],
           "supportedChangeModes": []
         }
@@ -22437,6 +22528,7 @@
           },
           "plural": false,
           "time": "NOW",
+          "description": "",
           "patterns": [],
           "supportedChangeModes": []
         },
@@ -22447,6 +22539,7 @@
           },
           "plural": false,
           "time": "NOW",
+          "description": "",
           "patterns": [],
           "supportedChangeModes": []
         },
@@ -22457,6 +22550,7 @@
           },
           "plural": false,
           "time": "NOW",
+          "description": "",
           "patterns": [],
           "supportedChangeModes": []
         }
@@ -22515,6 +22609,7 @@
           },
           "plural": false,
           "time": "NOW",
+          "description": "",
           "patterns": [],
           "supportedChangeModes": []
         }
@@ -22550,6 +22645,7 @@
           },
           "plural": false,
           "time": "NOW",
+          "description": "",
           "patterns": [],
           "supportedChangeModes": []
         },
@@ -22560,6 +22656,7 @@
           },
           "plural": false,
           "time": "NOW",
+          "description": "",
           "patterns": [],
           "supportedChangeModes": []
         },
@@ -22570,6 +22667,7 @@
           },
           "plural": false,
           "time": "NOW",
+          "description": "",
           "patterns": [],
           "supportedChangeModes": []
         }
@@ -22652,6 +22750,7 @@
           },
           "plural": false,
           "time": "NOW",
+          "description": "",
           "patterns": [],
           "supportedChangeModes": []
         }
@@ -22778,6 +22877,7 @@
           },
           "plural": false,
           "time": "NOW",
+          "description": "",
           "patterns": [],
           "supportedChangeModes": []
         }
@@ -22813,6 +22913,7 @@
           },
           "plural": false,
           "time": "NOW",
+          "description": "",
           "patterns": [],
           "supportedChangeModes": []
         }
@@ -22847,6 +22948,7 @@
           },
           "plural": false,
           "time": "PAST",
+          "description": "",
           "patterns": [],
           "supportedChangeModes": []
         },
@@ -22857,6 +22959,7 @@
           },
           "plural": false,
           "time": "NOW",
+          "description": "",
           "patterns": [],
           "supportedChangeModes": []
         },
@@ -22867,6 +22970,7 @@
           },
           "plural": false,
           "time": "NOW",
+          "description": "",
           "patterns": [],
           "supportedChangeModes": []
         }
@@ -22901,6 +23005,7 @@
           },
           "plural": true,
           "time": "NOW",
+          "description": "",
           "patterns": [],
           "supportedChangeModes": []
         }
@@ -22958,6 +23063,7 @@
           },
           "plural": false,
           "time": "NOW",
+          "description": "",
           "patterns": [],
           "supportedChangeModes": []
         }
@@ -23022,6 +23128,7 @@
           },
           "plural": false,
           "time": "PAST",
+          "description": "",
           "patterns": [],
           "supportedChangeModes": []
         },
@@ -23032,6 +23139,7 @@
           },
           "plural": false,
           "time": "NOW",
+          "description": "",
           "patterns": [],
           "supportedChangeModes": []
         }
@@ -23090,6 +23198,7 @@
           },
           "plural": false,
           "time": "NOW",
+          "description": "",
           "patterns": [],
           "supportedChangeModes": []
         },
@@ -23100,6 +23209,7 @@
           },
           "plural": false,
           "time": "NOW",
+          "description": "",
           "patterns": [],
           "supportedChangeModes": []
         },
@@ -23110,6 +23220,7 @@
           },
           "plural": true,
           "time": "NOW",
+          "description": "",
           "patterns": [],
           "supportedChangeModes": []
         },
@@ -23120,6 +23231,7 @@
           },
           "plural": false,
           "time": "NOW",
+          "description": "",
           "patterns": [],
           "supportedChangeModes": []
         }
@@ -23179,6 +23291,7 @@
           },
           "plural": false,
           "time": "NOW",
+          "description": "",
           "patterns": [],
           "supportedChangeModes": []
         }
@@ -23335,6 +23448,7 @@
           },
           "plural": false,
           "time": "FUTURE",
+          "description": "",
           "patterns": [],
           "supportedChangeModes": []
         }
@@ -23369,6 +23483,7 @@
           },
           "plural": false,
           "time": "NOW",
+          "description": "",
           "patterns": [],
           "supportedChangeModes": []
         },
@@ -23379,6 +23494,7 @@
           },
           "plural": false,
           "time": "NOW",
+          "description": "",
           "patterns": [],
           "supportedChangeModes": []
         },
@@ -23389,6 +23505,7 @@
           },
           "plural": false,
           "time": "NOW",
+          "description": "",
           "patterns": [],
           "supportedChangeModes": []
         }
@@ -23427,6 +23544,7 @@
           },
           "plural": false,
           "time": "NOW",
+          "description": "",
           "patterns": [],
           "supportedChangeModes": []
         }
@@ -23461,6 +23579,7 @@
           },
           "plural": false,
           "time": "NOW",
+          "description": "",
           "patterns": [],
           "supportedChangeModes": []
         }
@@ -23519,6 +23638,7 @@
           },
           "plural": false,
           "time": "NOW",
+          "description": "",
           "patterns": [],
           "supportedChangeModes": []
         }
@@ -23555,6 +23675,7 @@
           },
           "plural": false,
           "time": "NOW",
+          "description": "",
           "patterns": [],
           "supportedChangeModes": []
         },
@@ -23565,6 +23686,7 @@
           },
           "plural": false,
           "time": "NOW",
+          "description": "",
           "patterns": [],
           "supportedChangeModes": []
         }
@@ -23599,6 +23721,7 @@
           },
           "plural": false,
           "time": "PAST",
+          "description": "",
           "patterns": [],
           "supportedChangeModes": []
         },
@@ -23609,6 +23732,7 @@
           },
           "plural": false,
           "time": "NOW",
+          "description": "",
           "patterns": [],
           "supportedChangeModes": []
         },
@@ -23619,6 +23743,7 @@
           },
           "plural": false,
           "time": "NOW",
+          "description": "",
           "patterns": [],
           "supportedChangeModes": []
         }
@@ -23676,6 +23801,7 @@
           },
           "plural": false,
           "time": "NOW",
+          "description": "",
           "patterns": [],
           "supportedChangeModes": []
         }
@@ -23710,6 +23836,7 @@
           },
           "plural": false,
           "time": "NOW",
+          "description": "",
           "patterns": [],
           "supportedChangeModes": []
         }
@@ -23744,6 +23871,7 @@
           },
           "plural": false,
           "time": "NOW",
+          "description": "",
           "patterns": [],
           "supportedChangeModes": []
         }
@@ -23780,6 +23908,7 @@
           },
           "plural": false,
           "time": "NOW",
+          "description": "",
           "patterns": [],
           "supportedChangeModes": []
         },
@@ -23790,6 +23919,7 @@
           },
           "plural": true,
           "time": "NOW",
+          "description": "",
           "patterns": [],
           "supportedChangeModes": []
         },
@@ -23800,6 +23930,7 @@
           },
           "plural": false,
           "time": "NOW",
+          "description": "",
           "patterns": [],
           "supportedChangeModes": []
         }
@@ -23857,6 +23988,7 @@
           },
           "plural": false,
           "time": "PAST",
+          "description": "",
           "patterns": [],
           "supportedChangeModes": []
         },
@@ -23867,6 +23999,7 @@
           },
           "plural": false,
           "time": "NOW",
+          "description": "",
           "patterns": [],
           "supportedChangeModes": []
         }
@@ -23902,6 +24035,7 @@
           },
           "plural": false,
           "time": "NOW",
+          "description": "",
           "patterns": [],
           "supportedChangeModes": []
         }
@@ -23937,6 +24071,7 @@
           },
           "plural": false,
           "time": "NOW",
+          "description": "",
           "patterns": [],
           "supportedChangeModes": []
         }
@@ -23994,6 +24129,7 @@
           },
           "plural": false,
           "time": "NOW",
+          "description": "",
           "patterns": [],
           "supportedChangeModes": []
         }
@@ -24052,6 +24188,7 @@
           },
           "plural": false,
           "time": "NOW",
+          "description": "",
           "patterns": [],
           "supportedChangeModes": []
         }
@@ -24110,6 +24247,7 @@
           },
           "plural": false,
           "time": "NOW",
+          "description": "",
           "patterns": [],
           "supportedChangeModes": []
         },
@@ -24120,6 +24258,7 @@
           },
           "plural": false,
           "time": "NOW",
+          "description": "",
           "patterns": [],
           "supportedChangeModes": []
         }
@@ -24155,6 +24294,7 @@
           },
           "plural": false,
           "time": "NOW",
+          "description": "",
           "patterns": [],
           "supportedChangeModes": []
         },
@@ -24165,6 +24305,7 @@
           },
           "plural": false,
           "time": "NOW",
+          "description": "",
           "patterns": [],
           "supportedChangeModes": []
         },
@@ -24175,6 +24316,7 @@
           },
           "plural": false,
           "time": "NOW",
+          "description": "",
           "patterns": [],
           "supportedChangeModes": []
         },
@@ -24185,6 +24327,7 @@
           },
           "plural": false,
           "time": "FUTURE",
+          "description": "",
           "patterns": [],
           "supportedChangeModes": []
         },
@@ -24195,6 +24338,7 @@
           },
           "plural": false,
           "time": "FUTURE",
+          "description": "",
           "patterns": [],
           "supportedChangeModes": []
         }
@@ -24229,6 +24373,7 @@
           },
           "plural": false,
           "time": "NOW",
+          "description": "",
           "patterns": [],
           "supportedChangeModes": []
         }
@@ -24379,6 +24524,7 @@
           },
           "plural": false,
           "time": "NOW",
+          "description": "",
           "patterns": [],
           "supportedChangeModes": []
         },
@@ -24389,6 +24535,7 @@
           },
           "plural": false,
           "time": "NOW",
+          "description": "",
           "patterns": [],
           "supportedChangeModes": []
         }
@@ -24423,6 +24570,7 @@
           },
           "plural": false,
           "time": "NOW",
+          "description": "",
           "patterns": [],
           "supportedChangeModes": []
         }
@@ -24483,6 +24631,7 @@
           },
           "plural": false,
           "time": "PAST",
+          "description": "",
           "patterns": [],
           "supportedChangeModes": []
         },
@@ -24493,6 +24642,7 @@
           },
           "plural": false,
           "time": "NOW",
+          "description": "",
           "patterns": [],
           "supportedChangeModes": []
         },
@@ -24503,6 +24653,7 @@
           },
           "plural": false,
           "time": "NOW",
+          "description": "",
           "patterns": [],
           "supportedChangeModes": []
         }
@@ -24610,6 +24761,7 @@
           },
           "plural": false,
           "time": "NOW",
+          "description": "",
           "patterns": [],
           "supportedChangeModes": []
         }
@@ -24651,6 +24803,7 @@
           },
           "plural": true,
           "time": "PAST",
+          "description": "",
           "patterns": [],
           "supportedChangeModes": []
         },
@@ -24661,6 +24814,7 @@
           },
           "plural": true,
           "time": "NOW",
+          "description": "",
           "patterns": [],
           "supportedChangeModes": []
         }
@@ -24722,6 +24876,7 @@
           },
           "plural": false,
           "time": "NOW",
+          "description": "",
           "patterns": [],
           "supportedChangeModes": []
         },
@@ -24732,6 +24887,7 @@
           },
           "plural": false,
           "time": "NOW",
+          "description": "",
           "patterns": [],
           "supportedChangeModes": []
         },
@@ -24742,6 +24898,7 @@
           },
           "plural": false,
           "time": "NOW",
+          "description": "",
           "patterns": [],
           "supportedChangeModes": []
         },
@@ -24752,6 +24909,7 @@
           },
           "plural": false,
           "time": "FUTURE",
+          "description": "",
           "patterns": [],
           "supportedChangeModes": []
         }
@@ -24786,6 +24944,7 @@
           },
           "plural": false,
           "time": "NOW",
+          "description": "",
           "patterns": [],
           "supportedChangeModes": []
         },
@@ -24796,6 +24955,7 @@
           },
           "plural": false,
           "time": "NOW",
+          "description": "",
           "patterns": [],
           "supportedChangeModes": []
         }
@@ -24830,6 +24990,7 @@
           },
           "plural": false,
           "time": "NOW",
+          "description": "",
           "patterns": [],
           "supportedChangeModes": []
         }
@@ -24892,6 +25053,7 @@
           },
           "plural": false,
           "time": "NOW",
+          "description": "",
           "patterns": [],
           "supportedChangeModes": []
         },
@@ -24902,6 +25064,7 @@
           },
           "plural": false,
           "time": "NOW",
+          "description": "",
           "patterns": [],
           "supportedChangeModes": []
         }
@@ -24939,6 +25102,7 @@
           },
           "plural": false,
           "time": "NOW",
+          "description": "",
           "patterns": [],
           "supportedChangeModes": []
         },
@@ -24949,6 +25113,7 @@
           },
           "plural": false,
           "time": "NOW",
+          "description": "",
           "patterns": [],
           "supportedChangeModes": []
         },
@@ -24959,6 +25124,7 @@
           },
           "plural": false,
           "time": "NOW",
+          "description": "",
           "patterns": [],
           "supportedChangeModes": []
         },
@@ -24969,6 +25135,7 @@
           },
           "plural": false,
           "time": "NOW",
+          "description": "",
           "patterns": [],
           "supportedChangeModes": []
         },
@@ -24979,6 +25146,7 @@
           },
           "plural": false,
           "time": "NOW",
+          "description": "",
           "patterns": [],
           "supportedChangeModes": []
         },
@@ -24989,6 +25157,7 @@
           },
           "plural": false,
           "time": "NOW",
+          "description": "",
           "patterns": [],
           "supportedChangeModes": []
         },
@@ -24999,6 +25168,7 @@
           },
           "plural": false,
           "time": "NOW",
+          "description": "",
           "patterns": [],
           "supportedChangeModes": []
         },
@@ -25009,6 +25179,7 @@
           },
           "plural": false,
           "time": "NOW",
+          "description": "",
           "patterns": [],
           "supportedChangeModes": []
         },
@@ -25019,6 +25190,7 @@
           },
           "plural": false,
           "time": "NOW",
+          "description": "",
           "patterns": [],
           "supportedChangeModes": []
         },
@@ -25029,6 +25201,7 @@
           },
           "plural": false,
           "time": "NOW",
+          "description": "",
           "patterns": [],
           "supportedChangeModes": []
         },
@@ -25039,6 +25212,7 @@
           },
           "plural": false,
           "time": "NOW",
+          "description": "",
           "patterns": [],
           "supportedChangeModes": []
         }
@@ -25101,6 +25275,7 @@
           },
           "plural": false,
           "time": "PAST",
+          "description": "",
           "patterns": [],
           "supportedChangeModes": []
         },
@@ -25111,6 +25286,7 @@
           },
           "plural": false,
           "time": "NOW",
+          "description": "",
           "patterns": [],
           "supportedChangeModes": []
         },
@@ -25121,6 +25297,7 @@
           },
           "plural": true,
           "time": "NOW",
+          "description": "",
           "patterns": [],
           "supportedChangeModes": []
         },
@@ -25131,6 +25308,7 @@
           },
           "plural": true,
           "time": "NOW",
+          "description": "",
           "patterns": [],
           "supportedChangeModes": []
         }
@@ -25166,6 +25344,7 @@
           },
           "plural": false,
           "time": "NOW",
+          "description": "",
           "patterns": [],
           "supportedChangeModes": []
         },
@@ -25176,6 +25355,7 @@
           },
           "plural": false,
           "time": "NOW",
+          "description": "",
           "patterns": [],
           "supportedChangeModes": []
         }
@@ -25210,6 +25390,7 @@
           },
           "plural": false,
           "time": "NOW",
+          "description": "",
           "patterns": [],
           "supportedChangeModes": [
             "SET"
@@ -25250,6 +25431,7 @@
           },
           "plural": false,
           "time": "PAST",
+          "description": "",
           "patterns": [],
           "supportedChangeModes": [
             "SET"
@@ -25262,6 +25444,7 @@
           },
           "plural": false,
           "time": "PAST",
+          "description": "",
           "patterns": [],
           "supportedChangeModes": []
         },
@@ -25272,6 +25455,7 @@
           },
           "plural": false,
           "time": "PAST",
+          "description": "",
           "patterns": [],
           "supportedChangeModes": []
         },
@@ -25282,6 +25466,7 @@
           },
           "plural": false,
           "time": "NOW",
+          "description": "",
           "patterns": [],
           "supportedChangeModes": [
             "SET"
@@ -25294,6 +25479,7 @@
           },
           "plural": false,
           "time": "NOW",
+          "description": "",
           "patterns": [],
           "supportedChangeModes": []
         },
@@ -25304,6 +25490,7 @@
           },
           "plural": false,
           "time": "NOW",
+          "description": "",
           "patterns": [],
           "supportedChangeModes": []
         },
@@ -25314,6 +25501,7 @@
           },
           "plural": false,
           "time": "NOW",
+          "description": "",
           "patterns": [],
           "supportedChangeModes": []
         },
@@ -25324,6 +25512,7 @@
           },
           "plural": false,
           "time": "NOW",
+          "description": "",
           "patterns": [],
           "supportedChangeModes": []
         },
@@ -25334,6 +25523,7 @@
           },
           "plural": false,
           "time": "NOW",
+          "description": "",
           "patterns": [],
           "supportedChangeModes": []
         },
@@ -25344,6 +25534,7 @@
           },
           "plural": false,
           "time": "FUTURE",
+          "description": "",
           "patterns": [],
           "supportedChangeModes": []
         }
@@ -25429,6 +25620,7 @@
           },
           "plural": false,
           "time": "NOW",
+          "description": "",
           "patterns": [],
           "supportedChangeModes": []
         }
@@ -25471,6 +25663,7 @@
           },
           "plural": false,
           "time": "PAST",
+          "description": "",
           "patterns": [],
           "supportedChangeModes": []
         },
@@ -25481,6 +25674,7 @@
           },
           "plural": false,
           "time": "NOW",
+          "description": "",
           "patterns": [],
           "supportedChangeModes": []
         },
@@ -25491,6 +25685,7 @@
           },
           "plural": false,
           "time": "NOW",
+          "description": "",
           "patterns": [],
           "supportedChangeModes": []
         },
@@ -25501,6 +25696,7 @@
           },
           "plural": false,
           "time": "FUTURE",
+          "description": "",
           "patterns": [],
           "supportedChangeModes": []
         }
@@ -25535,6 +25731,7 @@
           },
           "plural": false,
           "time": "PAST",
+          "description": "",
           "patterns": [],
           "supportedChangeModes": []
         },
@@ -25545,6 +25742,7 @@
           },
           "plural": false,
           "time": "NOW",
+          "description": "",
           "patterns": [],
           "supportedChangeModes": []
         }
@@ -25580,6 +25778,7 @@
           },
           "plural": false,
           "time": "PAST",
+          "description": "",
           "patterns": [],
           "supportedChangeModes": []
         },
@@ -25590,6 +25789,7 @@
           },
           "plural": false,
           "time": "NOW",
+          "description": "",
           "patterns": [],
           "supportedChangeModes": []
         },
@@ -25600,6 +25800,7 @@
           },
           "plural": false,
           "time": "FUTURE",
+          "description": "",
           "patterns": [],
           "supportedChangeModes": []
         }
@@ -25637,6 +25838,7 @@
           },
           "plural": false,
           "time": "NOW",
+          "description": "",
           "patterns": [],
           "supportedChangeModes": []
         },
@@ -25647,6 +25849,7 @@
           },
           "plural": false,
           "time": "NOW",
+          "description": "",
           "patterns": [],
           "supportedChangeModes": []
         },
@@ -25657,6 +25860,7 @@
           },
           "plural": false,
           "time": "NOW",
+          "description": "",
           "patterns": [],
           "supportedChangeModes": []
         },
@@ -25667,6 +25871,7 @@
           },
           "plural": false,
           "time": "NOW",
+          "description": "",
           "patterns": [],
           "supportedChangeModes": []
         }
@@ -25701,6 +25906,7 @@
           },
           "plural": false,
           "time": "NOW",
+          "description": "",
           "patterns": [],
           "supportedChangeModes": []
         }
@@ -25762,6 +25968,7 @@
           },
           "plural": false,
           "time": "NOW",
+          "description": "",
           "patterns": [],
           "supportedChangeModes": []
         },
@@ -25772,6 +25979,7 @@
           },
           "plural": false,
           "time": "NOW",
+          "description": "",
           "patterns": [],
           "supportedChangeModes": []
         }
@@ -25806,6 +26014,7 @@
           },
           "plural": false,
           "time": "NOW",
+          "description": "",
           "patterns": [],
           "supportedChangeModes": []
         },
@@ -25816,6 +26025,7 @@
           },
           "plural": false,
           "time": "NOW",
+          "description": "",
           "patterns": [],
           "supportedChangeModes": []
         },
@@ -25826,6 +26036,7 @@
           },
           "plural": false,
           "time": "NOW",
+          "description": "",
           "patterns": [],
           "supportedChangeModes": []
         },
@@ -25836,6 +26047,7 @@
           },
           "plural": false,
           "time": "NOW",
+          "description": "",
           "patterns": [],
           "supportedChangeModes": []
         }
@@ -25872,6 +26084,7 @@
           },
           "plural": false,
           "time": "PAST",
+          "description": "",
           "patterns": [],
           "supportedChangeModes": [
             "SET"
@@ -25884,6 +26097,7 @@
           },
           "plural": false,
           "time": "NOW",
+          "description": "",
           "patterns": [],
           "supportedChangeModes": [
             "SET"
@@ -25896,6 +26110,7 @@
           },
           "plural": false,
           "time": "PAST",
+          "description": "",
           "patterns": [],
           "supportedChangeModes": [
             "SET"
@@ -25908,6 +26123,7 @@
           },
           "plural": false,
           "time": "NOW",
+          "description": "",
           "patterns": [],
           "supportedChangeModes": [
             "SET"
@@ -25920,6 +26136,7 @@
           },
           "plural": false,
           "time": "NOW",
+          "description": "",
           "patterns": [],
           "supportedChangeModes": []
         }
@@ -25957,6 +26174,7 @@
           },
           "plural": false,
           "time": "PAST",
+          "description": "",
           "patterns": [],
           "supportedChangeModes": []
         },
@@ -25967,6 +26185,7 @@
           },
           "plural": false,
           "time": "NOW",
+          "description": "",
           "patterns": [],
           "supportedChangeModes": []
         },
@@ -25977,6 +26196,7 @@
           },
           "plural": false,
           "time": "NOW",
+          "description": "",
           "patterns": [],
           "supportedChangeModes": []
         },
@@ -25987,6 +26207,7 @@
           },
           "plural": false,
           "time": "NOW",
+          "description": "",
           "patterns": [],
           "supportedChangeModes": []
         },
@@ -25997,6 +26218,7 @@
           },
           "plural": false,
           "time": "FUTURE",
+          "description": "",
           "patterns": [],
           "supportedChangeModes": []
         },
@@ -26007,6 +26229,7 @@
           },
           "plural": false,
           "time": "NOW",
+          "description": "",
           "patterns": [],
           "supportedChangeModes": []
         }
@@ -26042,6 +26265,7 @@
           },
           "plural": false,
           "time": "NOW",
+          "description": "",
           "patterns": [],
           "supportedChangeModes": []
         },
@@ -26052,6 +26276,7 @@
           },
           "plural": false,
           "time": "NOW",
+          "description": "",
           "patterns": [],
           "supportedChangeModes": []
         },
@@ -26062,6 +26287,7 @@
           },
           "plural": false,
           "time": "FUTURE",
+          "description": "",
           "patterns": [],
           "supportedChangeModes": []
         }
@@ -26126,6 +26352,7 @@
           },
           "plural": false,
           "time": "NOW",
+          "description": "",
           "patterns": [],
           "supportedChangeModes": []
         }
@@ -26188,6 +26415,7 @@
           },
           "plural": false,
           "time": "PAST",
+          "description": "",
           "patterns": [],
           "supportedChangeModes": []
         },
@@ -26198,6 +26426,7 @@
           },
           "plural": false,
           "time": "NOW",
+          "description": "",
           "patterns": [],
           "supportedChangeModes": []
         },
@@ -26208,6 +26437,7 @@
           },
           "plural": false,
           "time": "NOW",
+          "description": "",
           "patterns": [],
           "supportedChangeModes": []
         },
@@ -26218,6 +26448,7 @@
           },
           "plural": false,
           "time": "FUTURE",
+          "description": "",
           "patterns": [],
           "supportedChangeModes": []
         }
@@ -26256,6 +26487,7 @@
           },
           "plural": false,
           "time": "NOW",
+          "description": "",
           "patterns": [],
           "supportedChangeModes": []
         }
@@ -26398,6 +26630,7 @@
           },
           "plural": false,
           "time": "NOW",
+          "description": "",
           "patterns": [
             "gamemode"
           ],
@@ -26434,6 +26667,7 @@
           },
           "plural": false,
           "time": "NOW",
+          "description": "",
           "patterns": [],
           "supportedChangeModes": []
         },
@@ -26444,6 +26678,7 @@
           },
           "plural": false,
           "time": "NOW",
+          "description": "",
           "patterns": [],
           "supportedChangeModes": [
             "SET"
@@ -26456,6 +26691,7 @@
           },
           "plural": false,
           "time": "NOW",
+          "description": "",
           "patterns": [],
           "supportedChangeModes": []
         }
@@ -26522,6 +26758,7 @@
           },
           "plural": false,
           "time": "NOW",
+          "description": "",
           "patterns": [],
           "supportedChangeModes": []
         },
@@ -26532,6 +26769,7 @@
           },
           "plural": true,
           "time": "NOW",
+          "description": "",
           "patterns": [],
           "supportedChangeModes": []
         },
@@ -26542,6 +26780,7 @@
           },
           "plural": false,
           "time": "NOW",
+          "description": "",
           "patterns": [],
           "supportedChangeModes": []
         },
@@ -26552,6 +26791,7 @@
           },
           "plural": false,
           "time": "NOW",
+          "description": "",
           "patterns": [],
           "supportedChangeModes": []
         }
@@ -26588,6 +26828,7 @@
           },
           "plural": false,
           "time": "NOW",
+          "description": "",
           "patterns": [],
           "supportedChangeModes": []
         },
@@ -26598,6 +26839,7 @@
           },
           "plural": false,
           "time": "NOW",
+          "description": "",
           "patterns": [],
           "supportedChangeModes": []
         },
@@ -26608,6 +26850,7 @@
           },
           "plural": true,
           "time": "NOW",
+          "description": "",
           "patterns": [],
           "supportedChangeModes": []
         }
@@ -26643,6 +26886,7 @@
           },
           "plural": false,
           "time": "NOW",
+          "description": "",
           "patterns": [],
           "supportedChangeModes": []
         },
@@ -26653,6 +26897,7 @@
           },
           "plural": false,
           "time": "NOW",
+          "description": "",
           "patterns": [],
           "supportedChangeModes": []
         },
@@ -26663,6 +26908,7 @@
           },
           "plural": false,
           "time": "NOW",
+          "description": "",
           "patterns": [],
           "supportedChangeModes": []
         },
@@ -26673,6 +26919,7 @@
           },
           "plural": false,
           "time": "NOW",
+          "description": "",
           "patterns": [],
           "supportedChangeModes": []
         },
@@ -26683,6 +26930,7 @@
           },
           "plural": false,
           "time": "NOW",
+          "description": "",
           "patterns": [],
           "supportedChangeModes": []
         },
@@ -26693,6 +26941,7 @@
           },
           "plural": false,
           "time": "NOW",
+          "description": "",
           "patterns": [],
           "supportedChangeModes": []
         }
@@ -26729,6 +26978,7 @@
           },
           "plural": false,
           "time": "PAST",
+          "description": "",
           "patterns": [],
           "supportedChangeModes": []
         },
@@ -26739,6 +26989,7 @@
           },
           "plural": false,
           "time": "PAST",
+          "description": "",
           "patterns": [],
           "supportedChangeModes": []
         },
@@ -26749,6 +27000,7 @@
           },
           "plural": false,
           "time": "NOW",
+          "description": "",
           "patterns": [],
           "supportedChangeModes": []
         },
@@ -26759,6 +27011,7 @@
           },
           "plural": false,
           "time": "NOW",
+          "description": "",
           "patterns": [],
           "supportedChangeModes": []
         },
@@ -26769,6 +27022,7 @@
           },
           "plural": false,
           "time": "NOW",
+          "description": "",
           "patterns": [],
           "supportedChangeModes": []
         },
@@ -26779,6 +27033,7 @@
           },
           "plural": false,
           "time": "FUTURE",
+          "description": "",
           "patterns": [],
           "supportedChangeModes": []
         },
@@ -26789,6 +27044,7 @@
           },
           "plural": false,
           "time": "PAST",
+          "description": "",
           "patterns": [],
           "supportedChangeModes": []
         },
@@ -26799,6 +27055,7 @@
           },
           "plural": false,
           "time": "NOW",
+          "description": "",
           "patterns": [],
           "supportedChangeModes": []
         },
@@ -26809,6 +27066,7 @@
           },
           "plural": false,
           "time": "NOW",
+          "description": "",
           "patterns": [],
           "supportedChangeModes": []
         }
@@ -26848,6 +27106,7 @@
           },
           "plural": false,
           "time": "NOW",
+          "description": "",
           "patterns": [],
           "supportedChangeModes": []
         },
@@ -26858,6 +27117,7 @@
           },
           "plural": true,
           "time": "NOW",
+          "description": "",
           "patterns": [],
           "supportedChangeModes": []
         }
@@ -26925,6 +27185,7 @@
           },
           "plural": false,
           "time": "NOW",
+          "description": "",
           "patterns": [],
           "supportedChangeModes": []
         },
@@ -26935,6 +27196,7 @@
           },
           "plural": false,
           "time": "NOW",
+          "description": "",
           "patterns": [],
           "supportedChangeModes": []
         },
@@ -26945,6 +27207,7 @@
           },
           "plural": false,
           "time": "NOW",
+          "description": "",
           "patterns": [],
           "supportedChangeModes": []
         },
@@ -26955,6 +27218,7 @@
           },
           "plural": false,
           "time": "NOW",
+          "description": "",
           "patterns": [],
           "supportedChangeModes": []
         },
@@ -26965,6 +27229,7 @@
           },
           "plural": false,
           "time": "NOW",
+          "description": "",
           "patterns": [],
           "supportedChangeModes": []
         },
@@ -26975,6 +27240,7 @@
           },
           "plural": false,
           "time": "NOW",
+          "description": "",
           "patterns": [],
           "supportedChangeModes": []
         },
@@ -26985,6 +27251,7 @@
           },
           "plural": false,
           "time": "NOW",
+          "description": "",
           "patterns": [],
           "supportedChangeModes": []
         },
@@ -26995,6 +27262,7 @@
           },
           "plural": false,
           "time": "NOW",
+          "description": "",
           "patterns": [],
           "supportedChangeModes": []
         },
@@ -27005,6 +27273,7 @@
           },
           "plural": false,
           "time": "NOW",
+          "description": "",
           "patterns": [],
           "supportedChangeModes": []
         }
@@ -27091,6 +27360,7 @@
           },
           "plural": false,
           "time": "NOW",
+          "description": "",
           "patterns": [],
           "supportedChangeModes": []
         }
@@ -27126,6 +27396,7 @@
           },
           "plural": false,
           "time": "NOW",
+          "description": "",
           "patterns": [],
           "supportedChangeModes": []
         },
@@ -27136,6 +27407,7 @@
           },
           "plural": false,
           "time": "NOW",
+          "description": "",
           "patterns": [],
           "supportedChangeModes": []
         },
@@ -27146,6 +27418,7 @@
           },
           "plural": false,
           "time": "NOW",
+          "description": "",
           "patterns": [],
           "supportedChangeModes": []
         },
@@ -27156,6 +27429,7 @@
           },
           "plural": false,
           "time": "NOW",
+          "description": "",
           "patterns": [],
           "supportedChangeModes": []
         }
@@ -27221,6 +27495,7 @@
           },
           "plural": false,
           "time": "PAST",
+          "description": "",
           "patterns": [],
           "supportedChangeModes": [
             "SET"
@@ -27233,6 +27508,7 @@
           },
           "plural": false,
           "time": "PAST",
+          "description": "",
           "patterns": [],
           "supportedChangeModes": []
         },
@@ -27243,6 +27519,7 @@
           },
           "plural": false,
           "time": "PAST",
+          "description": "",
           "patterns": [],
           "supportedChangeModes": []
         },
@@ -27253,6 +27530,7 @@
           },
           "plural": false,
           "time": "NOW",
+          "description": "",
           "patterns": [],
           "supportedChangeModes": [
             "SET"
@@ -27265,6 +27543,7 @@
           },
           "plural": false,
           "time": "NOW",
+          "description": "",
           "patterns": [],
           "supportedChangeModes": []
         },
@@ -27275,6 +27554,7 @@
           },
           "plural": false,
           "time": "NOW",
+          "description": "",
           "patterns": [],
           "supportedChangeModes": []
         },
@@ -27285,6 +27565,7 @@
           },
           "plural": false,
           "time": "NOW",
+          "description": "",
           "patterns": [],
           "supportedChangeModes": []
         },
@@ -27295,6 +27576,7 @@
           },
           "plural": false,
           "time": "NOW",
+          "description": "",
           "patterns": [],
           "supportedChangeModes": []
         }
@@ -27329,6 +27611,7 @@
           },
           "plural": false,
           "time": "NOW",
+          "description": "",
           "patterns": [],
           "supportedChangeModes": []
         },
@@ -27339,6 +27622,7 @@
           },
           "plural": true,
           "time": "NOW",
+          "description": "",
           "patterns": [],
           "supportedChangeModes": []
         },
@@ -27349,6 +27633,7 @@
           },
           "plural": false,
           "time": "NOW",
+          "description": "",
           "patterns": [],
           "supportedChangeModes": []
         },
@@ -27359,6 +27644,7 @@
           },
           "plural": false,
           "time": "NOW",
+          "description": "",
           "patterns": [],
           "supportedChangeModes": []
         }
@@ -27395,6 +27681,7 @@
           },
           "plural": false,
           "time": "NOW",
+          "description": "",
           "patterns": [],
           "supportedChangeModes": []
         },
@@ -27405,6 +27692,7 @@
           },
           "plural": false,
           "time": "NOW",
+          "description": "",
           "patterns": [],
           "supportedChangeModes": []
         },
@@ -27415,6 +27703,7 @@
           },
           "plural": false,
           "time": "NOW",
+          "description": "",
           "patterns": [],
           "supportedChangeModes": []
         }
@@ -27452,6 +27741,7 @@
           },
           "plural": false,
           "time": "NOW",
+          "description": "",
           "patterns": [],
           "supportedChangeModes": []
         }
@@ -27489,6 +27779,7 @@
           },
           "plural": false,
           "time": "NOW",
+          "description": "",
           "patterns": [],
           "supportedChangeModes": []
         }
@@ -27530,6 +27821,7 @@
           },
           "plural": false,
           "time": "NOW",
+          "description": "",
           "patterns": [],
           "supportedChangeModes": []
         },
@@ -27540,6 +27832,7 @@
           },
           "plural": false,
           "time": "NOW",
+          "description": "",
           "patterns": [],
           "supportedChangeModes": []
         },
@@ -27550,6 +27843,7 @@
           },
           "plural": false,
           "time": "NOW",
+          "description": "",
           "patterns": [],
           "supportedChangeModes": []
         },
@@ -27560,6 +27854,7 @@
           },
           "plural": false,
           "time": "NOW",
+          "description": "",
           "patterns": [],
           "supportedChangeModes": []
         },
@@ -27570,6 +27865,7 @@
           },
           "plural": false,
           "time": "NOW",
+          "description": "",
           "patterns": [],
           "supportedChangeModes": []
         }
@@ -27608,6 +27904,7 @@
           },
           "plural": true,
           "time": "NOW",
+          "description": "",
           "patterns": [],
           "supportedChangeModes": []
         },
@@ -27618,6 +27915,7 @@
           },
           "plural": false,
           "time": "NOW",
+          "description": "",
           "patterns": [],
           "supportedChangeModes": []
         }
@@ -27653,6 +27951,7 @@
           },
           "plural": false,
           "time": "NOW",
+          "description": "",
           "patterns": [],
           "supportedChangeModes": []
         }
@@ -27694,6 +27993,7 @@
           },
           "plural": false,
           "time": "PAST",
+          "description": "",
           "patterns": [],
           "supportedChangeModes": []
         },
@@ -27704,6 +28004,7 @@
           },
           "plural": false,
           "time": "NOW",
+          "description": "",
           "patterns": [],
           "supportedChangeModes": []
         },
@@ -27714,6 +28015,7 @@
           },
           "plural": false,
           "time": "NOW",
+          "description": "",
           "patterns": [],
           "supportedChangeModes": []
         },
@@ -27724,6 +28026,7 @@
           },
           "plural": false,
           "time": "NOW",
+          "description": "",
           "patterns": [],
           "supportedChangeModes": []
         },
@@ -27734,6 +28037,7 @@
           },
           "plural": false,
           "time": "NOW",
+          "description": "",
           "patterns": [],
           "supportedChangeModes": []
         }
@@ -27779,6 +28083,7 @@
           },
           "plural": false,
           "time": "NOW",
+          "description": "",
           "patterns": [],
           "supportedChangeModes": []
         },
@@ -27789,6 +28094,7 @@
           },
           "plural": true,
           "time": "NOW",
+          "description": "",
           "patterns": [],
           "supportedChangeModes": []
         },
@@ -27799,6 +28105,7 @@
           },
           "plural": false,
           "time": "FUTURE",
+          "description": "",
           "patterns": [],
           "supportedChangeModes": []
         },
@@ -27809,6 +28116,7 @@
           },
           "plural": true,
           "time": "FUTURE",
+          "description": "",
           "patterns": [],
           "supportedChangeModes": []
         },
@@ -27819,6 +28127,7 @@
           },
           "plural": false,
           "time": "PAST",
+          "description": "",
           "patterns": [],
           "supportedChangeModes": []
         },
@@ -27829,6 +28138,7 @@
           },
           "plural": false,
           "time": "NOW",
+          "description": "",
           "patterns": [],
           "supportedChangeModes": []
         }
@@ -37393,39 +37703,6 @@
         }
       }
     },
-    "FuncEntity": {
-      "origin": {
-        "name": "Skript"
-      },
-      "id": "FuncEntity",
-      "name": "entity",
-      "description": "Returns an entity from a given UUID.\nIf the entity is unloaded or an offline player, the function will return nothing.",
-      "examples": [
-        "set {_entity} to entity({uuid})",
-        "kill entity({uuid})",
-        "set {_type} to type of entity({uuid})"
-      ],
-      "since": [
-        "2.16"
-      ],
-      "requirements": [],
-      "keywords": [],
-      "deprecated": false,
-      "returnType": {
-        "id": "TypeEntity",
-        "name": "Entity"
-      },
-      "parameters": {
-        "uuid": {
-          "name": "uuid",
-          "type": {
-            "id": "TypeUuid",
-            "name": "UUID"
-          },
-          "plural": false
-        }
-      }
-    },
     "FuncExp": {
       "origin": {
         "name": "Skript",
@@ -38267,6 +38544,39 @@
         }
       }
     },
+    "FuncEntity": {
+      "origin": {
+        "name": "Skript"
+      },
+      "id": "FuncEntity",
+      "name": "entity",
+      "description": "Returns an entity from a given UUID.\nIf the entity is unloaded or an offline player, the function will return nothing.",
+      "examples": [
+        "set {_entity} to entity({uuid})",
+        "kill entity({uuid})",
+        "set {_type} to type of entity({uuid})"
+      ],
+      "since": [
+        "2.16"
+      ],
+      "requirements": [],
+      "keywords": [],
+      "deprecated": false,
+      "returnType": {
+        "id": "TypeEntity",
+        "name": "Entity"
+      },
+      "parameters": {
+        "uuid": {
+          "name": "uuid",
+          "type": {
+            "id": "TypeUuid",
+            "name": "UUID"
+          },
+          "plural": false
+        }
+      }
+    },
     "FuncCeiling": {
       "origin": {
         "name": "Skript",
@@ -38483,6 +38793,86 @@
             "name": "Text"
           },
           "plural": false
+        }
+      }
+    },
+    "FuncLocation": {
+      "origin": {
+        "name": "Skript"
+      },
+      "id": "FuncLocation",
+      "name": "location",
+      "description": "Creates a location from a world and 3 coordinates, with an optional yaw and pitch.\nIf for whatever reason the world is not found, it will fallback to the server's main world.",
+      "examples": [
+        "# TELEPORTING\nteleport player to location(1,1,1, world \"world\")\nteleport player to location(1,1,1, world \"world\", 100, 0)\nteleport player to location(1,1,1, world \"world\", yaw of player, pitch of player)\nteleport player to location(1,1,1, world of player)\nteleport player to location(1,1,1, world(\"world\"))\nteleport player to location({_x}, {_y}, {_z}, {_w}, {_yaw}, {_pitch})\n\n# SETTING BLOCKS\nset block at location(1,1,1, world \"world\") to stone\nset block at location(1,1,1, world \"world\", 100, 0) to stone\nset block at location(1,1,1, world of player) to stone\nset block at location(1,1,1, world(\"world\")) to stone\nset block at location({_x}, {_y}, {_z}, {_w}) to stone\n\n# USING VARIABLES\nset {_l1} to location(1,1,1)\nset {_l2} to location(10,10,10)\nset blocks within {_l1} and {_l2} to stone\nif player is within {_l1} and {_l2}:\n\n# OTHER\nkill all entities in radius 50 around location(1,65,1, world \"world\")\ndelete all entities in radius 25 around location(50,50,50, world \"world_nether\")\nignite all entities in radius 25 around location(1,1,1, world of player)"
+      ],
+      "since": [
+        "2.2"
+      ],
+      "requirements": [],
+      "keywords": [],
+      "deprecated": false,
+      "returnType": {
+        "id": "TypeLocation",
+        "name": "Location"
+      },
+      "parameters": {
+        "x": {
+          "name": "x",
+          "type": {
+            "id": "TypeNumber",
+            "name": "Number"
+          },
+          "plural": false
+        },
+        "y": {
+          "name": "y",
+          "type": {
+            "id": "TypeNumber",
+            "name": "Number"
+          },
+          "plural": false
+        },
+        "z": {
+          "name": "z",
+          "type": {
+            "id": "TypeNumber",
+            "name": "Number"
+          },
+          "plural": false
+        },
+        "world": {
+          "name": "world",
+          "type": {
+            "id": "TypeWorld",
+            "name": "World"
+          },
+          "plural": false,
+          "modifiers": {
+            "optional": true
+          }
+        },
+        "yaw": {
+          "name": "yaw",
+          "type": {
+            "id": "TypeNumber",
+            "name": "Number"
+          },
+          "plural": false,
+          "modifiers": {
+            "optional": true
+          }
+        },
+        "pitch": {
+          "name": "pitch",
+          "type": {
+            "id": "TypeNumber",
+            "name": "Number"
+          },
+          "plural": false,
+          "modifiers": {
+            "optional": true
+          }
         }
       }
     },
@@ -38827,86 +39217,6 @@
             "name": "Number"
           },
           "plural": false
-        }
-      }
-    },
-    "FuncLocation": {
-      "origin": {
-        "name": "Skript"
-      },
-      "id": "FuncLocation",
-      "name": "location",
-      "description": "Creates a location from a world and 3 coordinates, with an optional yaw and pitch.\nIf for whatever reason the world is not found, it will fallback to the server's main world.",
-      "examples": [
-        "# TELEPORTING\nteleport player to location(1,1,1, world \"world\")\nteleport player to location(1,1,1, world \"world\", 100, 0)\nteleport player to location(1,1,1, world \"world\", yaw of player, pitch of player)\nteleport player to location(1,1,1, world of player)\nteleport player to location(1,1,1, world(\"world\"))\nteleport player to location({_x}, {_y}, {_z}, {_w}, {_yaw}, {_pitch})\n\n# SETTING BLOCKS\nset block at location(1,1,1, world \"world\") to stone\nset block at location(1,1,1, world \"world\", 100, 0) to stone\nset block at location(1,1,1, world of player) to stone\nset block at location(1,1,1, world(\"world\")) to stone\nset block at location({_x}, {_y}, {_z}, {_w}) to stone\n\n# USING VARIABLES\nset {_l1} to location(1,1,1)\nset {_l2} to location(10,10,10)\nset blocks within {_l1} and {_l2} to stone\nif player is within {_l1} and {_l2}:\n\n# OTHER\nkill all entities in radius 50 around location(1,65,1, world \"world\")\ndelete all entities in radius 25 around location(50,50,50, world \"world_nether\")\nignite all entities in radius 25 around location(1,1,1, world of player)"
-      ],
-      "since": [
-        "2.2"
-      ],
-      "requirements": [],
-      "keywords": [],
-      "deprecated": false,
-      "returnType": {
-        "id": "TypeLocation",
-        "name": "Location"
-      },
-      "parameters": {
-        "x": {
-          "name": "x",
-          "type": {
-            "id": "TypeNumber",
-            "name": "Number"
-          },
-          "plural": false
-        },
-        "y": {
-          "name": "y",
-          "type": {
-            "id": "TypeNumber",
-            "name": "Number"
-          },
-          "plural": false
-        },
-        "z": {
-          "name": "z",
-          "type": {
-            "id": "TypeNumber",
-            "name": "Number"
-          },
-          "plural": false
-        },
-        "world": {
-          "name": "world",
-          "type": {
-            "id": "TypeWorld",
-            "name": "World"
-          },
-          "plural": false,
-          "modifiers": {
-            "optional": true
-          }
-        },
-        "yaw": {
-          "name": "yaw",
-          "type": {
-            "id": "TypeNumber",
-            "name": "Number"
-          },
-          "plural": false,
-          "modifiers": {
-            "optional": true
-          }
-        },
-        "pitch": {
-          "name": "pitch",
-          "type": {
-            "id": "TypeNumber",
-            "name": "Number"
-          },
-          "plural": false,
-          "modifiers": {
-            "optional": true
-          }
         }
       }
     },
